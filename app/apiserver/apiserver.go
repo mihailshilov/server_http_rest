@@ -14,9 +14,9 @@ import (
 	"github.com/jackc/pgx/v4"
 	"github.com/jackc/pgx/v4/log/logrusadapter"
 	"github.com/jackc/pgx/v4/pgxpool"
-	logger "github.com/webdevolegkuprianov/server_http_rest/app/apiserver/logger"
-	"github.com/webdevolegkuprianov/server_http_rest/app/apiserver/model"
-	"github.com/webdevolegkuprianov/server_http_rest/app/apiserver/store/sqlstore"
+	logger "github.com/mihailshilov/server_http_rest/app/apiserver/logger"
+	"github.com/mihailshilov/server_http_rest/app/apiserver/model"
+	"github.com/mihailshilov/server_http_rest/app/apiserver/store/sqlstore"
 )
 
 func Start(config *model.Service) error {

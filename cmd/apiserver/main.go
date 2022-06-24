@@ -1,10 +1,10 @@
 package main
 
 import (
-	"github.com/webdevolegkuprianov/server_http_rest/app/apiserver"
-	"github.com/webdevolegkuprianov/server_http_rest/app/apiserver/model"
+	"github.com/mihailshilov/server_http_rest/app/apiserver"
+	"github.com/mihailshilov/server_http_rest/app/apiserver/model"
 
-	logger "github.com/webdevolegkuprianov/server_http_rest/app/apiserver/logger"
+	logger "github.com/mihailshilov/server_http_rest/app/apiserver/logger"
 )
 
 func main() {

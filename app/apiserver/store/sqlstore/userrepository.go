@@ -10,9 +10,9 @@ import (
 	"time"
 
 	"github.com/dgrijalva/jwt-go"
-	logger "github.com/webdevolegkuprianov/server_http_rest/app/apiserver/logger"
-	"github.com/webdevolegkuprianov/server_http_rest/app/apiserver/model"
-	"github.com/webdevolegkuprianov/server_http_rest/app/apiserver/store"
+	logger "github.com/mihailshilov/server_http_rest/app/apiserver/logger"
+	"github.com/mihailshilov/server_http_rest/app/apiserver/model"
+	"github.com/mihailshilov/server_http_rest/app/apiserver/store"
 )
 
 //User repository

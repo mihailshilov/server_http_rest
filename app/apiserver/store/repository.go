@@ -5,7 +5,7 @@ import (
 	"time"
 
 	"github.com/dgrijalva/jwt-go"
-	"github.com/webdevolegkuprianov/server_http_rest/app/apiserver/model"
+	"github.com/mihailshilov/server_http_rest/app/apiserver/model"
 )
 
 //user repository
