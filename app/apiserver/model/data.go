@@ -155,7 +155,7 @@ type DataStocks struct {
 	Номер_двигателя                NullString
 	Грузоподъемность_кг            string
 	Цвет                           string
-	ЦветИд                         NullString
+	ЦветИд                         string
 	ЦветRGB                        NullString
 	Вариант_сборки                 string
 	Расшифровка_варианта_сборки    string
