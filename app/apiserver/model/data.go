@@ -161,7 +161,7 @@ type DataStocks struct {
 	Расшифровка_варианта_сборки    string
 	Вариант_сборки_свернутый       NullString
 	Год_VIN                        string
-	Дата_сборки                    string
+	Дата_сборки                    NullString
 	Справочная_стоимость_по_прайсу string
 	Дата_отгрузка                  NullString
 	Дата_прихода                   NullString
