@@ -26,7 +26,7 @@ func (s *NullByte) Scan(value interface{}) error {
 
 func (s *NullString) Scan(value interface{}) error {
 
-	if value == nil {
+	if value == nil || value == "NULL" {
 		*s = "nil"
 		return nil
 	}
