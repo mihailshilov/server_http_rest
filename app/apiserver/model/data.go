@@ -163,7 +163,7 @@ type DataStocks struct {
 	Год_VIN                        string
 	Дата_сборки                    NullString
 	Справочная_стоимость_по_прайсу string
-	Дата_отгрузки                  NullString
+	Дата_отгрузка                  NullString
 	Дата_прихода                   NullString
 	Страна                         NullString
 	Контрагент_получателя          string

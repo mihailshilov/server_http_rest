@@ -374,7 +374,7 @@ func (r *DataRepository) QueryStocksMssql() ([]model.DataStocks, error) {
 			&data.Год_VIN,
 			&data.Дата_сборки,
 			&data.Справочная_стоимость_по_прайсу,
-			&data.Дата_отгрузки,
+			&data.Дата_отгрузка,
 			&data.Дата_прихода,
 			&data.Страна,
 			&data.Контрагент_получателя,
