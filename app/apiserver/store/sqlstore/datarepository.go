@@ -8,6 +8,7 @@ import (
 	"io/ioutil"
 	"net/http"
 	"reflect"
+	"strconv"
 	"time"
 
 	"github.com/mihailshilov/server_http_rest/app/apiserver/model"
@@ -15,12 +16,12 @@ import (
 	logger "github.com/mihailshilov/server_http_rest/app/apiserver/logger"
 )
 
-//Data repository
+// Data repository
 type DataRepository struct {
 	store *Store
 }
 
-//query insert mssql
+// query insert mssql
 func (r *DataRepository) QueryInsertMssql(data model.DataBooking) (string, error) {
 
 	//validation
@@ -67,7 +68,7 @@ func (r *DataRepository) QueryInsertMssql(data model.DataBooking) (string, error
 	return mssql_respond, nil
 }
 
-//insert booking in postgres
+// insert booking in postgres
 func (r *DataRepository) QueryInsertBookingPostgres(data model.DataBooking) error {
 
 	query := `
@@ -144,7 +145,7 @@ func (r *DataRepository) QueryInsertBookingPostgres(data model.DataBooking) erro
 
 }
 
-//insert forms in postgres
+// insert forms in postgres
 func (r *DataRepository) QueryInsertFormsPostgres(data model.DataForms) error {
 
 	query := `
@@ -211,7 +212,7 @@ func (r *DataRepository) QueryInsertFormsPostgres(data model.DataForms) error {
 
 }
 
-//insert lead_get in postgres
+// insert lead_get in postgres
 func (r *DataRepository) QueryInsertLeadGetPostgres(data model.DataLeadGet) error {
 
 	valSlice := reflect.ValueOf(data).FieldByName("Data").Interface().([]model.DataLeadGet_Gazcrm)
@@ -257,7 +258,7 @@ func (r *DataRepository) QueryInsertLeadGetPostgres(data model.DataLeadGet) erro
 	return nil
 }
 
-//insert work lists in postgres
+// insert work lists in postgres
 func (r *DataRepository) QueryInsertWorkListsPostgres(data model.DataWorkList) error {
 
 	valSlice := reflect.ValueOf(data).FieldByName("Data").Interface().([]model.DataWorkList_Gazcrm)
@@ -295,7 +296,7 @@ func (r *DataRepository) QueryInsertWorkListsPostgres(data model.DataWorkList) e
 	return nil
 }
 
-//insert work lists in postgres
+// insert work lists in postgres
 func (r *DataRepository) QueryInsertStatusesPostgres(data model.DataStatuses) error {
 
 	valSlice := reflect.ValueOf(data).FieldByName("Data").Interface().([]model.DataStatuses_Gazcrm)
@@ -336,7 +337,7 @@ func (r *DataRepository) QueryInsertStatusesPostgres(data model.DataStatuses) er
 	return nil
 }
 
-//query stocks mssql
+// query stocks mssql
 func (r *DataRepository) QueryStocksMssql() ([]model.DataStocks, error) {
 
 	rows, err := r.store.dbMssql.Query(r.store.config.Spec.Queryies.Stocks)
@@ -391,14 +392,31 @@ func (r *DataRepository) QueryStocksMssql() ([]model.DataStocks, error) {
 			logger.ErrorLogger.Println(err)
 			return nil, err
 		}
-		results = append(results, *data)
+
+		//results = append(results, *data)
+
+		// if data.Наименование_номенклатуры == "ГАЗ-А21S12-225" || data.Наименование_номенклатуры == "А23S12-1221-18-А83-60-00-900" {
+
+		// 	logger.InfoLogger.Println("не выгружаем: " + data.Наименование_номенклатуры)
+
+		// } else {
+		// 	results = append(results, *data)
+		// }
+
+		switch data.Наименование_номенклатуры {
+		case "ГАЗ-А21S12-225", "А23S12-1221-18-А83-60-00-900", "А31S12-0420-68-216-66-00-000", "А31S12-0420-68-218-66-00-000", "С41А23-1020-35-581-77-00-000":
+			logger.InfoLogger.Println("не выгружаем: " + data.Наименование_номенклатуры)
+		default:
+			results = append(results, *data)
+		}
+
 	}
 
 	return results, nil
 
 }
 
-//query mssql price basic models
+// query mssql price basic models
 func (r *DataRepository) QueryBasicModelsPriceMssql() ([]model.DataBasicModelsPrice, error) {
 
 	rows, err := r.store.dbMssql.Query(r.store.config.Spec.Queryies.BasicModelsPrice)
@@ -433,7 +451,7 @@ func (r *DataRepository) QueryBasicModelsPriceMssql() ([]model.DataBasicModelsPr
 
 }
 
-//query mssql options price
+// query mssql options price
 func (r *DataRepository) QueryOptionsPriceMssql() ([]model.DataOptionsPrice, error) {
 
 	rows, err := r.store.dbMssql.Query(r.store.config.Spec.Queryies.OptionsPrice)
@@ -453,7 +471,9 @@ func (r *DataRepository) QueryOptionsPriceMssql() ([]model.DataOptionsPrice, err
 		err := rows.Scan(
 			&data.ЕНСП_Модификация_Ид,
 			&data.Товар,
+			&data.ТоварИд,
 			&data.ЗначениеОпции,
+			&data.ЗначениеОпцииИд,
 			&data.ОбозначениеОпции,
 			&data.Цена,
 			&data.СтавкаНДС_Ид,
@@ -472,7 +492,7 @@ func (r *DataRepository) QueryOptionsPriceMssql() ([]model.DataOptionsPrice, err
 
 }
 
-//query mssql price general
+// query mssql price general
 func (r *DataRepository) QueryGeneralPriceMssql() ([]model.DataGeneralPrice, error) {
 
 	rows, err := r.store.dbMssql.Query(r.store.config.Spec.Queryies.GeneralPrice)
@@ -509,7 +529,7 @@ func (r *DataRepository) QueryGeneralPriceMssql() ([]model.DataGeneralPrice, err
 
 }
 
-//query mssql sprav
+// query mssql sprav
 func (r *DataRepository) QuerySprav() ([]model.DataSprav, error) {
 
 	rows, err := r.store.dbMssql.Query(r.store.config.Spec.Queryies.Sprav)
@@ -559,19 +579,83 @@ func (r *DataRepository) QuerySprav() ([]model.DataSprav, error) {
 			&data.БазовыйТовар,
 			&data.ОпцииАЗ,
 			&data.ХарактеристикиНоменклатуры,
+			&data.ИзЭПТС_ДопустимаяМаксимальнаяМассаСтандарт,
+			&data.ИзЭПТС_ДопустимаяМаксимальнаяМасса9РА,
+			&data.ИзЭПТС_ДопустимаяМаксимальнаяМасса9РВ,
+			&data.ИзЭПТС_СнаряженнаяМасса,
+			&data.ДоступностьКЗаказу,
 		)
+
 		if err != nil {
 			logger.ErrorLogger.Println(err)
 			return nil, err
 		}
-		results = append(results, *data)
+
+		if data.МассаСнагрузкой == "nil" {
+			data.МассаСнагрузкой = "nil"
+		}
+
+		// if data.Наименование == "ГАЗ-А31S22-420" || data.Наименование == "ГАЗ-А32S22-420" {
+		// 	data.Семейство = "Соболь NN"
+		// }
+
+		if data.ИзЭПТС_ДопустимаяМаксимальнаяМассаСтандарт == nil {
+			stringone := "nil" //тут можно добавить любое значение
+			stringtwo := &stringone
+			data.ИзЭПТС_ДопустимаяМаксимальнаяМассаСтандарт = stringtwo
+		}
+
+		//*&data
+		/*
+			blacklist := []string{
+				"ГАЗ-А21S12-225",
+				"А23S12-1221-18-А83-60-00-900",
+			}
+
+			for _, id_nom := range blacklist {
+
+				if data.Наименование != id_nom {
+
+					//results = results
+					results = append(results, *data)
+
+				} else {
+
+					logger.InfoLogger.Println("не выгружаем: " + data.Наименование)
+
+				}
+
+			}
+		*/
+
+		//А31S12-0420-68-218-66-00-000
+
+		switch data.Наименование {
+		case "ГАЗ-А21S12-225", "А23S12-1221-18-А83-60-00-900", "А31S12-0420-68-216-66-00-000", "А31S12-0420-68-218-66-00-000", "С41А23-1020-35-581-77-00-000":
+			logger.InfoLogger.Println("не выгружаем: " + data.Наименование)
+		default:
+			results = append(results, *data)
+		}
+
+		/*
+			if data.Наименование == "ГАЗ-А21S12-225" || data.Наименование == "А23S12-1221-18-А83-60-00-900" {
+
+				//results = results
+
+				logger.InfoLogger.Println("не выгружаем: " + data.Наименование)
+
+			} else {
+
+			}
+		*/
+
 	}
 
 	return results, nil
 
 }
 
-//query mssql options data
+// query mssql options data
 func (r *DataRepository) QueryOptionsData() ([]model.DataOptions, error) {
 
 	rows, err := r.store.dbMssql.Query(r.store.config.Spec.Queryies.Options)
@@ -591,18 +675,18 @@ func (r *DataRepository) QueryOptionsData() ([]model.DataOptions, error) {
 		err := rows.Scan(
 			&data.НоменклатураИд,
 			&data.НоменклатураНаименование,
-			&data.ГруппаОпций,
-			&data.ГруппаОпцийНаименование,
+			&data.ИдГруппыОпций,
+			&data.КраткоеНаименованиеГруппыОпций,
+			&data.ПолноеНаименованиеГруппыОпций,
 			&data.ОпцияИд,
 			&data.КраткоеНаименованиеОпции,
-			&data.НаименованиеОпции,
-			&data.ЗначениеОпцииИд,
-			&data.Цена,
-			&data.КраткоеНаименование,
-			&data.НаименованиеЗначенияОпции,
+			&data.ПолноеНаименованиеОпции,
+			&data.ОписаниеОпции,
+			&data.ЦенаОпции,
 			&data.Обязательная,
 			&data.ВыбранаПоУмолчанию,
 			&data.ЭтоПакет,
+			&data.ЦенаНулл,
 		)
 
 		if err != nil {
@@ -616,7 +700,7 @@ func (r *DataRepository) QueryOptionsData() ([]model.DataOptions, error) {
 
 }
 
-//query mssql options sprav data
+// query mssql options sprav data
 func (r *DataRepository) QueryOptionsDataSprav() ([]model.DataOptionsSprav, error) {
 
 	rows, err := r.store.dbMssql.Query(r.store.config.Spec.Queryies.OptionsSprav)
@@ -653,7 +737,7 @@ func (r *DataRepository) QueryOptionsDataSprav() ([]model.DataOptionsSprav, erro
 
 }
 
-//query mssql packets data
+// query mssql packets data
 func (r *DataRepository) QueryPacketsData() ([]model.DataPackets, error) {
 
 	rows, err := r.store.dbMssql.Query(r.store.config.Spec.Queryies.Packets)
@@ -673,14 +757,15 @@ func (r *DataRepository) QueryPacketsData() ([]model.DataPackets, error) {
 		err := rows.Scan(
 			&data.НоменклатураИд,
 			&data.НоменклатураНаименование,
-			&data.Пакет,
-			&data.НаименованиеПакета,
-			&data.Опция,
-			&data.ЗначениеОпции,
-			&data.ЗначениеОпцииНаим,
-			&data.ЗначениеОпцииКраткоеНаим,
-			&data.ОпцияНаим,
-			&data.ОпцияКраткоеНаим,
+			&data.ИдПакета,
+			&data.КраткоеНаименованиеПакета,
+			&data.ПолноеНаименованиеПакета,
+			&data.ИдГруппыОпций,
+			&data.КраткоеНаименованиеГруппыОпций,
+			&data.ПолноеНаименованиеГруппыОпций,
+			&data.ИдОпции,
+			&data.ПолноеНаименованиеОпции,
+			&data.КраткоеНаименованиеОпции,
 		)
 		if err != nil {
 			logger.ErrorLogger.Println(err)
@@ -693,7 +778,7 @@ func (r *DataRepository) QueryPacketsData() ([]model.DataPackets, error) {
 
 }
 
-//query mssql colors data
+// query mssql colors data
 func (r *DataRepository) QueryColorsData() ([]model.DataColors, error) {
 
 	rows, err := r.store.dbMssql.Query(r.store.config.Spec.Queryies.Colors)
@@ -730,7 +815,41 @@ func (r *DataRepository) QueryColorsData() ([]model.DataColors, error) {
 
 }
 
-//query mssql colors data
+// query mssql statuses data
+func (r *DataRepository) QueryStatusesLkData() ([]model.DataStatusesLk, error) {
+
+	rows, err := r.store.dbMssql.Query(r.store.config.Spec.Queryies.Statuses)
+	if err != nil {
+		logger.ErrorLogger.Println(err)
+		return nil, err
+	}
+
+	defer rows.Close()
+
+	results := []model.DataStatusesLk{} // creating empty slice
+
+	for rows.Next() {
+
+		data := &model.DataStatusesLk{} // creating new struct for every row
+
+		err := rows.Scan(
+			&data.ИдЗаказа,
+			&data.СтатусЗаказа,
+			&data.НомернойТовар,
+			&data.ВИН,
+		)
+		if err != nil {
+			logger.ErrorLogger.Println(err)
+			return nil, err
+		}
+		results = append(results, *data)
+	}
+
+	return results, nil
+
+}
+
+// query mssql sprav data
 func (r *DataRepository) QuerySpravModels() ([]model.DataSpravModels, error) {
 
 	rows, err := r.store.dbMssql.Query(r.store.config.Spec.Queryies.Sprav_new)
@@ -754,6 +873,9 @@ func (r *DataRepository) QuerySpravModels() ([]model.DataSpravModels, error) {
 			&data.СтатусМоделиВПроизводстве,
 			&data.БазовыйТовар,
 			&data.ХарактеристикиНоменклатуры,
+			&data.Цена,
+			&data.СтавкаНДС,
+			&data.НДС,
 		)
 		if err != nil {
 			logger.ErrorLogger.Println(err)
@@ -766,7 +888,7 @@ func (r *DataRepository) QuerySpravModels() ([]model.DataSpravModels, error) {
 
 }
 
-//call microservice mailing
+// call microservice mailing
 func (r *DataRepository) CallMSMailing(data model.DataBooking, config *model.Service) (string, error) {
 
 	bodyBytesReq, err := json.Marshal(data)
@@ -792,7 +914,7 @@ func (r *DataRepository) CallMSMailing(data model.DataBooking, config *model.Ser
 
 }
 
-//request GAZ CRM booking
+// request GAZ CRM booking
 func (r *DataRepository) RequestGazCrmApiBooking(data model.DataBooking, config *model.Service) (*model.ResponseGazCrm, error) {
 
 	var dataset model.DataGazCrm
@@ -885,6 +1007,8 @@ func (r *DataRepository) RequestGazCrmApiBooking(data model.DataBooking, config 
 
 	defer resp.Body.Close()
 
+	defer resp.Body.Close()
+
 	bodyBytesResp, err := ioutil.ReadAll(resp.Body)
 	if err != nil {
 		logger.ErrorLogger.Println(err)
@@ -899,7 +1023,7 @@ func (r *DataRepository) RequestGazCrmApiBooking(data model.DataBooking, config 
 
 }
 
-//request GAZ CRM forms
+// request GAZ CRM forms
 func (r *DataRepository) RequestGazCrmApiForms(data model.DataForms, config *model.Service) (*model.ResponseGazCrm, error) {
 
 	var dataset model.DataGazCrm
@@ -996,6 +1120,94 @@ func (r *DataRepository) RequestGazCrmApiForms(data model.DataForms, config *mod
 		logger.ErrorLogger.Println(err)
 		return nil, err
 	}
+
+	return response, nil
+
+}
+
+// request LK order
+func (r *DataRepository) RequestLkOrder(data model.DataBooking, config *model.Service) (*http.Response, error) {
+
+	dataset := &model.DataLkOrder{
+		Id:          data.RequestId,
+		StageCode:   "new",
+		Title:       data.ModFamily + " " + data.ModBodyType,
+		Vin:         data.Vin,
+		Cost:        strconv.Itoa(data.PriceWithNds),
+		ModelFamily: data.ModFamily,
+		PreviewUrl:  data.PreviewUrl,
+	}
+
+	client := &http.Client{}
+
+	token := data.СlientToken
+
+	bearer := "Bearer " + token
+
+	bodyBytesReq, err := json.Marshal(dataset)
+	if err != nil {
+		return nil, err
+	}
+
+	logger.ErrorLogger.Println(bytes.NewBuffer(bodyBytesReq))
+
+	//resp, err := http.Post(config.Spec.Client.UrlLkOrder, "application/json", bytes.NewBuffer(bodyBytesReq))
+	req, err := http.NewRequest(http.MethodPost, config.Spec.Client.UrlLkOrder, bytes.NewBuffer(bodyBytesReq)) // URL-encoded payload
+	if err != nil {
+		logger.ErrorLogger.Println(err)
+	}
+
+	req.Header.Add("Authorization", bearer)
+	req.Header.Add("Content-Type", "application/json")
+
+	response, err := client.Do(req)
+	if err != nil {
+		logger.ErrorLogger.Println(err)
+	}
+
+	logger.ErrorLogger.Println(req)
+
+	return response, nil
+
+}
+
+// query tech data
+func (r *DataRepository) QueryTechData() (*[]model.TechDataObj, error) {
+
+	rows, err := r.store.dbMssql.Query(r.store.config.Spec.Queryies.Techdata)
+	if err != nil {
+		logger.ErrorLogger.Println(err)
+		return nil, err
+	}
+
+	//result := model.TechData{}
+
+	var result string
+	var response *[]model.TechDataObj
+
+	for rows.Next() {
+
+		data := "" // creating new struct for every row
+
+		err := rows.Scan(
+			&data,
+		)
+		if err != nil {
+			logger.ErrorLogger.Println(err)
+			return nil, err
+		}
+		result = result + data
+	}
+
+	//result_unq, err := json.Unmarshal([]byte(result), []model.TechDataObj)
+	if err := json.Unmarshal([]byte(result), &response); err != nil {
+		logger.ErrorLogger.Println(err)
+		return nil, err
+	}
+
+	//result1 := model.TechData{Data: result_unq}
+
+	defer rows.Close()
 
 	return response, nil
 

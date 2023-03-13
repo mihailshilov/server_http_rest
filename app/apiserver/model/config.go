@@ -7,7 +7,7 @@ import (
 	"gopkg.in/yaml.v2"
 )
 
-//config yaml struct
+// config yaml struct
 type Service struct {
 	APIVersion string `yaml:"apiVersion"`
 	Spec       struct {
@@ -39,6 +39,7 @@ type Service struct {
 		Client struct {
 			UrlGazCrmTest     string `yaml:"url_gaz_crm_test"`
 			UrlMailingService string `yaml:"url_mailing_service"`
+			UrlLkOrder        string `yaml:"url_lk_order"`
 		} `yaml:"client"`
 		Queryies struct {
 			Booking          string `yaml:"booking"`
@@ -52,11 +53,13 @@ type Service struct {
 			OptionsSprav     string `yaml:"options_sprav"`
 			Packets          string `yaml:"packets"`
 			Colors           string `yaml:"colors"`
+			Techdata         string `yaml:"techdata"`
+			Statuses         string `yaml:"statuses"`
 		} `yaml:"queryies"`
 	} `yaml:"spec"`
 }
 
-//New config
+// New config
 func NewConfig() (*Service, error) {
 
 	var service *Service

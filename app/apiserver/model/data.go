@@ -6,6 +6,7 @@ import (
 
 type NullByte string
 type NullString string
+type NullInt string
 
 func (s *NullByte) Scan(value interface{}) error {
 
@@ -42,11 +43,28 @@ func (s *NullString) Scan(value interface{}) error {
 	return nil
 }
 
-//Data booking
+func (s *NullInt) Scan(value interface{}) error {
+
+	if value == nil || value == "NULL" {
+		*s = "nil"
+		return nil
+	}
+
+	val, ok := value.(int64)
+	if !ok {
+		*s = "nil"
+		return nil
+	}
+	*s = NullInt(string(val))
+
+	return nil
+}
+
+// Data booking
 type DataBooking struct {
 	RequestId             string `json:"request_id"`
 	ActionType            string `json:"action_type"`
-	UniqModCode           int    `json:"uniq_mod_code"`
+	UniqModCode           *int   `json:"uniq_mod_code"`
 	Modification          string `json:"modification"`
 	ModFamily             string `json:"mod_family"`
 	ModBodyType           string `json:"mod_body_type"`
@@ -96,14 +114,16 @@ type DataBooking struct {
 	CarModel         string `json:"car_model"`
 	MetricsType      string `json:"metrics_type"`
 	СlientIP         string `json:"client_IP"`
+	СlientToken      string `json:"client_token"`
+	PreviewUrl       string `json:"preview_url"`
 }
 
-//Validation data booking
+// Validation data booking
 func (d *DataBooking) ValidateDataBooking() error {
 	return validation.ValidateStruct(
 		d,
 		validation.Field(&d.RequestId, validation.Required),
-		validation.Field(&d.UniqModCode, validation.Required),
+		//validation.Field(&d.UniqModCode, validation.Required),
 		validation.Field(&d.Modification, validation.Required),
 		validation.Field(&d.ModFamily, validation.Required),
 		validation.Field(&d.ModBodyType, validation.Required),
@@ -141,7 +161,7 @@ func (d *DataBooking) ValidateDataBooking() error {
 	)
 }
 
-//Data get
+// Data get
 type DataStocks struct {
 	VIN                            string
 	Площадка                       string
@@ -177,7 +197,7 @@ type DataStocks struct {
 	Номерной_товар                 string
 }
 
-//data price basic models
+// data price basic models
 type DataBasicModelsPrice struct {
 	Товар          string
 	НачалоДействия string
@@ -186,20 +206,22 @@ type DataBasicModelsPrice struct {
 	СтавкаНДС      string
 }
 
-//data price options
+// data price options
 type DataOptionsPrice struct {
 	ЕНСП_Модификация_Ид NullString
+	ТоварИд             string
 	Товар               string
+	ЗначениеОпцииИд     string
 	ЗначениеОпции       string
 	ОбозначениеОпции    string
-	Цена                string
+	Цена                NullByte
 	СтавкаНДС_Ид        string
-	НДС                 string
+	НДС                 NullByte
 	НачалоДействия      string
 	СоставПакета        NullString
 }
 
-//data price general
+// data price general
 type DataGeneralPrice struct {
 	Товар                    string
 	ВариантСборки            string
@@ -210,7 +232,7 @@ type DataGeneralPrice struct {
 	НачалоДействия           string
 }
 
-//data sprav models
+// data sprav models
 type DataSpravModels struct {
 	Ид                         string
 	Наименование               string
@@ -218,63 +240,71 @@ type DataSpravModels struct {
 	СтатусМоделиВПроизводстве  string
 	БазовыйТовар               NullString
 	ХарактеристикиНоменклатуры string
+	Цена                       NullString
+	СтавкаНДС                  NullString
+	НДС                        NullString
 }
 
-//data sprav
+// data sprav
 type DataSprav struct {
-	Наименование               string
-	НомерСогласноКД            string
-	Дивизион                   string
-	СтатусМоделиВПроизводстве  string
-	МассаСнагрузкой            string
-	МассаБезНагрузки           string
-	ОписаниеДляПрайса          string
-	База                       string
-	БазаАвтомобиляДлина        string
-	ТипКузова                  string
-	ТипФургона                 string
-	ОбозначениеДвигателя       string
-	ОбъемДвигателя             string
-	ВидТоплива                 string
-	СтабилизаторЗаднейПодвески string
-	ГорныйТормоз               string
-	ТормознаяСистемаТип        string
-	ЦветаДопустимыеВЭтомМесяце string
-	ОпцииДопустимыеВЭтомМесяце string
-	ОпцииПоУмолчанию           string
-	ЧислоПосадочныхМест        string
-	ЭкКласс                    string
-	Привод                     string
-	Семейство                  string
-	Лебедка                    string
-	КПП                        string
-	ГБО                        string
-	Надстройка                 string
-	ОсобенностьНадстройки      string
-	БазовыйТовар               NullString
-	ОпцииАЗ                    string
-	ХарактеристикиНоменклатуры string
+	Наименование                               string
+	НомерСогласноКД                            string
+	Дивизион                                   string
+	СтатусМоделиВПроизводстве                  string
+	МассаСнагрузкой                            NullString
+	МассаБезНагрузки                           NullString
+	ОписаниеДляПрайса                          string
+	База                                       string
+	БазаАвтомобиляДлина                        string
+	ТипКузова                                  string
+	ТипФургона                                 string
+	ОбозначениеДвигателя                       string
+	ОбъемДвигателя                             string
+	ВидТоплива                                 string
+	СтабилизаторЗаднейПодвески                 string
+	ГорныйТормоз                               string
+	ТормознаяСистемаТип                        string
+	ЦветаДопустимыеВЭтомМесяце                 string
+	ОпцииДопустимыеВЭтомМесяце                 string
+	ОпцииПоУмолчанию                           string
+	ЧислоПосадочныхМест                        string
+	ЭкКласс                                    string
+	Привод                                     string
+	Семейство                                  string
+	Лебедка                                    string
+	КПП                                        string
+	ГБО                                        string
+	Надстройка                                 string
+	ОсобенностьНадстройки                      string
+	БазовыйТовар                               NullString
+	ОпцииАЗ                                    string
+	ХарактеристикиНоменклатуры                 string
+	ИзЭПТС_ДопустимаяМаксимальнаяМассаСтандарт *string
+	ИзЭПТС_ДопустимаяМаксимальнаяМасса9РА      *string
+	ИзЭПТС_ДопустимаяМаксимальнаяМасса9РВ      *string
+	ИзЭПТС_СнаряженнаяМасса                    *string
+	ДоступностьКЗаказу                         string
 }
 
-//options data
+// options data
 type DataOptions struct {
-	НоменклатураИд            string
-	НоменклатураНаименование  string
-	ГруппаОпций               NullString
-	ГруппаОпцийНаименование   NullString
-	ОпцияИд                   string
-	КраткоеНаименованиеОпции  string
-	НаименованиеОпции         string
-	ЗначениеОпцииИд           string
-	Цена                      NullByte
-	КраткоеНаименование       string
-	НаименованиеЗначенияОпции string
-	Обязательная              string
-	ВыбранаПоУмолчанию        string
-	ЭтоПакет                  string
+	НоменклатураИд                 string
+	НоменклатураНаименование       string
+	ИдГруппыОпций                  NullString
+	КраткоеНаименованиеГруппыОпций NullString
+	ПолноеНаименованиеГруппыОпций  NullString
+	ОпцияИд                        string
+	КраткоеНаименованиеОпции       string
+	ПолноеНаименованиеОпции        string
+	ОписаниеОпции                  NullString
+	ЦенаОпции                      NullByte
+	Обязательная                   string
+	ВыбранаПоУмолчанию             string
+	ЭтоПакет                       string
+	ЦенаНулл                       string
 }
 
-//options sprav data
+// options sprav data
 type DataOptionsSprav struct {
 	НоменклатураИд           string
 	НоменклатураНаименование string
@@ -285,21 +315,22 @@ type DataOptionsSprav struct {
 	ВидСочетания             string
 }
 
-//packets data
+// packets data
 type DataPackets struct {
-	НоменклатураИд           string
-	НоменклатураНаименование string
-	Пакет                    string
-	НаименованиеПакета       string
-	Опция                    string
-	ЗначениеОпции            string
-	ЗначениеОпцииНаим        string
-	ЗначениеОпцииКраткоеНаим string
-	ОпцияНаим                string
-	ОпцияКраткоеНаим         string
+	НоменклатураИд                 string
+	НоменклатураНаименование       string
+	ИдПакета                       string
+	КраткоеНаименованиеПакета      string
+	ПолноеНаименованиеПакета       string
+	ИдГруппыОпций                  string
+	КраткоеНаименованиеГруппыОпций string
+	ПолноеНаименованиеГруппыОпций  string
+	ИдОпции                        string
+	ПолноеНаименованиеОпции        string
+	КраткоеНаименованиеОпции       string
 }
 
-//colors data
+// colors data
 type DataColors struct {
 	НоменклатураИд           string
 	НоменклатураНаименование string
@@ -307,14 +338,14 @@ type DataColors struct {
 	Наименование             string
 	ПолноеНаименование       string
 	ЦветRGB                  string
-	Слойность                string
+	Слойность                NullString
 }
 
-//data options
+// data options
 type OptionsData struct {
 }
 
-//Data forms
+// Data forms
 type DataForms struct {
 	//gaz crm fields
 	TimeRequest      string `json:"event_datetime"` //general field with booking
@@ -351,7 +382,7 @@ type DataForms struct {
 	UrlMod       string `json:"url_mod"`
 }
 
-//Validation data fiz
+// Validation data fiz
 func (d *DataForms) ValidateDataForms() error {
 	return validation.ValidateStruct(
 		d,
@@ -387,13 +418,13 @@ func (d *DataForms) ValidateDataForms() error {
 	)
 }
 
-//gaz crm
-//data struct for call gaz crm api method
+// gaz crm
+// data struct for call gaz crm api method
 type DataGazCrm struct {
 	Data []*DataGazCrmReq `json:"Data"`
 }
 
-//data struct for call gaz crm api method
+// data struct for call gaz crm api method
 type DataGazCrmReq struct {
 	//gaz crm fields
 	TimeRequest       string `json:"event_datetime,omitempty"` //general field with booking
@@ -419,13 +450,13 @@ type DataGazCrmReq struct {
 	AgreementMailing  string `json:"agreement_mailing,omitempty"`   //general field with booking
 }
 
-//data struct for call gaz crm api method
-//lead_get gaz crm
+// data struct for call gaz crm api method
+// lead_get gaz crm
 type DataLeadGet struct {
 	Data []DataLeadGet_Gazcrm `json:"Data"`
 }
 
-//lead_get gaz crm
+// lead_get gaz crm
 type DataLeadGet_Gazcrm struct {
 	TimeRequest      string `json:"event_datetime,omitempty"`
 	EventName        string `json:"event_name,omitempty"`
@@ -441,12 +472,12 @@ type DataLeadGet_Gazcrm struct {
 	MetricsType      string `json:"metrics_type,omitempty"`
 }
 
-//work_list gaz crm
+// work_list gaz crm
 type DataWorkList struct {
 	Data []DataWorkList_Gazcrm `json:"Data"`
 }
 
-//work_list gaz crm
+// work_list gaz crm
 type DataWorkList_Gazcrm struct {
 	TimeRequest      string `json:"event_datetime,omitempty"`
 	EventName        string `json:"event_name,omitempty"`
@@ -454,12 +485,12 @@ type DataWorkList_Gazcrm struct {
 	GazCrmWorkListId string `json:"gazcrm_worklist_id,omitempty"`
 }
 
-//status gaz crm
+// status gaz crm
 type DataStatuses struct {
 	Data []DataStatuses_Gazcrm `json:"Data"`
 }
 
-//status gaz crm
+// status gaz crm
 type DataStatuses_Gazcrm struct {
 	TimeRequest      string `json:"event_datetime,omitempty"`
 	EventName        string `json:"event_name,omitempty"`
@@ -470,8 +501,43 @@ type DataStatuses_Gazcrm struct {
 	MetricsType      string `json:"metrics_type,omitempty"`
 }
 
-//resp struct api gaz crm
+// status lk
+type DataStatusesLk struct {
+	ИдЗаказа      string `json:"order_id,omitempty"`
+	СтатусЗаказа  string `json:"order_status,omitempty"`
+	НомернойТовар string `json:"id_isk,omitempty"`
+	ВИН           string `json:"vin,omitempty"`
+}
+
+// resp struct api gaz crm
 type ResponseGazCrm struct {
 	Status  string `json:"status"`
 	Message string `json:"message"`
+}
+
+type DataLkOrder struct {
+	Id          string `json:"id"`
+	StageCode   string `json:"stageCode"`
+	Title       string `json:"title"`
+	Vin         string `json:"vin"`
+	Cost        string `json:"cost"`
+	ModelFamily string `json:"modelFamily"`
+	PreviewUrl  string `json:"previewUrl"`
+}
+
+type TechData struct {
+	Data TechDataObj `json:"Data"`
+}
+
+type TechDataObj struct {
+	Ид                   int    `json:"Ид"`
+	Модель               string `json:"Модель"`
+	ИдКатегории          int    `json:"ИдКатегории"`
+	Категория            string `json:"Категория"`
+	ИдРодителя           int    `json:"ИдРодителя"`
+	НаименованиеРодителя string `json:"НаименованиеРодителя"`
+	ИдСвойства           int    `json:"ИдСвойства"`
+	НаименованиеСвойства string `json:"НаименованиеСвойства"`
+	ИдЗначенияСвойства   int    `json:"ИдЗначенияСвойства"`
+	ЗначениеСвойства     string `json:"ЗначениеСвойства"`
 }

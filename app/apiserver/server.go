@@ -10,9 +10,27 @@ import (
 	logger "github.com/mihailshilov/server_http_rest/app/apiserver/logger"
 	"github.com/mihailshilov/server_http_rest/app/apiserver/model"
 	"github.com/mihailshilov/server_http_rest/app/apiserver/store"
+	_ "github.com/mihailshilov/server_http_rest/docs"
+	httpSwagger "github.com/swaggo/http-swagger"
 )
 
-//errors
+// @title API СТТ
+// @version 1.0
+// @oas 3
+// @description API-сервер СТТ
+// @termsOfService http://swagger.io/terms/
+// @contact.name API Support
+// @contact.email shilovmo@st.tech
+// @license.name Apache 2.0
+// @license.url http://www.apache.org/licenses/LICENSE-2.0.html
+// @host https://onsales.st.tech
+// @BasePath /
+// @query.collection.format multi
+// @securityDefinitions.apikey ApiKeyAuth
+// @in header
+// @name Authorization
+
+// errors
 var (
 	errIncorrectEmailOrPassword = errors.New("incorrect auth")
 	errReg                      = errors.New("service registration error")
@@ -21,7 +39,7 @@ var (
 	errMssql                    = errors.New("mssql error")
 )
 
-//responses
+// responses
 var (
 	respGazCrmWorkList = "data work_list recieved"
 	respGazCrmLeadGet  = "data lead_get recieved"
@@ -31,7 +49,7 @@ var (
 	errPg              = "error postgres storing"
 )
 
-//server configure
+// server configure
 type server struct {
 	router *mux.Router
 	store  store.Store
@@ -50,7 +68,7 @@ func newServer(store store.Store, config *model.Service, client *http.Client) *s
 	return s
 }
 
-//write new token struct
+// write new token struct
 func newToken(token string, exp time.Time) *model.Token_exp {
 	return &model.Token_exp{
 		Token: token,
@@ -58,7 +76,7 @@ func newToken(token string, exp time.Time) *model.Token_exp {
 	}
 }
 
-//write response struct
+// write response struct
 func newResponse(status string, response string) *model.Response {
 	return &model.Response{
 		Status:   status,
@@ -66,23 +84,23 @@ func newResponse(status string, response string) *model.Response {
 	}
 }
 
-//write response struct booking
-func newResponseBooking(statusms string, responsems string, statusgcrm string, responsegcrm string) *model.ResponseBooking {
+// write response struct booking
+func newResponseBooking(statusms string, responsems string, statuslk string, responsegcrm string) *model.ResponseBooking {
 	return &model.ResponseBooking{
 		StatusMs:       statusms,
 		ResponseMs:     responsems,
-		StatusGazCrm:   statusgcrm,
+		StatusLK:       statuslk,
 		ResponseGazCrm: responsegcrm,
 	}
 }
 
-//write http error
+// write http error
 func (s *server) error(w http.ResponseWriter, r *http.Request, code int, err error) {
 	s.respond(w, r, code, map[string]string{"error": err.Error()})
 
 }
 
-//write http response
+// write http response
 func (s *server) respond(w http.ResponseWriter, r *http.Request, code int, data interface{}) {
 	w.WriteHeader(code)
 	if data != nil {
@@ -95,6 +113,15 @@ func (s *server) ServeHTTP(w http.ResponseWriter, r *http.Request) {
 }
 
 func (s *server) configureRouter() {
+
+	s.router.PathPrefix("/swagger/").Handler(httpSwagger.Handler(
+		httpSwagger.URL("doc.json"), //The url pointing to API definition
+		httpSwagger.DeepLinking(true),
+		httpSwagger.DocExpansion("none"),
+		httpSwagger.DomID("swagger-ui"),
+		//httpSwagger.Plugins([]string),
+	)).Methods(http.MethodGet)
+
 	//open
 	s.router.HandleFunc("/authentication", s.handleAuth()).Methods("POST")
 	//private
@@ -116,15 +143,18 @@ func (s *server) configureRouter() {
 	//sprav models
 	auth.HandleFunc("/getsprav", s.handleSprav()).Methods("GET")
 	auth.HandleFunc("/getspravmodels", s.handleSpravModels()).Methods("GET")
+	auth.HandleFunc("/techdata", s.handleTechData()).Methods("GET")
 	//options
 	auth.HandleFunc("/getoptionsdata", s.handleOptionsData()).Methods("GET")
 	auth.HandleFunc("/getoptionsdatasprav", s.handleOptionsDataSprav()).Methods("GET")
 	auth.HandleFunc("/getpacketsdata", s.handlePacketsData()).Methods("GET")
 	//colors
 	auth.HandleFunc("/getcolorsdata", s.handleColorsData()).Methods("GET")
+	//statuses
+	auth.HandleFunc("/getstatusesdata", s.handleStatusesData()).Methods("GET")
 }
 
-//handle Auth
+// handle Auth
 func (s *server) handleAuth() http.HandlerFunc {
 
 	var req model.User1
@@ -157,9 +187,11 @@ func (s *server) handleAuth() http.HandlerFunc {
 
 }
 
-//Middleware
+// Middleware
 func (s *server) middleWare(next http.Handler) http.Handler {
 	return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+
+		w.Header().Add("Content-Type", "application/json")
 
 		//extract user_id
 		user_id, err := s.store.User().ExtractTokenMetadata(r, s.config)
@@ -181,7 +213,7 @@ func (s *server) middleWare(next http.Handler) http.Handler {
 
 }
 
-//handle Client Data
+// handle Client Data
 func (s *server) handleRequestBooking() http.HandlerFunc {
 
 	var errMs string
@@ -220,6 +252,21 @@ func (s *server) handleRequestBooking() http.HandlerFunc {
 
 		}
 
+		StatusLK := ""
+
+		if req.СlientToken != "" {
+
+			//send order data to lk
+			res_lk, err := s.store.Data().RequestLkOrder(req, s.config)
+			if err != nil {
+				logger.ErrorLogger.Println(err)
+			} else {
+				logger.InfoLogger.Println(res_lk)
+				StatusLK = res_lk.Status
+			}
+
+		}
+
 		//request gazcrm api
 		respg, err := s.store.Data().RequestGazCrmApiBooking(req, s.config)
 		if err != nil {
@@ -227,10 +274,10 @@ func (s *server) handleRequestBooking() http.HandlerFunc {
 		}
 		if respg.Status != "OK" {
 			logger.ErrorLogger.Println(respg)
-			s.respond(w, r, http.StatusBadRequest, newResponseBooking(errMs, resp, "Error", respg.Message))
+			s.respond(w, r, http.StatusBadRequest, newResponseBooking(errMs, resp, StatusLK, respg.Message))
 		} else {
 			logger.InfoLogger.Println("gazcrm booking data transfer success")
-			s.respond(w, r, http.StatusOK, newResponseBooking(errMs, resp, "Ok", respBooking))
+			s.respond(w, r, http.StatusOK, newResponseBooking(errMs, resp, StatusLK, respBooking))
 		}
 
 		//insert data in postgres
@@ -244,7 +291,7 @@ func (s *server) handleRequestBooking() http.HandlerFunc {
 
 }
 
-//handle request forms
+// handle request forms
 func (s *server) handleRequestForm() http.HandlerFunc {
 
 	return func(w http.ResponseWriter, r *http.Request) {
@@ -281,8 +328,8 @@ func (s *server) handleRequestForm() http.HandlerFunc {
 
 }
 
-//gaz crm
-//handle request lead get from gaz crm
+// gaz crm
+// handle request lead get from gaz crm
 func (s *server) handleRequestLeadGetGazCrm() http.HandlerFunc {
 
 	return func(w http.ResponseWriter, r *http.Request) {
@@ -309,7 +356,7 @@ func (s *server) handleRequestLeadGetGazCrm() http.HandlerFunc {
 
 }
 
-//handle request work list from gaz crm
+// handle request work list from gaz crm
 func (s *server) handleRequestWorkListGazCrm() http.HandlerFunc {
 
 	return func(w http.ResponseWriter, r *http.Request) {
@@ -336,7 +383,7 @@ func (s *server) handleRequestWorkListGazCrm() http.HandlerFunc {
 
 }
 
-//handle request status from gaz crm
+// handle request status from gaz crm
 func (s *server) handleRequestStatusGazCrm() http.HandlerFunc {
 
 	return func(w http.ResponseWriter, r *http.Request) {
@@ -363,7 +410,7 @@ func (s *server) handleRequestStatusGazCrm() http.HandlerFunc {
 
 }
 
-//handle request stocks
+// handle request stocks
 func (s *server) handleGetDataStocks() http.HandlerFunc {
 
 	return func(w http.ResponseWriter, r *http.Request) {
@@ -382,7 +429,7 @@ func (s *server) handleGetDataStocks() http.HandlerFunc {
 
 }
 
-//handle request basic model price
+// handle request basic model price
 func (s *server) handleBasicModelsPrice() http.HandlerFunc {
 
 	return func(w http.ResponseWriter, r *http.Request) {
@@ -401,7 +448,7 @@ func (s *server) handleBasicModelsPrice() http.HandlerFunc {
 
 }
 
-//handle request options price
+// handle request options price
 func (s *server) handleOptionsPrice() http.HandlerFunc {
 
 	return func(w http.ResponseWriter, r *http.Request) {
@@ -420,7 +467,7 @@ func (s *server) handleOptionsPrice() http.HandlerFunc {
 
 }
 
-//handle request general price
+// handle request general price
 func (s *server) handleGeneralPrice() http.HandlerFunc {
 
 	return func(w http.ResponseWriter, r *http.Request) {
@@ -439,7 +486,7 @@ func (s *server) handleGeneralPrice() http.HandlerFunc {
 
 }
 
-//handle request sprav
+// handle request sprav
 func (s *server) handleSprav() http.HandlerFunc {
 
 	return func(w http.ResponseWriter, r *http.Request) {
@@ -458,7 +505,7 @@ func (s *server) handleSprav() http.HandlerFunc {
 
 }
 
-//handle request sprav
+// handle request sprav
 func (s *server) handleSpravModels() http.HandlerFunc {
 
 	return func(w http.ResponseWriter, r *http.Request) {
@@ -477,7 +524,7 @@ func (s *server) handleSpravModels() http.HandlerFunc {
 
 }
 
-//handle request options data
+// handle request options data
 func (s *server) handleOptionsData() http.HandlerFunc {
 
 	return func(w http.ResponseWriter, r *http.Request) {
@@ -496,7 +543,7 @@ func (s *server) handleOptionsData() http.HandlerFunc {
 
 }
 
-//handle request options sprav data
+// handle request options sprav data
 func (s *server) handleOptionsDataSprav() http.HandlerFunc {
 
 	return func(w http.ResponseWriter, r *http.Request) {
@@ -515,7 +562,7 @@ func (s *server) handleOptionsDataSprav() http.HandlerFunc {
 
 }
 
-//handle request options packets data
+// handle request options packets data
 func (s *server) handlePacketsData() http.HandlerFunc {
 
 	return func(w http.ResponseWriter, r *http.Request) {
@@ -534,7 +581,7 @@ func (s *server) handlePacketsData() http.HandlerFunc {
 
 }
 
-//handle request colors data
+// handle request colors data
 func (s *server) handleColorsData() http.HandlerFunc {
 
 	return func(w http.ResponseWriter, r *http.Request) {
@@ -547,6 +594,54 @@ func (s *server) handleColorsData() http.HandlerFunc {
 
 		s.respond(w, r, http.StatusOK, data)
 		logger.InfoLogger.Println("data colors sent")
+
+	}
+
+}
+
+// handle request statuses data
+func (s *server) handleStatusesData() http.HandlerFunc {
+
+	return func(w http.ResponseWriter, r *http.Request) {
+
+		data, err := s.store.Data().QueryStatusesLkData()
+		if err != nil {
+			s.error(w, r, http.StatusBadRequest, errMssql)
+			logger.ErrorLogger.Println(err)
+		}
+
+		/*
+			data := &[]model.DataStatusesLk{
+				{"753159", "Заказ подтверждён", "2344504", "X96330200P2882559"},
+				{"753160", "Формирование документов", "2344505", "X96330200P2882560"},
+				{"753161", "Подготовка к отгрузке", "2344506", "X96330200P2882561"},
+				{"753162", "На складе перевозчика", "2344507", "X96330200P2882562"},
+				{"753162", "В процессе доставки", "2344508", "X96330200P2882563"},
+				{"753162", "Доставлено до дилера", "2344509", "X96330200P2882564"},
+			}
+		*/
+
+		s.respond(w, r, http.StatusOK, data)
+		logger.InfoLogger.Println("data statuses sent")
+
+	}
+
+}
+
+// handle request tech data
+func (s *server) handleTechData() http.HandlerFunc {
+
+	return func(w http.ResponseWriter, r *http.Request) {
+
+		data, err := s.store.Data().QueryTechData()
+
+		if err != nil {
+			s.error(w, r, http.StatusBadRequest, errMssql)
+			logger.ErrorLogger.Println(err)
+		}
+
+		s.respond(w, r, http.StatusOK, data)
+		logger.InfoLogger.Println("tech data sent")
 
 	}
 

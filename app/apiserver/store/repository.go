@@ -4,11 +4,11 @@ import (
 	"net/http"
 	"time"
 
-	"github.com/dgrijalva/jwt-go"
+	"github.com/golang-jwt/jwt/v4"
 	"github.com/mihailshilov/server_http_rest/app/apiserver/model"
 )
 
-//user repository
+// user repository
 type UserRepository interface {
 	//auth methods
 	FindUser(string, string) (*model.User1, error)
@@ -20,15 +20,18 @@ type UserRepository interface {
 	ExtractToken(*http.Request) string
 }
 
-//data repository
+// data repository
 type DataRepository interface {
 	QueryInsertMssql(model.DataBooking) (string, error)
 	//sites methods
 	QueryInsertBookingPostgres(model.DataBooking) error
 	QueryInsertFormsPostgres(model.DataForms) error
+	//gaz crm
 	RequestGazCrmApiBooking(model.DataBooking, *model.Service) (*model.ResponseGazCrm, error)
 	RequestGazCrmApiForms(model.DataForms, *model.Service) (*model.ResponseGazCrm, error)
-	//gaz crm
+	// Личный кабинет
+	RequestLkOrder(model.DataBooking, *model.Service) (*http.Response, error)
+	//PG
 	QueryInsertLeadGetPostgres(model.DataLeadGet) error
 	QueryInsertWorkListsPostgres(model.DataWorkList) error
 	QueryInsertStatusesPostgres(model.DataStatuses) error
@@ -43,6 +46,8 @@ type DataRepository interface {
 	QueryOptionsDataSprav() ([]model.DataOptionsSprav, error)
 	QueryPacketsData() ([]model.DataPackets, error)
 	QueryColorsData() ([]model.DataColors, error)
+	QueryStatusesLkData() ([]model.DataStatusesLk, error)
+	QueryTechData() (*[]model.TechDataObj, error)
 
 	//mailing call method
 	CallMSMailing(model.DataBooking, *model.Service) (string, error)

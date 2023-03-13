@@ -35,6 +35,6 @@ type Response struct {
 type ResponseBooking struct {
 	StatusMs       string `json:"status_ms"`
 	ResponseMs     string `json:"response_ms"`
-	StatusGazCrm   string `json:"status_gcrm"`
+	StatusLK       string `json:"status_lk"`
 	ResponseGazCrm string `json:"response_gcrm"`
 }
