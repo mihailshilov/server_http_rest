@@ -122,6 +122,17 @@ func (s *server) configureRouter() {
 		//httpSwagger.Plugins([]string),
 	)).Methods(http.MethodGet)
 
+	// HandleAuth godoc
+	// @Summary Авторизация
+	// @Description Auth Login
+	// @Tags Авторизация
+	// @ID auth-login
+	// @Accept  json
+	// @Produce  json
+	// @Param input body model.User true "user info"
+	// @Success 200 {object} model.Token_exp "OK"
+	// @Router /authentication/ [post]
+
 	//open
 	s.router.HandleFunc("/authentication", s.handleAuth()).Methods("POST")
 	//private
@@ -629,6 +640,16 @@ func (s *server) handleStatusesData() http.HandlerFunc {
 }
 
 // handle request tech data
+// handleTechData godoc
+// @Summary Получить технические характеристика автомобилей
+// @Tags Получение данных данных
+// @Description Получить технические характеристики
+// @ID get-techdata
+// @Accept  json
+// @Produce  json
+// @Success 200 {object} model.TechData
+// @Router /auth/techdata [get]
+// @Security ApiKeyAuth
 func (s *server) handleTechData() http.HandlerFunc {
 
 	return func(w http.ResponseWriter, r *http.Request) {
