@@ -1,46 +1,297 @@
 basePath: /
 definitions:
-  model.TechData:
+  model.DataColors:
     properties:
-      Data:
-        $ref: '#/definitions/model.TechDataObj'
+      Наименование:
+        example: СИЛЬВЕР ЛАЙТ
+        type: string
+        x-order: d
+      НоменклатураИд:
+        example: "865436"
+        type: string
+        x-order: a
+      НоменклатураНаименование:
+        example: ГАЗ-А21R33-10
+        type: string
+        x-order: b
+      ПолноеНаименование:
+        example: СВЕТЛО-СЕРЫЙ
+        type: string
+        x-order: e
+      Слойность:
+        example: "2"
+        type: string
+        x-order: g
+      ЦветRGB:
+        example: 157,163,166
+        type: string
+        x-order: f
+      ЦветИд:
+        example: "996"
+        type: string
+        x-order: c
+    type: object
+  model.DataOptionsSprav:
+    properties:
+      ВидСочетания:
+        example: недопустимое
+        type: string
+        x-order: g
+      ЗначениеОпции1:
+        example: "560"
+        type: string
+        x-order: c
+      ЗначениеОпции2:
+        example: "691"
+        type: string
+        x-order: d
+      КодОпции1:
+        example: 8BA
+        type: string
+        x-order: e
+      КодОпции2:
+        example: 8LB
+        type: string
+        x-order: f
+      НоменклатураИд:
+        example: "865436"
+        type: string
+        x-order: a
+      НоменклатураНаименование:
+        example: ГАЗ-А21R33-10
+        type: string
+        x-order: b
+    type: object
+  model.DataPackets:
+    properties:
+      ИдГруппыОпций:
+        example: "141"
+        type: string
+        x-order: f
+      ИдОпции:
+        example: "684"
+        type: string
+        x-order: i
+      ИдПакета:
+        example: "975"
+        type: string
+        x-order: c
+      КраткоеНаименованиеГруппыОпций:
+        example: 2K
+        type: string
+        x-order: g
+      КраткоеНаименованиеОпции:
+        example: 2KB
+        type: string
+        x-order: k
+      КраткоеНаименованиеПакета:
+        example: ST(N)
+        type: string
+        x-order: d
+      НоменклатураИд:
+        example: "865436"
+        type: string
+        x-order: a
+      НоменклатураНаименование:
+        example: ГАЗ-А21R33-10
+        type: string
+        x-order: b
+      ПолноеНаименованиеГруппыОпций:
+        example: Сиденье водителя
+        type: string
+        x-order: h
+      ПолноеНаименованиеОпции:
+        example: Сиденье водителя с подлокотником
+        type: string
+        x-order: j
+      ПолноеНаименованиеПакета:
+        example: ПолноеНаименованиеПакета
+        type: string
+        x-order: e
+    type: object
+  model.DataStatusesLk:
+    properties:
+      id_isk:
+        example: "2281063"
+        type: string
+        x-order: c
+      order_id:
+        example: "123"
+        type: string
+        x-order: a
+      order_status:
+        example: В процессе доставки
+        type: string
+        x-order: b
+      vin:
+        example: X96A21R32N2856911
+        type: string
+        x-order: d
+    type: object
+  model.HTTPerrIncorrectEmailOrPassword:
+    properties:
+      error:
+        example: incorrect auth
+        type: string
+    type: object
+  model.HTTPerrReg:
+    properties:
+      error:
+        example: service registration error
+        type: string
     type: object
   model.TechDataObj:
     properties:
       ЗначениеСвойства:
+        example: 185/75R16C
         type: string
+        x-order: j
       Ид:
+        example: 866508
         type: integer
+        x-order: a
       ИдЗначенияСвойства:
+        example: 5809
         type: integer
+        x-order: i
       ИдКатегории:
+        example: 415
         type: integer
+        x-order: c
       ИдРодителя:
+        example: 422
         type: integer
+        x-order: e
       ИдСвойства:
+        example: 462
         type: integer
+        x-order: g
       Категория:
+        example: Характеристики
         type: string
+        x-order: d
       Модель:
+        example: ГАЗ-А21R25-20
         type: string
+        x-order: b
       НаименованиеРодителя:
+        example: Шины
         type: string
+        x-order: f
       НаименованиеСвойства:
+        example: Размерность
         type: string
+        x-order: h
     type: object
-host: https://onsales.st.tech
+  model.Token_exp:
+    properties:
+      exp:
+        example: "2023-06-11T10:18:29+03:00"
+        type: string
+        x-order: b
+      token:
+        type: string
+        x-order: a
+    type: object
+  model.User1:
+    properties:
+      email:
+        type: string
+      password:
+        type: string
+    required:
+    - email
+    - password
+    type: object
+host: onsales.st.tech
 info:
   contact:
     email: shilovmo@st.tech
     name: API Support
   description: API-сервер СТТ
-  license:
-    name: Apache 2.0
-    url: http://www.apache.org/licenses/LICENSE-2.0.html
-  termsOfService: http://swagger.io/terms/
   title: API СТТ
   version: "1.0"
 paths:
+  /auth/getcolorsdata:
+    get:
+      consumes:
+      - application/json
+      description: Получить цвета автомобилей
+      operationId: get-colorsdata
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            items:
+              $ref: '#/definitions/model.DataColors'
+            type: array
+      security:
+      - ApiKeyAuth: []
+      summary: Получить цвета автомобилей
+      tags:
+      - Данные по автомобилям для заказа
+  /auth/getoptionsdatasprav:
+    get:
+      consumes:
+      - application/json
+      description: Получить список недопустимых и обязательных опций
+      operationId: get-packetsdatasprav
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            items:
+              $ref: '#/definitions/model.DataOptionsSprav'
+            type: array
+      security:
+      - ApiKeyAuth: []
+      summary: Получить список недопустимых и обязательных опций
+      tags:
+      - Данные по автомобилям для заказа
+  /auth/getpacketsdata:
+    get:
+      consumes:
+      - application/json
+      description: Получить список пакетов опций
+      operationId: get-packetsdata
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            items:
+              $ref: '#/definitions/model.DataPackets'
+            type: array
+      security:
+      - ApiKeyAuth: []
+      summary: Получить список пакетов опций
+      tags:
+      - Данные по автомобилям для заказа
+  /auth/getstatusesdata:
+    get:
+      consumes:
+      - application/json
+      description: Получить статусы заказов для личного кабинета
+      operationId: get-statusesdata
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            items:
+              $ref: '#/definitions/model.DataStatusesLk'
+            type: array
+      security:
+      - ApiKeyAuth: []
+      summary: Получить статусы заказов для личного кабинета
+      tags:
+      - Данные для личного кабинета
   /auth/techdata:
     get:
       consumes:
@@ -53,12 +304,45 @@ paths:
         "200":
           description: OK
           schema:
-            $ref: '#/definitions/model.TechData'
+            items:
+              $ref: '#/definitions/model.TechDataObj'
+            type: array
       security:
       - ApiKeyAuth: []
       summary: Получить технические характеристика автомобилей
       tags:
-      - Получение данных данных
+      - Данные по автомобилям для заказа
+  /authentication:
+    post:
+      consumes:
+      - application/json
+      description: Auth Login
+      operationId: auth-login
+      parameters:
+      - description: user info
+        in: body
+        name: input
+        required: true
+        schema:
+          $ref: '#/definitions/model.User1'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/model.Token_exp'
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/model.HTTPerrReg'
+        "401":
+          description: Unauthorized
+          schema:
+            $ref: '#/definitions/model.HTTPerrIncorrectEmailOrPassword'
+      summary: Авторизация
+      tags:
+      - Авторизация
 securityDefinitions:
   ApiKeyAuth:
     in: header

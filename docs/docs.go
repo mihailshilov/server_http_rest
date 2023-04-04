@@ -9,20 +9,143 @@ const docTemplate = `{
     "info": {
         "description": "{{escape .Description}}",
         "title": "{{.Title}}",
-        "termsOfService": "http://swagger.io/terms/",
         "contact": {
             "name": "API Support",
             "email": "shilovmo@st.tech"
-        },
-        "license": {
-            "name": "Apache 2.0",
-            "url": "http://www.apache.org/licenses/LICENSE-2.0.html"
         },
         "version": "{{.Version}}"
     },
     "host": "{{.Host}}",
     "basePath": "{{.BasePath}}",
     "paths": {
+        "/auth/getcolorsdata": {
+            "get": {
+                "security": [
+                    {
+                        "ApiKeyAuth": []
+                    }
+                ],
+                "description": "Получить цвета автомобилей",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "Данные по автомобилям для заказа"
+                ],
+                "summary": "Получить цвета автомобилей",
+                "operationId": "get-colorsdata",
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "type": "array",
+                            "items": {
+                                "$ref": "#/definitions/model.DataColors"
+                            }
+                        }
+                    }
+                }
+            }
+        },
+        "/auth/getoptionsdatasprav": {
+            "get": {
+                "security": [
+                    {
+                        "ApiKeyAuth": []
+                    }
+                ],
+                "description": "Получить список недопустимых и обязательных опций",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "Данные по автомобилям для заказа"
+                ],
+                "summary": "Получить список недопустимых и обязательных опций",
+                "operationId": "get-packetsdatasprav",
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "type": "array",
+                            "items": {
+                                "$ref": "#/definitions/model.DataOptionsSprav"
+                            }
+                        }
+                    }
+                }
+            }
+        },
+        "/auth/getpacketsdata": {
+            "get": {
+                "security": [
+                    {
+                        "ApiKeyAuth": []
+                    }
+                ],
+                "description": "Получить список пакетов опций",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "Данные по автомобилям для заказа"
+                ],
+                "summary": "Получить список пакетов опций",
+                "operationId": "get-packetsdata",
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "type": "array",
+                            "items": {
+                                "$ref": "#/definitions/model.DataPackets"
+                            }
+                        }
+                    }
+                }
+            }
+        },
+        "/auth/getstatusesdata": {
+            "get": {
+                "security": [
+                    {
+                        "ApiKeyAuth": []
+                    }
+                ],
+                "description": "Получить статусы заказов для личного кабинета",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "Данные для личного кабинета"
+                ],
+                "summary": "Получить статусы заказов для личного кабинета",
+                "operationId": "get-statusesdata",
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "type": "array",
+                            "items": {
+                                "$ref": "#/definitions/model.DataStatusesLk"
+                            }
+                        }
+                    }
+                }
+            }
+        },
         "/auth/techdata": {
             "get": {
                 "security": [
@@ -38,7 +161,7 @@ const docTemplate = `{
                     "application/json"
                 ],
                 "tags": [
-                    "Получение данных данных"
+                    "Данные по автомобилям для заказа"
                 ],
                 "summary": "Получить технические характеристика автомобилей",
                 "operationId": "get-techdata",
@@ -46,7 +169,57 @@ const docTemplate = `{
                     "200": {
                         "description": "OK",
                         "schema": {
-                            "$ref": "#/definitions/model.TechData"
+                            "type": "array",
+                            "items": {
+                                "$ref": "#/definitions/model.TechDataObj"
+                            }
+                        }
+                    }
+                }
+            }
+        },
+        "/authentication": {
+            "post": {
+                "description": "Auth Login",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "Авторизация"
+                ],
+                "summary": "Авторизация",
+                "operationId": "auth-login",
+                "parameters": [
+                    {
+                        "description": "user info",
+                        "name": "input",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/model.User1"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/model.Token_exp"
+                        }
+                    },
+                    "400": {
+                        "description": "Bad Request",
+                        "schema": {
+                            "$ref": "#/definitions/model.HTTPerrReg"
+                        }
+                    },
+                    "401": {
+                        "description": "Unauthorized",
+                        "schema": {
+                            "$ref": "#/definitions/model.HTTPerrIncorrectEmailOrPassword"
                         }
                     }
                 }
@@ -54,45 +227,269 @@ const docTemplate = `{
         }
     },
     "definitions": {
-        "model.TechData": {
+        "model.DataColors": {
             "type": "object",
             "properties": {
-                "Data": {
-                    "$ref": "#/definitions/model.TechDataObj"
+                "НоменклатураИд": {
+                    "type": "string",
+                    "x-order": "a",
+                    "example": "865436"
+                },
+                "НоменклатураНаименование": {
+                    "type": "string",
+                    "x-order": "b",
+                    "example": "ГАЗ-А21R33-10"
+                },
+                "ЦветИд": {
+                    "type": "string",
+                    "x-order": "c",
+                    "example": "996"
+                },
+                "Наименование": {
+                    "type": "string",
+                    "x-order": "d",
+                    "example": "СИЛЬВЕР ЛАЙТ"
+                },
+                "ПолноеНаименование": {
+                    "type": "string",
+                    "x-order": "e",
+                    "example": "СВЕТЛО-СЕРЫЙ"
+                },
+                "ЦветRGB": {
+                    "type": "string",
+                    "x-order": "f",
+                    "example": "157,163,166"
+                },
+                "Слойность": {
+                    "type": "string",
+                    "x-order": "g",
+                    "example": "2"
+                }
+            }
+        },
+        "model.DataOptionsSprav": {
+            "type": "object",
+            "properties": {
+                "НоменклатураИд": {
+                    "type": "string",
+                    "x-order": "a",
+                    "example": "865436"
+                },
+                "НоменклатураНаименование": {
+                    "type": "string",
+                    "x-order": "b",
+                    "example": "ГАЗ-А21R33-10"
+                },
+                "ЗначениеОпции1": {
+                    "type": "string",
+                    "x-order": "c",
+                    "example": "560"
+                },
+                "ЗначениеОпции2": {
+                    "type": "string",
+                    "x-order": "d",
+                    "example": "691"
+                },
+                "КодОпции1": {
+                    "type": "string",
+                    "x-order": "e",
+                    "example": "8BA"
+                },
+                "КодОпции2": {
+                    "type": "string",
+                    "x-order": "f",
+                    "example": "8LB"
+                },
+                "ВидСочетания": {
+                    "type": "string",
+                    "x-order": "g",
+                    "example": "недопустимое"
+                }
+            }
+        },
+        "model.DataPackets": {
+            "type": "object",
+            "properties": {
+                "НоменклатураИд": {
+                    "type": "string",
+                    "x-order": "a",
+                    "example": "865436"
+                },
+                "НоменклатураНаименование": {
+                    "type": "string",
+                    "x-order": "b",
+                    "example": "ГАЗ-А21R33-10"
+                },
+                "ИдПакета": {
+                    "type": "string",
+                    "x-order": "c",
+                    "example": "975"
+                },
+                "КраткоеНаименованиеПакета": {
+                    "type": "string",
+                    "x-order": "d",
+                    "example": "ST(N)"
+                },
+                "ПолноеНаименованиеПакета": {
+                    "type": "string",
+                    "x-order": "e",
+                    "example": "ПолноеНаименованиеПакета"
+                },
+                "ИдГруппыОпций": {
+                    "type": "string",
+                    "x-order": "f",
+                    "example": "141"
+                },
+                "КраткоеНаименованиеГруппыОпций": {
+                    "type": "string",
+                    "x-order": "g",
+                    "example": "2K"
+                },
+                "ПолноеНаименованиеГруппыОпций": {
+                    "type": "string",
+                    "x-order": "h",
+                    "example": "Сиденье водителя"
+                },
+                "ИдОпции": {
+                    "type": "string",
+                    "x-order": "i",
+                    "example": "684"
+                },
+                "ПолноеНаименованиеОпции": {
+                    "type": "string",
+                    "x-order": "j",
+                    "example": "Сиденье водителя с подлокотником"
+                },
+                "КраткоеНаименованиеОпции": {
+                    "type": "string",
+                    "x-order": "k",
+                    "example": "2KB"
+                }
+            }
+        },
+        "model.DataStatusesLk": {
+            "type": "object",
+            "properties": {
+                "order_id": {
+                    "type": "string",
+                    "x-order": "a",
+                    "example": "123"
+                },
+                "order_status": {
+                    "type": "string",
+                    "x-order": "b",
+                    "example": "В процессе доставки"
+                },
+                "id_isk": {
+                    "type": "string",
+                    "x-order": "c",
+                    "example": "2281063"
+                },
+                "vin": {
+                    "type": "string",
+                    "x-order": "d",
+                    "example": "X96A21R32N2856911"
+                }
+            }
+        },
+        "model.HTTPerrIncorrectEmailOrPassword": {
+            "type": "object",
+            "properties": {
+                "error": {
+                    "type": "string",
+                    "example": "incorrect auth"
+                }
+            }
+        },
+        "model.HTTPerrReg": {
+            "type": "object",
+            "properties": {
+                "error": {
+                    "type": "string",
+                    "example": "service registration error"
                 }
             }
         },
         "model.TechDataObj": {
             "type": "object",
             "properties": {
-                "ЗначениеСвойства": {
-                    "type": "string"
-                },
                 "Ид": {
-                    "type": "integer"
-                },
-                "ИдЗначенияСвойства": {
-                    "type": "integer"
-                },
-                "ИдКатегории": {
-                    "type": "integer"
-                },
-                "ИдРодителя": {
-                    "type": "integer"
-                },
-                "ИдСвойства": {
-                    "type": "integer"
-                },
-                "Категория": {
-                    "type": "string"
+                    "type": "integer",
+                    "x-order": "a",
+                    "example": 866508
                 },
                 "Модель": {
-                    "type": "string"
+                    "type": "string",
+                    "x-order": "b",
+                    "example": "ГАЗ-А21R25-20"
+                },
+                "ИдКатегории": {
+                    "type": "integer",
+                    "x-order": "c",
+                    "example": 415
+                },
+                "Категория": {
+                    "type": "string",
+                    "x-order": "d",
+                    "example": "Характеристики"
+                },
+                "ИдРодителя": {
+                    "type": "integer",
+                    "x-order": "e",
+                    "example": 422
                 },
                 "НаименованиеРодителя": {
-                    "type": "string"
+                    "type": "string",
+                    "x-order": "f",
+                    "example": "Шины"
+                },
+                "ИдСвойства": {
+                    "type": "integer",
+                    "x-order": "g",
+                    "example": 462
                 },
                 "НаименованиеСвойства": {
+                    "type": "string",
+                    "x-order": "h",
+                    "example": "Размерность"
+                },
+                "ИдЗначенияСвойства": {
+                    "type": "integer",
+                    "x-order": "i",
+                    "example": 5809
+                },
+                "ЗначениеСвойства": {
+                    "type": "string",
+                    "x-order": "j",
+                    "example": "185/75R16C"
+                }
+            }
+        },
+        "model.Token_exp": {
+            "type": "object",
+            "properties": {
+                "token": {
+                    "type": "string",
+                    "x-order": "a"
+                },
+                "exp": {
+                    "type": "string",
+                    "x-order": "b",
+                    "example": "2023-06-11T10:18:29+03:00"
+                }
+            }
+        },
+        "model.User1": {
+            "type": "object",
+            "required": [
+                "email",
+                "password"
+            ],
+            "properties": {
+                "email": {
+                    "type": "string"
+                },
+                "password": {
                     "type": "string"
                 }
             }
@@ -110,7 +507,7 @@ const docTemplate = `{
 // SwaggerInfo holds exported Swagger Info so clients can modify it
 var SwaggerInfo = &swag.Spec{
 	Version:          "1.0",
-	Host:             "https://onsales.st.tech",
+	Host:             "onsales.st.tech",
 	BasePath:         "/",
 	Schemes:          []string{},
 	Title:            "API СТТ",

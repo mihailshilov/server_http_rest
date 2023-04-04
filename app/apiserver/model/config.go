@@ -40,21 +40,23 @@ type Service struct {
 			UrlGazCrmTest     string `yaml:"url_gaz_crm_test"`
 			UrlMailingService string `yaml:"url_mailing_service"`
 			UrlLkOrder        string `yaml:"url_lk_order"`
+			UrlLkOrderTest    string `yaml:"url_lk_order_test"`
 		} `yaml:"client"`
 		Queryies struct {
-			Booking          string `yaml:"booking"`
-			Stocks           string `yaml:"stocks"`
-			BasicModelsPrice string `yaml:"basic_models_price"`
-			OptionsPrice     string `yaml:"options_price"`
-			GeneralPrice     string `yaml:"general_price"`
-			Sprav            string `yaml:"sprav"`
-			Sprav_new        string `yaml:"sprav_new"`
-			Options          string `yaml:"options"`
-			OptionsSprav     string `yaml:"options_sprav"`
-			Packets          string `yaml:"packets"`
-			Colors           string `yaml:"colors"`
-			Techdata         string `yaml:"techdata"`
-			Statuses         string `yaml:"statuses"`
+			Booking           string `yaml:"booking"`
+			Stocks            string `yaml:"stocks"`
+			BasicModelsPrice  string `yaml:"basic_models_price"`
+			BasicModelsPrice2 string `yaml:"basic_models_price_2"`
+			OptionsPrice      string `yaml:"options_price"`
+			GeneralPrice      string `yaml:"general_price"`
+			Sprav             string `yaml:"sprav"`
+			Sprav_new         string `yaml:"sprav_new"`
+			Options           string `yaml:"options"`
+			OptionsSprav      string `yaml:"options_sprav"`
+			Packets           string `yaml:"packets"`
+			Colors            string `yaml:"colors"`
+			Techdata          string `yaml:"techdata"`
+			Statuses          string `yaml:"statuses"`
 		} `yaml:"queryies"`
 	} `yaml:"spec"`
 }

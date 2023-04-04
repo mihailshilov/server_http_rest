@@ -38,6 +38,7 @@ type DataRepository interface {
 	//get methods
 	QueryStocksMssql() ([]model.DataStocks, error)
 	QueryBasicModelsPriceMssql() ([]model.DataBasicModelsPrice, error)
+	QueryBasicModelsPriceMssql2() ([]model.DataBasicModelsPrice, error)
 	QueryOptionsPriceMssql() ([]model.DataOptionsPrice, error)
 	QueryGeneralPriceMssql() ([]model.DataGeneralPrice, error)
 	QuerySprav() ([]model.DataSprav, error)

@@ -1,6 +1,7 @@
 package apiserver
 
 import (
+	"bytes"
 	"encoding/json"
 	"errors"
 	"net/http"
@@ -18,12 +19,9 @@ import (
 // @version 1.0
 // @oas 3
 // @description API-сервер СТТ
-// @termsOfService http://swagger.io/terms/
 // @contact.name API Support
 // @contact.email shilovmo@st.tech
-// @license.name Apache 2.0
-// @license.url http://www.apache.org/licenses/LICENSE-2.0.html
-// @host https://onsales.st.tech
+// @host onsales.st.tech
 // @BasePath /
 // @query.collection.format multi
 // @securityDefinitions.apikey ApiKeyAuth
@@ -117,21 +115,15 @@ func (s *server) configureRouter() {
 	s.router.PathPrefix("/swagger/").Handler(httpSwagger.Handler(
 		httpSwagger.URL("doc.json"), //The url pointing to API definition
 		httpSwagger.DeepLinking(true),
-		httpSwagger.DocExpansion("none"),
+		//httpSwagger.DocExpansion("none"),
 		httpSwagger.DomID("swagger-ui"),
+		httpSwagger.UIConfig(map[string]string{
+			"showExtensions":        "true",
+			"onComplete":            `() => { window.ui.setBasePath('v3'); }`,
+			"defaultModelRendering": `"model"`,
+		}),
 		//httpSwagger.Plugins([]string),
 	)).Methods(http.MethodGet)
-
-	// HandleAuth godoc
-	// @Summary Авторизация
-	// @Description Auth Login
-	// @Tags Авторизация
-	// @ID auth-login
-	// @Accept  json
-	// @Produce  json
-	// @Param input body model.User true "user info"
-	// @Success 200 {object} model.Token_exp "OK"
-	// @Router /authentication/ [post]
 
 	//open
 	s.router.HandleFunc("/authentication", s.handleAuth()).Methods("POST")
@@ -149,6 +141,7 @@ func (s *server) configureRouter() {
 	auth.HandleFunc("/getdatastocks", s.handleGetDataStocks()).Methods("GET")
 	//prices
 	auth.HandleFunc("/getbasicmodelsprice", s.handleBasicModelsPrice()).Methods("GET")
+	auth.HandleFunc("/getbasicmodelsprice2", s.handleBasicModelsPrice2()).Methods("GET")
 	auth.HandleFunc("/getoptionsprice", s.handleOptionsPrice()).Methods("GET")
 	auth.HandleFunc("/getgeneralprice", s.handleGeneralPrice()).Methods("GET")
 	//sprav models
@@ -165,7 +158,18 @@ func (s *server) configureRouter() {
 	auth.HandleFunc("/getstatusesdata", s.handleStatusesData()).Methods("GET")
 }
 
-// handle Auth
+// HandleAuth godoc
+// @Summary Авторизация
+// @Description Auth Login
+// @Tags Авторизация
+// @ID auth-login
+// @Accept  json
+// @Produce  json
+// @Param input body model.User1 true "user info"
+// @Success 200 {object} model.Token_exp "OK"
+// @Failure 400	{object} model.HTTPerrReg
+// @Failure 401	{object} model.HTTPerrIncorrectEmailOrPassword
+// @Router /authentication [post]
 func (s *server) handleAuth() http.HandlerFunc {
 
 	var req model.User1
@@ -239,6 +243,15 @@ func (s *server) handleRequestBooking() http.HandlerFunc {
 			return
 		}
 
+		logger.InfoLogger.Println("Запрос от Перкса:\n")
+		bodyBytesReq, err := json.Marshal(req)
+		if err != nil {
+			logger.ErrorLogger.Println(err)
+			return
+		}
+		logger.InfoLogger.Println(bytes.NewBuffer(bodyBytesReq))
+		logger.InfoLogger.Println("\n Конец запроса от Перкса")
+
 		resp, err := s.store.Data().QueryInsertMssql(req)
 		if err != nil {
 			s.error(w, r, http.StatusBadRequest, errMssql)
@@ -250,6 +263,7 @@ func (s *server) handleRequestBooking() http.HandlerFunc {
 		if resp != "Обработка данных прошла успешно" {
 			errMs = "Error"
 			logger.ErrorLogger.Println(resp)
+			return
 		} else {
 			errMs = "Ok"
 			logger.InfoLogger.Println("data booking stored in mssql")
@@ -459,6 +473,25 @@ func (s *server) handleBasicModelsPrice() http.HandlerFunc {
 
 }
 
+// handle request basic model price 2
+func (s *server) handleBasicModelsPrice2() http.HandlerFunc {
+
+	return func(w http.ResponseWriter, r *http.Request) {
+
+		data, err := s.store.Data().QueryBasicModelsPriceMssql2()
+
+		if err != nil {
+			s.error(w, r, http.StatusBadRequest, errMssql)
+			logger.ErrorLogger.Println(err)
+		}
+
+		s.respond(w, r, http.StatusOK, data)
+		logger.InfoLogger.Println("data price basic 2 models sent")
+
+	}
+
+}
+
 // handle request options price
 func (s *server) handleOptionsPrice() http.HandlerFunc {
 
@@ -554,7 +587,16 @@ func (s *server) handleOptionsData() http.HandlerFunc {
 
 }
 
-// handle request options sprav data
+// handlePacketsDataSprav godoc
+// @Summary Получить список недопустимых и обязательных опций
+// @Tags Данные по автомобилям для заказа
+// @Description Получить список недопустимых и обязательных опций
+// @ID get-packetsdatasprav
+// @Accept  json
+// @Produce  json
+// @Success 200 {array} model.DataOptionsSprav "OK"
+// @Router /auth/getoptionsdatasprav [get]
+// @Security ApiKeyAuth
 func (s *server) handleOptionsDataSprav() http.HandlerFunc {
 
 	return func(w http.ResponseWriter, r *http.Request) {
@@ -573,7 +615,16 @@ func (s *server) handleOptionsDataSprav() http.HandlerFunc {
 
 }
 
-// handle request options packets data
+// handlePacketsData godoc
+// @Summary Получить список пакетов опций
+// @Tags Данные по автомобилям для заказа
+// @Description Получить список пакетов опций
+// @ID get-packetsdata
+// @Accept  json
+// @Produce  json
+// @Success 200 {array} model.DataPackets "OK"
+// @Router /auth/getpacketsdata [get]
+// @Security ApiKeyAuth
 func (s *server) handlePacketsData() http.HandlerFunc {
 
 	return func(w http.ResponseWriter, r *http.Request) {
@@ -589,10 +640,18 @@ func (s *server) handlePacketsData() http.HandlerFunc {
 		logger.InfoLogger.Println("data packets sent")
 
 	}
-
 }
 
-// handle request colors data
+// handleColorsData godoc
+// @Summary Получить цвета автомобилей
+// @Tags Данные по автомобилям для заказа
+// @Description Получить цвета автомобилей
+// @ID get-colorsdata
+// @Accept  json
+// @Produce  json
+// @Success 200 {array} model.DataColors
+// @Router /auth/getcolorsdata [get]
+// @Security ApiKeyAuth
 func (s *server) handleColorsData() http.HandlerFunc {
 
 	return func(w http.ResponseWriter, r *http.Request) {
@@ -610,7 +669,16 @@ func (s *server) handleColorsData() http.HandlerFunc {
 
 }
 
-// handle request statuses data
+// handleStatusesData godoc
+// @Summary Получить статусы заказов для личного кабинета
+// @Tags Данные для личного кабинета
+// @Description Получить статусы заказов для личного кабинета
+// @ID get-statusesdata
+// @Accept  json
+// @Produce  json
+// @Success 200 {array} model.DataStatusesLk "OK"
+// @Router /auth/getstatusesdata [get]
+// @Security ApiKeyAuth
 func (s *server) handleStatusesData() http.HandlerFunc {
 
 	return func(w http.ResponseWriter, r *http.Request) {
@@ -639,15 +707,14 @@ func (s *server) handleStatusesData() http.HandlerFunc {
 
 }
 
-// handle request tech data
 // handleTechData godoc
 // @Summary Получить технические характеристика автомобилей
-// @Tags Получение данных данных
+// @Tags Данные по автомобилям для заказа
 // @Description Получить технические характеристики
 // @ID get-techdata
 // @Accept  json
 // @Produce  json
-// @Success 200 {object} model.TechData
+// @Success 200 {array} model.TechDataObj "OK"
 // @Router /auth/techdata [get]
 // @Security ApiKeyAuth
 func (s *server) handleTechData() http.HandlerFunc {

@@ -33,6 +33,14 @@ func (r *DataRepository) QueryInsertMssql(data model.DataBooking) (string, error
 	//request mssql
 	var mssql_respond string
 
+	if data.TypeClient == "Юрлицо" || data.TypeClient == "юрлицо" {
+		data.Email = data.RepresentativeEmail
+		data.PhoneNumber = data.RepresentativePhoneNumber
+		data.TypeClient = "company"
+	} else {
+		data.TypeClient = "personal"
+	}
+
 	_, err := r.store.dbMssql.Exec(r.store.config.Spec.Queryies.Booking,
 		sql.Named("ИдентификаторОбращения", data.RequestId),
 		sql.Named("Действие", data.ActionType),
@@ -43,8 +51,9 @@ func (r *DataRepository) QueryInsertMssql(data model.DataBooking) (string, error
 		sql.Named("ИНН", data.Inn),
 		sql.Named("КПП", data.Kpp),
 		sql.Named("ОГРН", data.Ogrn),
-		sql.Named("АдресЮридический", data.YurAddressCode),
-		sql.Named("АдресДоставки", data.DeliveryAddressCode),
+		sql.Named("АдресЮридический", data.YurAddress),
+		sql.Named("АдресПочтовый", data.PostAddress),
+		sql.Named("АдресДоставки", data.DeliveryAddress),
 		sql.Named("Hid", data.Hid),
 		sql.Named("Наименование", data.CompanyName),
 		sql.Named("Фамилия", data.Surname),
@@ -73,11 +82,12 @@ func (r *DataRepository) QueryInsertBookingPostgres(data model.DataBooking) erro
 
 	query := `
 	insert into booking
+	("requestid", "actiontype", "uniqmodcode", "modification", "modfamily", "modbodytype", "modengine", "modbase", "modtuning", "vin", "pricewithnds", "typeclient", "inn", "kpp", "ogrn", "yuraddress", "postaddress", "deliveryaddress", "hid", "companyname", "representativename", "representativesurname", "surname", "name", "patronymic", "passportser", "passportnumber", "snils", "dateofbirth", "email", "phonenumber", "comment", "consentmailing", "timerequest", "file", "billnumber", "urlmod", "clientid", "ymuid", "testmod")
 	values($1, $2, $3, $4, $5, $6, $7, $8, $9,
 		$10, $11, $12, $13, $14, $15, $16, $17, $18,
 		$19, $20, $21, $22, $23, $24, $25, $26, $27,
 		$28, $29, $30, $31, $32, $33, $34, $35, $36,
-		$37, $38, $39)`
+		$37, $38, $39, $40)`
 
 	ctx, cancelFunc := context.WithTimeout(context.Background(), time.Second*5)
 	defer cancelFunc()
@@ -91,7 +101,7 @@ func (r *DataRepository) QueryInsertBookingPostgres(data model.DataBooking) erro
 	_, err = tx.Exec(ctx, query,
 		data.RequestId,
 		data.ActionType,
-		data.UniqModCode,
+		strconv.Itoa(data.UniqModCode),
 		data.Modification,
 		data.ModFamily,
 		data.ModBodyType,
@@ -99,13 +109,13 @@ func (r *DataRepository) QueryInsertBookingPostgres(data model.DataBooking) erro
 		data.ModBase,
 		data.ModTuning,
 		data.Vin,
-		data.PriceWithNds,
+		strconv.Itoa(data.PriceWithNds),
 		data.TypeClient,
 		data.Inn,
 		data.Kpp,
 		data.Ogrn,
-		data.YurAddressCode,
-		data.DeliveryAddressCode,
+		data.YurAddress,
+		data.PostAddress,
 		data.DeliveryAddress,
 		data.Hid,
 		data.CompanyName,
@@ -128,7 +138,7 @@ func (r *DataRepository) QueryInsertBookingPostgres(data model.DataBooking) erro
 		data.UrlMod,
 		data.Clientid,
 		data.Ymuid,
-		data.TestMod,
+		strconv.FormatBool(data.TestMod),
 	)
 	if err != nil {
 		logger.ErrorLogger.Println(err)
@@ -144,6 +154,8 @@ func (r *DataRepository) QueryInsertBookingPostgres(data model.DataBooking) erro
 	return nil
 
 }
+
+//
 
 // insert forms in postgres
 func (r *DataRepository) QueryInsertFormsPostgres(data model.DataForms) error {
@@ -420,6 +432,41 @@ func (r *DataRepository) QueryStocksMssql() ([]model.DataStocks, error) {
 func (r *DataRepository) QueryBasicModelsPriceMssql() ([]model.DataBasicModelsPrice, error) {
 
 	rows, err := r.store.dbMssql.Query(r.store.config.Spec.Queryies.BasicModelsPrice)
+	if err != nil {
+		logger.ErrorLogger.Println(err)
+		return nil, err
+	}
+
+	defer rows.Close()
+
+	results := []model.DataBasicModelsPrice{}
+
+	for rows.Next() {
+
+		data := &model.DataBasicModelsPrice{}
+
+		err := rows.Scan(
+			&data.Товар,
+			&data.Цена,
+			&data.СтавкаНДС,
+			&data.НДС,
+			&data.НачалоДействия,
+		)
+		if err != nil {
+			logger.ErrorLogger.Println(err)
+			return nil, err
+		}
+		results = append(results, *data)
+	}
+
+	return results, nil
+
+}
+
+// query mssql price2 basic models
+func (r *DataRepository) QueryBasicModelsPriceMssql2() ([]model.DataBasicModelsPrice, error) {
+
+	rows, err := r.store.dbMssql.Query(r.store.config.Spec.Queryies.BasicModelsPrice2)
 	if err != nil {
 		logger.ErrorLogger.Println(err)
 		return nil, err
@@ -920,6 +967,14 @@ func (r *DataRepository) RequestGazCrmApiBooking(data model.DataBooking, config 
 	var dataset model.DataGazCrm
 	var response *model.ResponseGazCrm
 
+	if data.TypeClient == "Физлицо" || data.TypeClient == "физлицо" {
+		data.TypeClient = "personal"
+	} else {
+		data.TypeClient = "company"
+		data.Email = data.RepresentativeEmail
+		data.PhoneNumber = data.RepresentativePhoneNumber
+	}
+
 	bodyJson0 := &model.DataGazCrmReq{
 		TimeRequest: data.TimeRequest,
 	}
@@ -962,9 +1017,11 @@ func (r *DataRepository) RequestGazCrmApiBooking(data model.DataBooking, config 
 	bodyJson13 := &model.DataGazCrmReq{
 		СlientIP: data.СlientIP,
 	}
+
 	bodyJson14 := &model.DataGazCrmReq{
 		TypeClient: data.TypeClient,
 	}
+
 	bodyJson15 := &model.DataGazCrmReq{
 		CompanyName: data.CompanyName,
 	}
@@ -1138,6 +1195,14 @@ func (r *DataRepository) RequestLkOrder(data model.DataBooking, config *model.Se
 		PreviewUrl:  data.PreviewUrl,
 	}
 
+	var ApiUrl string
+
+	if data.TestMod == true {
+		ApiUrl = config.Spec.Client.UrlLkOrderTest
+	} else {
+		ApiUrl = config.Spec.Client.UrlLkOrder
+	}
+
 	client := &http.Client{}
 
 	token := data.СlientToken
@@ -1149,10 +1214,10 @@ func (r *DataRepository) RequestLkOrder(data model.DataBooking, config *model.Se
 		return nil, err
 	}
 
-	logger.ErrorLogger.Println(bytes.NewBuffer(bodyBytesReq))
+	logger.InfoLogger.Println(bytes.NewBuffer(bodyBytesReq))
 
 	//resp, err := http.Post(config.Spec.Client.UrlLkOrder, "application/json", bytes.NewBuffer(bodyBytesReq))
-	req, err := http.NewRequest(http.MethodPost, config.Spec.Client.UrlLkOrder, bytes.NewBuffer(bodyBytesReq)) // URL-encoded payload
+	req, err := http.NewRequest(http.MethodPost, ApiUrl, bytes.NewBuffer(bodyBytesReq)) // URL-encoded payload
 	if err != nil {
 		logger.ErrorLogger.Println(err)
 	}
