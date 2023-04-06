@@ -8,6 +8,7 @@ import (
 	"io/ioutil"
 	"net/http"
 	"reflect"
+	"regexp"
 	"strconv"
 	"time"
 
@@ -647,7 +648,7 @@ func (r *DataRepository) QuerySprav() ([]model.DataSprav, error) {
 		// }
 
 		if data.ИзЭПТС_ДопустимаяМаксимальнаяМассаСтандарт == nil {
-			stringone := "nil" //тут можно добавить любое значение
+			stringone := "3500" //тут можно добавить любое значение
 			stringtwo := &stringone
 			data.ИзЭПТС_ДопустимаяМаксимальнаяМассаСтандарт = stringtwo
 		}
@@ -1218,6 +1219,87 @@ func (r *DataRepository) RequestLkOrder(data model.DataBooking, config *model.Se
 
 	//resp, err := http.Post(config.Spec.Client.UrlLkOrder, "application/json", bytes.NewBuffer(bodyBytesReq))
 	req, err := http.NewRequest(http.MethodPost, ApiUrl, bytes.NewBuffer(bodyBytesReq)) // URL-encoded payload
+	if err != nil {
+		logger.ErrorLogger.Println(err)
+	}
+
+	req.Header.Add("Authorization", bearer)
+	req.Header.Add("Content-Type", "application/json")
+
+	response, err := client.Do(req)
+	if err != nil {
+		logger.ErrorLogger.Println(err)
+	}
+
+	logger.ErrorLogger.Println(req)
+
+	return response, nil
+
+}
+
+// request LK profile
+func (r *DataRepository) RequestLkProfile(data model.DataBooking, config *model.Service) (*http.Response, error) {
+
+	re := regexp.MustCompile(`[^a-zA-Z0-9+]`)
+
+	dataset := &model.DataLkProfile{
+		User: model.DataLkProfileUser{
+			Name:       data.Name,
+			SecondName: data.Patronymic,
+			LastName:   data.Surname,
+			Email:      data.Email,
+			Phone:      re.ReplaceAllString(data.PhoneNumber, ""),
+			BirthDay:   data.DateOfBirth,
+		},
+		PersonalData: model.DataLkProfilePersonalData{
+			PassportSeries:     data.PassportSer,
+			PassportNumber:     data.PassportNumber,
+			PassportIssuedBy:   data.PassportOrgan,
+			PassportIssuerCode: data.PassportOrganCode,
+			PassportIssueDate:  data.PassportDate,
+			Snils:              re.ReplaceAllString(data.Snils, ""),
+		},
+		Address: []model.DataLkProfileAddress{
+			{
+				TypeCode:          "ADDRESS_USER_DELIVERY",
+				UnrestrictedValue: data.DeliveryAddress,
+			},
+			{
+				TypeCode:          "ADDRESS_USER_MAILING",
+				UnrestrictedValue: data.PostAddress,
+			},
+			{
+				TypeCode:          "ADDRESS_USER_REGISTRATION",
+				UnrestrictedValue: data.YurAddress,
+			},
+		},
+	}
+
+	// dataset1 = dataset1
+
+	var ApiUrl string
+
+	if data.TestMod == true {
+		ApiUrl = config.Spec.Client.UrlLkProfileTest
+	} else {
+		ApiUrl = config.Spec.Client.UrlLkProfile
+	}
+
+	client := &http.Client{}
+
+	token := data.СlientToken
+
+	bearer := "Bearer " + token
+
+	bodyBytesReq, err := json.Marshal(dataset)
+	if err != nil {
+		return nil, err
+	}
+
+	logger.InfoLogger.Println(bytes.NewBuffer(bodyBytesReq))
+
+	//resp, err := http.Post(config.Spec.Client.UrlLkOrder, "application/json", bytes.NewBuffer(bodyBytesReq))
+	req, err := http.NewRequest(http.MethodPut, ApiUrl, bytes.NewBuffer(bodyBytesReq)) // URL-encoded payload
 	if err != nil {
 		logger.ErrorLogger.Println(err)
 	}

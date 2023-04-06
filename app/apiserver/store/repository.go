@@ -31,6 +31,7 @@ type DataRepository interface {
 	RequestGazCrmApiForms(model.DataForms, *model.Service) (*model.ResponseGazCrm, error)
 	// Личный кабинет
 	RequestLkOrder(model.DataBooking, *model.Service) (*http.Response, error)
+	RequestLkProfile(model.DataBooking, *model.Service) (*http.Response, error)
 	//PG
 	QueryInsertLeadGetPostgres(model.DataLeadGet) error
 	QueryInsertWorkListsPostgres(model.DataWorkList) error

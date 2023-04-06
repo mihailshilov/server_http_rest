@@ -534,6 +534,35 @@ type DataLkOrder struct {
 	PreviewUrl  string `json:"previewUrl"`
 }
 
+type DataLkProfile struct {
+	User         DataLkProfileUser         `json:"user"`
+	PersonalData DataLkProfilePersonalData `json:"personalData"`
+	Address      []DataLkProfileAddress    `json:"address"`
+}
+
+type DataLkProfileUser struct {
+	Name       string `json:"name"`
+	SecondName string `json:"secondName"`
+	LastName   string `json:"lastName"`
+	Email      string `json:"email"`
+	Phone      string `json:"phone"`
+	BirthDay   string `json:"birthDay"`
+}
+
+type DataLkProfilePersonalData struct {
+	PassportSeries     string `json:"passportSeries"`
+	PassportNumber     string `json:"passportNumber"`
+	PassportIssuedBy   string `json:"passportIssuedBy"`
+	PassportIssuerCode string `json:"passportIssuerCode"`
+	PassportIssueDate  string `json:"passportIssueDate"`
+	Snils              string `json:"snils"`
+}
+
+type DataLkProfileAddress struct {
+	TypeCode          string `json:"typeCode"`
+	UnrestrictedValue string `json:"unrestrictedValue"`
+}
+
 type TechData struct {
 	Data TechDataObj `json:"Data"`
 }

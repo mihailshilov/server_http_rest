@@ -41,6 +41,8 @@ type Service struct {
 			UrlMailingService string `yaml:"url_mailing_service"`
 			UrlLkOrder        string `yaml:"url_lk_order"`
 			UrlLkOrderTest    string `yaml:"url_lk_order_test"`
+			UrlLkProfile      string `yaml:"url_lk_profile"`
+			UrlLkProfileTest  string `yaml:"url_lk_profile_test"`
 		} `yaml:"client"`
 		Queryies struct {
 			Booking           string `yaml:"booking"`

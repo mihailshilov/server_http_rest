@@ -252,6 +252,14 @@ func (s *server) handleRequestBooking() http.HandlerFunc {
 		logger.InfoLogger.Println(bytes.NewBuffer(bodyBytesReq))
 		logger.InfoLogger.Println("\n Конец запроса от Перкса")
 
+		//пишем в postgres
+		if err := s.store.Data().QueryInsertBookingPostgres(req); err != nil {
+			logger.ErrorLogger.Println(err)
+		} else {
+			logger.InfoLogger.Println("sites booking data stored")
+		}
+
+		//отправляем в исклиент
 		resp, err := s.store.Data().QueryInsertMssql(req)
 		if err != nil {
 			s.error(w, r, http.StatusBadRequest, errMssql)
@@ -277,6 +285,8 @@ func (s *server) handleRequestBooking() http.HandlerFunc {
 
 		}
 
+		//Если есть токен - отправим в ЛК
+
 		StatusLK := ""
 
 		if req.СlientToken != "" {
@@ -288,6 +298,17 @@ func (s *server) handleRequestBooking() http.HandlerFunc {
 			} else {
 				logger.InfoLogger.Println(res_lk)
 				StatusLK = res_lk.Status
+			}
+
+			//update user data in lk
+
+			res_lk_profile, err := s.store.Data().RequestLkProfile(req, s.config)
+			if err != nil {
+				logger.ErrorLogger.Println(err)
+			} else {
+				logger.InfoLogger.Println(res_lk_profile)
+				//StatusLK = res_lk.Status
+				res_lk_profile = res_lk_profile
 			}
 
 		}
@@ -303,13 +324,6 @@ func (s *server) handleRequestBooking() http.HandlerFunc {
 		} else {
 			logger.InfoLogger.Println("gazcrm booking data transfer success")
 			s.respond(w, r, http.StatusOK, newResponseBooking(errMs, resp, StatusLK, respBooking))
-		}
-
-		//insert data in postgres
-		if err := s.store.Data().QueryInsertBookingPostgres(req); err != nil {
-			logger.ErrorLogger.Println(err)
-		} else {
-			logger.InfoLogger.Println("sites booking data stored")
 		}
 
 	}
