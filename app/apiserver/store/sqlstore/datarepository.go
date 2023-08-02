@@ -78,6 +78,104 @@ func (r *DataRepository) QueryInsertMssql(data model.DataBooking) (string, error
 	return mssql_respond, nil
 }
 
+// query insert mssql fiz
+
+func (r *DataRepository) QueryInsertMssqlBookingF(data model.DataBookingF) (string, error) {
+
+	//validation
+	// if err := data.ValidateDataBooking(); err != nil {
+	// 	logger.ErrorLogger.Println(err)
+	// 	return "", err
+	// }
+
+	//request mssql
+	var mssql_respond string
+
+	_, err := r.store.dbMssql.Exec(r.store.config.Spec.Queryies.Booking,
+		sql.Named("ИдентификаторОбращения", data.RequestId),
+		sql.Named("Действие", "booking"),
+		sql.Named("НомернойТовар", data.UniqModCode),
+		sql.Named("ВИН", data.Vin),
+		sql.Named("ЦенаСНДС", data.PriceWithNds),
+		sql.Named("ТипКонтрагента", "personal"),
+		// sql.Named("ИНН", data.Inn),
+		// sql.Named("КПП", data.Kpp),
+		// sql.Named("ОГРН", data.Ogrn),
+		sql.Named("АдресЮридический", data.YurAddress),
+		sql.Named("АдресПочтовый", data.PostAddress),
+		sql.Named("АдресДоставки", data.DeliveryAddress),
+		// sql.Named("Hid", data.Hid),
+		// sql.Named("Наименование", data.CompanyName),
+		sql.Named("Фамилия", data.Surname),
+		sql.Named("Имя", data.Name),
+		sql.Named("ДатаРождения", data.DateOfBirth),
+		sql.Named("Отчество", data.Patronymic),
+		sql.Named("СерияПаспорта", data.PassportSer),
+		sql.Named("НомерПаспорта", data.PassportNumber),
+		sql.Named("СНИЛС", data.Snils),
+		sql.Named("ЭлектроннаяПочта", data.Email),
+		sql.Named("Телефоны", data.PhoneNumber),
+		sql.Named("МоментОбращения", data.TimeRequest),
+		sql.Named("НомерСчета", data.BillNumber),
+		sql.Named("Ошибка", sql.Out{Dest: &mssql_respond}),
+		sql.Named("ВыполнитьТестовыйВызов", data.TestMod),
+	)
+	if err != nil {
+		return "", err
+	}
+
+	return mssql_respond, nil
+}
+
+// query insert mssql ur
+
+func (r *DataRepository) QueryInsertMssqlBookingU(data model.DataBookingU) (string, error) {
+
+	//validation
+	// if err := data.ValidateDataBooking(); err != nil {
+	// 	logger.ErrorLogger.Println(err)
+	// 	return "", err
+	// }
+
+	//request mssql
+	var mssql_respond string
+
+	_, err := r.store.dbMssql.Exec(r.store.config.Spec.Queryies.Booking,
+		sql.Named("ИдентификаторОбращения", data.RequestId),
+		sql.Named("Действие", "booking"),
+		sql.Named("НомернойТовар", data.UniqModCode),
+		sql.Named("ВИН", data.Vin),
+		sql.Named("ЦенаСНДС", data.PriceWithNds),
+		sql.Named("ТипКонтрагента", "personal"),
+		sql.Named("ИНН", data.Inn),
+		sql.Named("КПП", data.Kpp),
+		sql.Named("ОГРН", data.Ogrn),
+		sql.Named("АдресЮридический", data.CompanyAdress),
+		sql.Named("АдресПочтовый", data.PostAddress),
+		sql.Named("АдресДоставки", data.DeliveryAddress),
+		sql.Named("Hid", data.Hid),
+		sql.Named("Наименование", data.CompanyName),
+		sql.Named("Фамилия", data.RepresentativeSurname),
+		sql.Named("Имя", data.RepresentativeName),
+		//sql.Named("ДатаРождения", data.DateOfBirth),
+		//sql.Named("Отчество", data.Patronymic),
+		//sql.Named("СерияПаспорта", data.PassportSer),
+		//sql.Named("НомерПаспорта", data.PassportNumber),
+		//sql.Named("СНИЛС", data.Snils),
+		sql.Named("ЭлектроннаяПочта", data.RepresentativeEmail),
+		sql.Named("Телефоны", data.RepresentativeEmail),
+		sql.Named("МоментОбращения", data.TimeRequest),
+		sql.Named("НомерСчета", data.BillNumber),
+		sql.Named("Ошибка", sql.Out{Dest: &mssql_respond}),
+		sql.Named("ВыполнитьТестовыйВызов", data.TestMod),
+	)
+	if err != nil {
+		return "", err
+	}
+
+	return mssql_respond, nil
+}
+
 // insert booking in postgres
 func (r *DataRepository) QueryInsertBookingPostgres(data model.DataBooking) error {
 
@@ -139,6 +237,199 @@ func (r *DataRepository) QueryInsertBookingPostgres(data model.DataBooking) erro
 		data.UrlMod,
 		data.Clientid,
 		data.Ymuid,
+		strconv.FormatBool(data.TestMod),
+	)
+	if err != nil {
+		logger.ErrorLogger.Println(err)
+		return err
+	}
+
+	err = tx.Commit(ctx)
+	if err != nil {
+		logger.ErrorLogger.Println(err)
+		return err
+	}
+
+	return nil
+
+}
+
+func (r *DataRepository) QueryInsertBookingPostgresF(data model.DataBookingF) error {
+
+	query := `
+	insert into booking
+	("requestid", "actiontype", "uniqmodcode", "modification", "modfamily", "modbodytype", "modengine", "modbase", "modtuning", "vin", "pricewithnds", "typeclient", "inn", "kpp", "ogrn", "yuraddress", "postaddress", "deliveryaddress", "hid", "companyname", "representativename", "representativesurname", "surname", "name", "patronymic", "passportser", "passportnumber", "snils", "dateofbirth", "email", "phonenumber", "comment", "consentmailing", "timerequest", "file", "billnumber", "urlmod", "clientid", "ymuid", "testmod")
+	values($1, $2, $3, $4, $5, $6, $7, $8, $9,
+		$10, $11, $12, $13, $14, $15, $16, $17, $18,
+		$19, $20, $21, $22, $23, $24, $25, $26, $27,
+		$28, $29, $30, $31, $32, $33, $34, $35, $36,
+		$37, $38, $39, $40)`
+
+	ctx, cancelFunc := context.WithTimeout(context.Background(), time.Second*5)
+	defer cancelFunc()
+
+	tx, err := r.store.dbPostgres.Begin(context.Background())
+	if err != nil {
+		logger.ErrorLogger.Println(err)
+		return err
+	}
+
+	_, err = tx.Exec(ctx, query,
+		data.RequestId,
+		"booking",
+		strconv.Itoa(data.UniqModCode),
+		data.Modification,
+		data.ModFamily,
+		data.ModBodyType,
+		"",
+		"",
+		"",
+		data.Vin,
+		strconv.Itoa(data.PriceWithNds),
+		"personal",
+		"",
+		"",
+		"",
+		data.YurAddress,
+		data.PostAddress,
+		data.DeliveryAddress,
+		"",
+		"",
+		"",
+		"",
+		data.Surname,
+		data.Name,
+		data.Patronymic,
+		data.PassportSer,
+		data.PassportNumber,
+		data.Snils,
+		data.DateOfBirth,
+		data.Email,
+		data.PhoneNumber,
+		data.Comment,
+		data.Consentmailing,
+		data.TimeRequest,
+		data.BillURL,
+		data.BillNumber,
+		"",
+		data.Clientid,
+		"",
+		strconv.FormatBool(data.TestMod),
+	)
+	if err != nil {
+		logger.ErrorLogger.Println(err)
+		return err
+	}
+
+	err = tx.Commit(ctx)
+	if err != nil {
+		logger.ErrorLogger.Println(err)
+		return err
+	}
+
+	return nil
+
+}
+
+func (r *DataRepository) QueryInsertBookingPostgresU(data model.DataBookingU) error {
+
+	query := `
+	insert into booking
+	("requestid", 
+	"actiontype", 
+	"uniqmodcode", 
+	"modification", 
+	"modfamily", 
+	"modbodytype", 
+	"modengine", 
+	"modbase", 
+	"modtuning", 
+	"vin", 
+	"pricewithnds", 
+	"typeclient", 
+	"inn", 
+	"kpp", 
+	"ogrn", 
+	"yuraddress", 
+	"postaddress", 
+	"deliveryaddress", 
+	"hid", 
+	"companyname", 
+	"representativename", 
+	"representativesurname", 
+	"surname", 
+	"name", 
+	"patronymic", 
+	"passportser", 
+	"passportnumber", 
+	"snils", 
+	"dateofbirth", 
+	"email", 
+	"phonenumber", 
+	"comment", 
+	"consentmailing", 
+	"timerequest", 
+	"file", 
+	"billnumber", 
+	"urlmod", 
+	"clientid", 
+	"ymuid", 
+	"testmod")
+	values($1, $2, $3, $4, $5, $6, $7, $8, $9,
+		$10, $11, $12, $13, $14, $15, $16, $17, $18,
+		$19, $20, $21, $22, $23, $24, $25, $26, $27,
+		$28, $29, $30, $31, $32, $33, $34, $35, $36,
+		$37, $38, $39, $40)`
+
+	ctx, cancelFunc := context.WithTimeout(context.Background(), time.Second*5)
+	defer cancelFunc()
+
+	tx, err := r.store.dbPostgres.Begin(context.Background())
+	if err != nil {
+		logger.ErrorLogger.Println(err)
+		return err
+	}
+
+	_, err = tx.Exec(ctx, query,
+		data.RequestId,
+		"booking",
+		strconv.Itoa(data.UniqModCode),
+		data.Modification,
+		data.ModFamily,
+		data.ModBodyType,
+		"",
+		"",
+		"",
+		data.Vin,
+		strconv.Itoa(data.PriceWithNds),
+		"company",
+		data.Inn,
+		data.Kpp,
+		data.Ogrn,
+		data.CompanyAdress,
+		data.PostAddress,
+		data.DeliveryAddress,
+		data.Hid,
+		data.CompanyName,
+		data.RepresentativeName,
+		data.RepresentativeSurname,
+		"",
+		"",
+		"",
+		"",
+		"",
+		"",
+		"",
+		data.RepresentativeEmail,
+		data.RepresentativePhoneNumber,
+		data.Comment,
+		data.Consentmailing,
+		data.TimeRequest,
+		data.BillURL,
+		data.BillNumber,
+		"",
+		data.Clientid,
+		"",
 		strconv.FormatBool(data.TestMod),
 	)
 	if err != nil {
@@ -416,12 +707,15 @@ func (r *DataRepository) QueryStocksMssql() ([]model.DataStocks, error) {
 		// 	results = append(results, *data)
 		// }
 
-		switch data.Наименование_номенклатуры {
-		case "ГАЗ-А21S12-225", "А23S12-1221-18-А83-60-00-900", "А31S12-0420-68-216-66-00-000", "А31S12-0420-68-218-66-00-000", "С41А23-1020-35-581-77-00-000":
-			logger.InfoLogger.Println("не выгружаем: " + data.Наименование_номенклатуры)
-		default:
-			results = append(results, *data)
-		}
+		//рабочее исключение тачек:
+		// switch data.Наименование_номенклатуры {
+		// case "А23S12-1221-18-А83-60-00-900", "А31S12-0420-68-216-66-00-000", "А31S12-0420-68-218-66-00-000", "С41А23-1020-35-581-77-00-000":
+		// 	logger.InfoLogger.Println("не выгружаем: " + data.Наименование_номенклатуры)
+		// default:
+		// 	results = append(results, *data)
+		// }
+
+		results = append(results, *data)
 
 	}
 
@@ -678,12 +972,14 @@ func (r *DataRepository) QuerySprav() ([]model.DataSprav, error) {
 
 		//А31S12-0420-68-218-66-00-000
 
-		switch data.Наименование {
-		case "ГАЗ-А21S12-225", "А23S12-1221-18-А83-60-00-900", "А31S12-0420-68-216-66-00-000", "А31S12-0420-68-218-66-00-000", "С41А23-1020-35-581-77-00-000":
-			logger.InfoLogger.Println("не выгружаем: " + data.Наименование)
-		default:
-			results = append(results, *data)
-		}
+		// switch data.Наименование {
+		// case "ГАЗ-А21S12-225", "А23S12-1221-18-А83-60-00-900", "А31S12-0420-68-216-66-00-000", "А31S12-0420-68-218-66-00-000", "С41А23-1020-35-581-77-00-000":
+		// 	logger.InfoLogger.Println("не выгружаем: " + data.Наименование)
+		// default:
+
+		// }
+
+		results = append(results, *data)
 
 		/*
 			if data.Наименование == "ГАЗ-А21S12-225" || data.Наименование == "А23S12-1221-18-А83-60-00-900" {
@@ -697,6 +993,160 @@ func (r *DataRepository) QuerySprav() ([]model.DataSprav, error) {
 			}
 		*/
 
+	}
+
+	return results, nil
+
+}
+
+func (r *DataRepository) QueryModels() ([]model.DataModels, error) {
+
+	rows, err := r.store.dbMssql.Query(r.store.config.Spec.Queryies.Models)
+	if err != nil {
+		logger.ErrorLogger.Println(err)
+		return nil, err
+	}
+
+	defer rows.Close()
+
+	results := []model.DataModels{}
+
+	for rows.Next() {
+
+		data := &model.DataModels{Сортировка: 500}
+
+		err := rows.Scan(
+			&data.ИдМодели,
+			&data.Модель,
+			&data.ИдНабораОпций,
+			&data.НаборОпций,
+			&data.ИдДивизиона,
+			&data.Дивизион,
+			&data.ИдСемейства,
+			&data.Семейство,
+			&data.ВидПродукции,
+			&data.Класс,
+			&data.Кузов,
+			&data.ИдНазначения,
+			&data.Назначение,
+			&data.ИдПроизводителя,
+			&data.Производитель,
+			&data.Цена,
+			&data.ПризнакЦеныОт,
+			&data.СообщениеГдеНетЦен,
+			&data.ДокументУстановившийЦену,
+		)
+
+		if err != nil {
+			logger.ErrorLogger.Println(err)
+			return nil, err
+		}
+
+		results = append(results, *data)
+
+	}
+
+	return results, nil
+
+}
+
+// query mssql options
+func (r *DataRepository) QueryOptions() ([]model.Options, error) {
+
+	rows, err := r.store.dbMssql.Query(r.store.config.Spec.Queryies.OptionsG)
+	if err != nil {
+		logger.ErrorLogger.Println(err)
+		return nil, err
+	}
+
+	defer rows.Close()
+
+	// for rows.Next() {
+	// }
+
+	// if rows.NextResultSet() {
+	// 	logger.ErrorLogger.Println("Передан один resultSet, должно быть два, но я не знаю зачем так...")
+	// }
+
+	results := []model.Options{}
+
+	for rows.Next() {
+
+		data := &model.Options{}
+
+		err := rows.Scan(
+			&data.НомерСтроки,
+			&data.Модель,
+			&data.БазоваяМодель,
+			&data.КодКатегории,
+			&data.НаименованиеКатегории,
+			&data.ИдЗначенияОпции,
+			&data.КодЗначенияОпции,
+			&data.НаименованиеЗначенияОпции,
+			&data.ОписаниеЗначенияОпцииДляСайта,
+			&data.ВыбранаПоУмолчанию,
+			&data.Обязательная,
+			&data.ДопустимоТолькоОдноЗначениеВНаборе,
+			&data.ОбязательноеСочетаниеОпций,
+			&data.НедопустимоеСочетаниеОпций,
+			&data.Цена,
+			&data.ГруппаНаСайте,
+		)
+
+		if err != nil {
+			logger.ErrorLogger.Println(err)
+			return nil, err
+		}
+		results = append(results, *data)
+	}
+
+	return results, nil
+
+}
+
+// query mssql special
+func (r *DataRepository) QuerySpecial() ([]model.Special, error) {
+
+	rows, err := r.store.dbMssql.Query(r.store.config.Spec.Queryies.Special)
+	if err != nil {
+		logger.ErrorLogger.Println(err)
+		return nil, err
+	}
+
+	defer rows.Close()
+
+	// for rows.Next() {
+	// }
+
+	// if rows.NextResultSet() {
+	// 	logger.ErrorLogger.Println("Передан один resultSet, должно быть два, но я не знаю зачем так...")
+	// }
+
+	results := []model.Special{}
+
+	for rows.Next() {
+
+		data := &model.Special{}
+
+		err := rows.Scan(
+			&data.ИдМодели,
+			&data.НаименованиеМодели,
+			&data.ИдПараметра,
+			&data.НаименованиеПараметра,
+			&data.ИдЗначения,
+			&data.НаименованиеЗначения,
+			&data.ПорядокСортировки,
+			&data.ИдГруппы,
+			&data.НаименованиеГруппы,
+			&data.ИдКатегории,
+			&data.НаименованиеКатегории,
+		)
+
+		if err != nil {
+			logger.ErrorLogger.Println(err)
+			return nil, err
+		}
+		results = append(results, *data)
 	}
 
 	return results, nil
@@ -826,6 +1276,47 @@ func (r *DataRepository) QueryPacketsData() ([]model.DataPackets, error) {
 
 }
 
+// query mssql packets data new
+func (r *DataRepository) QueryPackets() ([]model.DataPackets_l, error) {
+
+	rows, err := r.store.dbMssql.Query(r.store.config.Spec.Queryies.Packets)
+	if err != nil {
+		logger.ErrorLogger.Println(err)
+		return nil, err
+	}
+
+	defer rows.Close()
+
+	results := []model.DataPackets_l{} // creating empty slice
+
+	for rows.Next() {
+
+		data := &model.DataPackets_l{} // creating new struct for every row
+
+		err := rows.Scan(
+			&data.НоменклатураИд,
+			&data.НоменклатураНаименование,
+			&data.ИдПакета,
+			&data.КраткоеНаименованиеПакета,
+			&data.ПолноеНаименованиеПакета,
+			&data.ИдГруппыОпций,
+			&data.КраткоеНаименованиеГруппыОпций,
+			&data.ПолноеНаименованиеГруппыОпций,
+			&data.ИдОпции,
+			&data.ПолноеНаименованиеОпции,
+			&data.КраткоеНаименованиеОпции,
+		)
+		if err != nil {
+			logger.ErrorLogger.Println(err)
+			return nil, err
+		}
+		results = append(results, *data)
+	}
+
+	return results, nil
+
+}
+
 // query mssql colors data
 func (r *DataRepository) QueryColorsData() ([]model.DataColors, error) {
 
@@ -839,19 +1330,23 @@ func (r *DataRepository) QueryColorsData() ([]model.DataColors, error) {
 
 	results := []model.DataColors{} // creating empty slice
 
+	//var probka interface{}
+
 	for rows.Next() {
 
 		data := &model.DataColors{} // creating new struct for every row
 
 		err := rows.Scan(
-			&data.НоменклатураИд,
-			&data.НоменклатураНаименование,
 			&data.ЦветИд,
 			&data.Наименование,
 			&data.ПолноеНаименование,
-			&data.ЦветRGB,
 			&data.Слойность,
+			&data.Цена,
+			&data.ЦветRGB,
+			&data.НоменклатураНаименование,
+			&data.НоменклатураИд,
 		)
+
 		if err != nil {
 			logger.ErrorLogger.Println(err)
 			return nil, err
@@ -1057,7 +1552,229 @@ func (r *DataRepository) RequestGazCrmApiBooking(data model.DataBooking, config 
 		return nil, err
 	}
 
-	resp, err := http.Post(config.Spec.Client.UrlGazCrmTest, "application/json", bytes.NewBuffer(bodyBytesReq))
+	var CrmApiUrl = config.Spec.Client.UrlGazCrm
+	if data.TestMod == true {
+		CrmApiUrl = config.Spec.Client.UrlGazCrmTest
+	}
+
+	resp, err := http.Post(CrmApiUrl, "application/json", bytes.NewBuffer(bodyBytesReq))
+	if err != nil {
+		logger.ErrorLogger.Println(err)
+		return nil, err
+	}
+
+	defer resp.Body.Close()
+
+	defer resp.Body.Close()
+
+	bodyBytesResp, err := ioutil.ReadAll(resp.Body)
+	if err != nil {
+		logger.ErrorLogger.Println(err)
+		return nil, err
+	}
+
+	if err := json.Unmarshal(bodyBytesResp, &response); err != nil {
+		return nil, err
+	}
+
+	return response, nil
+
+}
+
+func (r *DataRepository) RequestGazCrmApiBookingF(data model.DataBookingF, config *model.Service) (*model.ResponseGazCrm, error) {
+
+	var dataset model.DataGazCrm
+	var response *model.ResponseGazCrm
+
+	bodyJson0 := &model.DataGazCrmReq{
+		TimeRequest: data.TimeRequest,
+	}
+	bodyJson1 := &model.DataGazCrmReq{
+		RequestId: data.RequestId,
+	}
+	bodyJson2 := &model.DataGazCrmReq{
+		SubdivisionsId: data.SubdivisionsId,
+	}
+	bodyJson4 := &model.DataGazCrmReq{
+		FormName: data.FormName,
+	}
+	bodyJson5 := &model.DataGazCrmReq{
+		FormId: data.FormId,
+	}
+	bodyJson6 := &model.DataGazCrmReq{
+		HostName: data.HostName,
+	}
+	bodyJson7 := &model.DataGazCrmReq{
+		Division: data.Division,
+	}
+	bodyJson8 := &model.DataGazCrmReq{
+		Area: data.Area,
+	}
+	bodyJson9 := &model.DataGazCrmReq{
+		BrandName: data.BrandName,
+	}
+	bodyJson10 := &model.DataGazCrmReq{
+		CarModel: data.CarModel,
+	}
+	bodyJson11 := &model.DataGazCrmReq{
+		ClientID: data.Clientid,
+	}
+	bodyJson12 := &model.DataGazCrmReq{
+		MetricsType: "Yandex",
+	}
+	bodyJson13 := &model.DataGazCrmReq{
+		СlientIP: data.СlientIP,
+	}
+
+	bodyJson14 := &model.DataGazCrmReq{
+		TypeClient: "personal",
+	}
+	bodyJson16 := &model.DataGazCrmReq{
+		СlientName: data.Name,
+	}
+	bodyJson17 := &model.DataGazCrmReq{
+		ClientEmail: data.Email,
+	}
+	bodyJson18 := &model.DataGazCrmReq{
+		ClientPhoneNumber: data.PhoneNumber,
+	}
+	bodyJson19 := &model.DataGazCrmReq{
+		Commentary: data.Comment,
+	}
+	bodyJson20 := &model.DataGazCrmReq{
+		AgreementMailing: data.Consentmailing,
+	}
+
+	dataset.Data = append(dataset.Data, bodyJson0, bodyJson1, bodyJson2, bodyJson4, bodyJson5, bodyJson6,
+		bodyJson7, bodyJson8, bodyJson9, bodyJson10, bodyJson11, bodyJson12, bodyJson13, bodyJson14, bodyJson16, bodyJson17, bodyJson18, bodyJson19, bodyJson20)
+
+	//d_spaces, err := json.MarshalIndent(dataset, "", "    ")
+	//if err != nil {
+	//return "", err
+	//}
+
+	bodyBytesReq, err := json.Marshal(dataset)
+	if err != nil {
+		logger.ErrorLogger.Println(err)
+		return nil, err
+	}
+
+	var CrmApiUrl = config.Spec.Client.UrlGazCrm
+	if data.TestMod == true {
+		CrmApiUrl = config.Spec.Client.UrlGazCrmTest
+	}
+
+	resp, err := http.Post(CrmApiUrl, "application/json", bytes.NewBuffer(bodyBytesReq))
+	if err != nil {
+		logger.ErrorLogger.Println(err)
+		return nil, err
+	}
+
+	defer resp.Body.Close()
+
+	defer resp.Body.Close()
+
+	bodyBytesResp, err := ioutil.ReadAll(resp.Body)
+	if err != nil {
+		logger.ErrorLogger.Println(err)
+		return nil, err
+	}
+
+	if err := json.Unmarshal(bodyBytesResp, &response); err != nil {
+		return nil, err
+	}
+
+	return response, nil
+
+}
+
+func (r *DataRepository) RequestGazCrmApiBookingU(data model.DataBookingU, config *model.Service) (*model.ResponseGazCrm, error) {
+
+	var dataset model.DataGazCrm
+	var response *model.ResponseGazCrm
+
+	bodyJson0 := &model.DataGazCrmReq{
+		TimeRequest: data.TimeRequest,
+	}
+	bodyJson1 := &model.DataGazCrmReq{
+		RequestId: data.RequestId,
+	}
+	bodyJson2 := &model.DataGazCrmReq{
+		SubdivisionsId: data.SubdivisionsId,
+	}
+	bodyJson4 := &model.DataGazCrmReq{
+		FormName: data.FormName,
+	}
+	bodyJson5 := &model.DataGazCrmReq{
+		FormId: data.FormId,
+	}
+	bodyJson6 := &model.DataGazCrmReq{
+		HostName: data.HostName,
+	}
+	bodyJson7 := &model.DataGazCrmReq{
+		Division: data.Division,
+	}
+	bodyJson8 := &model.DataGazCrmReq{
+		Area: data.Area,
+	}
+	bodyJson9 := &model.DataGazCrmReq{
+		BrandName: data.BrandName,
+	}
+	bodyJson10 := &model.DataGazCrmReq{
+		CarModel: data.CarModel,
+	}
+	bodyJson11 := &model.DataGazCrmReq{
+		ClientID: data.Clientid,
+	}
+	bodyJson12 := &model.DataGazCrmReq{
+		MetricsType: "Yandex",
+	}
+	bodyJson13 := &model.DataGazCrmReq{
+		СlientIP: data.СlientIP,
+	}
+
+	bodyJson14 := &model.DataGazCrmReq{
+		TypeClient: "company",
+	}
+	bodyJson15 := &model.DataGazCrmReq{
+		CompanyName: data.CompanyName,
+	}
+	bodyJson16 := &model.DataGazCrmReq{
+		СlientName: data.RepresentativeName,
+	}
+	bodyJson17 := &model.DataGazCrmReq{
+		ClientEmail: data.RepresentativeEmail,
+	}
+	bodyJson18 := &model.DataGazCrmReq{
+		ClientPhoneNumber: data.RepresentativePhoneNumber,
+	}
+	bodyJson19 := &model.DataGazCrmReq{
+		Commentary: data.Comment,
+	}
+	bodyJson20 := &model.DataGazCrmReq{
+		AgreementMailing: data.Consentmailing,
+	}
+
+	dataset.Data = append(dataset.Data, bodyJson0, bodyJson1, bodyJson2, bodyJson4, bodyJson5, bodyJson6,
+		bodyJson7, bodyJson8, bodyJson9, bodyJson10, bodyJson11, bodyJson12, bodyJson13, bodyJson14, bodyJson15, bodyJson16, bodyJson17, bodyJson18, bodyJson19, bodyJson20)
+
+	//d_spaces, err := json.MarshalIndent(dataset, "", "    ")
+	//if err != nil {
+	//return "", err
+	//}
+
+	bodyBytesReq, err := json.Marshal(dataset)
+	if err != nil {
+		logger.ErrorLogger.Println(err)
+		return nil, err
+	}
+
+	var CrmApiUrl = config.Spec.Client.UrlGazCrm
+	if data.TestMod == true {
+		CrmApiUrl = config.Spec.Client.UrlGazCrmTest
+	}
+
+	resp, err := http.Post(CrmApiUrl, "application/json", bytes.NewBuffer(bodyBytesReq))
 	if err != nil {
 		logger.ErrorLogger.Println(err)
 		return nil, err
@@ -1237,8 +1954,197 @@ func (r *DataRepository) RequestLkOrder(data model.DataBooking, config *model.Se
 
 }
 
+// request LK orderF
+func (r *DataRepository) RequestLkOrderF(data model.DataBookingF, config *model.Service) (*http.Response, error) {
+
+	dataset := &model.DataLkOrder{
+		Id:          data.RequestId,
+		StageCode:   "new",
+		Title:       data.ModFamily + " " + data.ModBodyType,
+		Vin:         data.Vin,
+		Cost:        strconv.Itoa(data.PriceWithNds),
+		ModelFamily: data.ModFamily,
+		PreviewUrl:  data.PreviewUrl,
+	}
+
+	var ApiUrl string
+
+	if data.TestMod == true {
+		ApiUrl = config.Spec.Client.UrlLkOrderTest
+	} else {
+		ApiUrl = config.Spec.Client.UrlLkOrder
+	}
+
+	client := &http.Client{}
+
+	token := data.СlientToken
+
+	bearer := "Bearer " + token
+
+	bodyBytesReq, err := json.Marshal(dataset)
+	if err != nil {
+		return nil, err
+	}
+
+	logger.InfoLogger.Println(bytes.NewBuffer(bodyBytesReq))
+
+	//resp, err := http.Post(config.Spec.Client.UrlLkOrder, "application/json", bytes.NewBuffer(bodyBytesReq))
+	req, err := http.NewRequest(http.MethodPost, ApiUrl, bytes.NewBuffer(bodyBytesReq)) // URL-encoded payload
+	if err != nil {
+		logger.ErrorLogger.Println(err)
+	}
+
+	req.Header.Add("Authorization", bearer)
+	req.Header.Add("Content-Type", "application/json")
+
+	response, err := client.Do(req)
+	if err != nil {
+		logger.ErrorLogger.Println(err)
+	}
+
+	logger.ErrorLogger.Println(req)
+
+	return response, nil
+
+}
+
+// request LK orderU
+func (r *DataRepository) RequestLkOrderU(data model.DataBookingU, config *model.Service) (*http.Response, error) {
+
+	dataset := &model.DataLkOrder{
+		Id:          data.RequestId,
+		StageCode:   "new",
+		Title:       data.ModFamily + " " + data.ModBodyType,
+		Vin:         data.Vin,
+		Cost:        strconv.Itoa(data.PriceWithNds),
+		ModelFamily: data.ModFamily,
+		PreviewUrl:  data.PreviewUrl,
+	}
+
+	var ApiUrl string
+
+	if data.TestMod == true {
+		ApiUrl = config.Spec.Client.UrlLkOrderTest
+	} else {
+		ApiUrl = config.Spec.Client.UrlLkOrder
+	}
+
+	client := &http.Client{}
+
+	token := data.СlientToken
+
+	bearer := "Bearer " + token
+
+	bodyBytesReq, err := json.Marshal(dataset)
+	if err != nil {
+		return nil, err
+	}
+
+	logger.InfoLogger.Println(bytes.NewBuffer(bodyBytesReq))
+
+	//resp, err := http.Post(config.Spec.Client.UrlLkOrder, "application/json", bytes.NewBuffer(bodyBytesReq))
+	req, err := http.NewRequest(http.MethodPost, ApiUrl, bytes.NewBuffer(bodyBytesReq)) // URL-encoded payload
+	if err != nil {
+		logger.ErrorLogger.Println(err)
+	}
+
+	req.Header.Add("Authorization", bearer)
+	req.Header.Add("Content-Type", "application/json")
+
+	response, err := client.Do(req)
+	if err != nil {
+		logger.ErrorLogger.Println(err)
+	}
+
+	logger.ErrorLogger.Println(req)
+
+	return response, nil
+
+}
+
 // request LK profile
 func (r *DataRepository) RequestLkProfile(data model.DataBooking, config *model.Service) (*http.Response, error) {
+
+	re := regexp.MustCompile(`[^a-zA-Z0-9+]`)
+
+	dataset := &model.DataLkProfile{
+		User: model.DataLkProfileUser{
+			Name:       data.Name,
+			SecondName: data.Patronymic,
+			LastName:   data.Surname,
+			Email:      data.Email,
+			Phone:      re.ReplaceAllString(data.PhoneNumber, ""),
+			BirthDay:   data.DateOfBirth,
+		},
+		PersonalData: model.DataLkProfilePersonalData{
+			PassportSeries:     data.PassportSer,
+			PassportNumber:     data.PassportNumber,
+			PassportIssuedBy:   data.PassportOrgan,
+			PassportIssuerCode: data.PassportOrganCode,
+			PassportIssueDate:  data.PassportDate,
+			Snils:              re.ReplaceAllString(data.Snils, ""),
+		},
+		Address: []model.DataLkProfileAddress{
+			{
+				TypeCode:          "ADDRESS_USER_DELIVERY",
+				UnrestrictedValue: data.DeliveryAddress,
+			},
+			{
+				TypeCode:          "ADDRESS_USER_MAILING",
+				UnrestrictedValue: data.PostAddress,
+			},
+			{
+				TypeCode:          "ADDRESS_USER_REGISTRATION",
+				UnrestrictedValue: data.YurAddress,
+			},
+		},
+	}
+
+	// dataset1 = dataset1
+
+	var ApiUrl string
+
+	if data.TestMod == true {
+		ApiUrl = config.Spec.Client.UrlLkProfileTest
+	} else {
+		ApiUrl = config.Spec.Client.UrlLkProfile
+	}
+
+	client := &http.Client{}
+
+	token := data.СlientToken
+
+	bearer := "Bearer " + token
+
+	bodyBytesReq, err := json.Marshal(dataset)
+	if err != nil {
+		return nil, err
+	}
+
+	logger.InfoLogger.Println(bytes.NewBuffer(bodyBytesReq))
+
+	//resp, err := http.Post(config.Spec.Client.UrlLkOrder, "application/json", bytes.NewBuffer(bodyBytesReq))
+	req, err := http.NewRequest(http.MethodPut, ApiUrl, bytes.NewBuffer(bodyBytesReq)) // URL-encoded payload
+	if err != nil {
+		logger.ErrorLogger.Println(err)
+	}
+
+	req.Header.Add("Authorization", bearer)
+	req.Header.Add("Content-Type", "application/json")
+
+	response, err := client.Do(req)
+	if err != nil {
+		logger.ErrorLogger.Println(err)
+	}
+
+	logger.ErrorLogger.Println(req)
+
+	return response, nil
+
+}
+
+// request LK profile
+func (r *DataRepository) RequestLkProfileF(data model.DataBookingF, config *model.Service) (*http.Response, error) {
 
 	re := regexp.MustCompile(`[^a-zA-Z0-9+]`)
 
@@ -1357,5 +2263,78 @@ func (r *DataRepository) QueryTechData() (*[]model.TechDataObj, error) {
 	defer rows.Close()
 
 	return response, nil
+
+}
+
+// query grey innG
+func (r *DataRepository) QueryGreyINNOld() ([]model.GreyINN, error) {
+
+	rows, err := r.store.dbMssql.Query(r.store.config.Spec.Queryies.GreyINN)
+	if err != nil {
+		logger.ErrorLogger.Println(err)
+		return nil, err
+	}
+
+	//result := model.TechData{}
+
+	var result string
+	var response []model.GreyINN
+
+	for rows.Next() {
+
+		data := "" // creating new struct for every row
+
+		err := rows.Scan(
+			&data,
+		)
+		if err != nil {
+			logger.ErrorLogger.Println(err)
+			return nil, err
+		}
+		result = result + data
+	}
+
+	//result_unq, err := json.Unmarshal([]byte(result), []model.TechDataObj)
+	if err := json.Unmarshal([]byte(result), &response); err != nil {
+		logger.ErrorLogger.Println(err)
+		return nil, err
+	}
+
+	//result1 := model.TechData{Data: result_unq}
+
+	defer rows.Close()
+
+	return response, nil
+
+}
+
+// query mssql statuses data
+func (r *DataRepository) QueryGreyINN() ([]string, error) {
+
+	rows, err := r.store.dbMssql.Query(r.store.config.Spec.Queryies.GreyINN)
+	if err != nil {
+		logger.ErrorLogger.Println(err)
+		return nil, err
+	}
+
+	defer rows.Close()
+
+	var results []string // creating empty slice
+
+	for rows.Next() {
+
+		data := &model.GreyINN{} // creating new struct for every row
+
+		err := rows.Scan(
+			&data.INN,
+		)
+		if err != nil {
+			logger.ErrorLogger.Println(err)
+			return nil, err
+		}
+		results = append(results, data.INN)
+	}
+
+	return results, nil
 
 }

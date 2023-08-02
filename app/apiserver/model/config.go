@@ -37,6 +37,7 @@ type Service struct {
 			LifeTerm    int    `yaml:"term"`
 		} `yaml:"jwt"`
 		Client struct {
+			UrlGazCrm         string `yaml:"url_gaz_crm"`
 			UrlGazCrmTest     string `yaml:"url_gaz_crm_test"`
 			UrlMailingService string `yaml:"url_mailing_service"`
 			UrlLkOrder        string `yaml:"url_lk_order"`
@@ -47,6 +48,7 @@ type Service struct {
 		Queryies struct {
 			Booking           string `yaml:"booking"`
 			Stocks            string `yaml:"stocks"`
+			Models            string `yaml:"models"`
 			BasicModelsPrice  string `yaml:"basic_models_price"`
 			BasicModelsPrice2 string `yaml:"basic_models_price_2"`
 			OptionsPrice      string `yaml:"options_price"`
@@ -54,11 +56,14 @@ type Service struct {
 			Sprav             string `yaml:"sprav"`
 			Sprav_new         string `yaml:"sprav_new"`
 			Options           string `yaml:"options"`
+			OptionsG          string `yaml:"options_g"`
 			OptionsSprav      string `yaml:"options_sprav"`
 			Packets           string `yaml:"packets"`
 			Colors            string `yaml:"colors"`
 			Techdata          string `yaml:"techdata"`
 			Statuses          string `yaml:"statuses"`
+			Special           string `yaml:"special"`
+			GreyINN           string `yaml:"grey_inn"`
 		} `yaml:"queryies"`
 	} `yaml:"spec"`
 }

@@ -18,6 +18,126 @@ const docTemplate = `{
     "host": "{{.Host}}",
     "basePath": "{{.BasePath}}",
     "paths": {
+        "/auth/booking_f/": {
+            "post": {
+                "security": [
+                    {
+                        "ApiKeyAuth": []
+                    }
+                ],
+                "description": "Регистрирует онлайн продажу \u003cbr/\u003e\u003cbr/\u003e \u003ci\u003eхп\\_ОтразитьРозничнуюПродажу\u003ci\u003e",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "Онлайн продажа"
+                ],
+                "summary": "Данные по продаже физ.лицу для ИС Клиент, ГазЦРМ и ЛК",
+                "operationId": "post-booking-f",
+                "parameters": [
+                    {
+                        "description": "booking info",
+                        "name": "input",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/model.DataBookingF"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/model.ResponseBooking"
+                        }
+                    }
+                }
+            }
+        },
+        "/auth/booking_u/": {
+            "post": {
+                "security": [
+                    {
+                        "ApiKeyAuth": []
+                    }
+                ],
+                "description": "Регистрирует онлайн продажу \u003cbr/\u003e\u003cbr/\u003e \u003ci\u003eхп\\_ОтразитьРозничнуюПродажу\u003ci\u003e",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "Онлайн продажа"
+                ],
+                "summary": "Данные по продаже юр.лицу для ИС Клиент, ГазЦРМ и ЛК",
+                "operationId": "post-booking-u",
+                "parameters": [
+                    {
+                        "description": "booking info",
+                        "name": "input",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/model.DataBookingU"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/model.ResponseBooking"
+                        }
+                    }
+                }
+            }
+        },
+        "/auth/form/": {
+            "post": {
+                "security": [
+                    {
+                        "ApiKeyAuth": []
+                    }
+                ],
+                "description": "Данные для создания обращения в ГАЗЦРМ",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "ГАЗ ЦРМ"
+                ],
+                "summary": "Данные для создания обращения в ГАЗЦРМ",
+                "operationId": "post-form",
+                "parameters": [
+                    {
+                        "description": "form info",
+                        "name": "input",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/model.Form"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/model.ResponseGazCrm"
+                        }
+                    }
+                }
+            }
+        },
         "/auth/getcolorsdata": {
             "get": {
                 "security": [
@@ -25,7 +145,7 @@ const docTemplate = `{
                         "ApiKeyAuth": []
                     }
                 ],
-                "description": "Получить цвета автомобилей",
+                "description": "Получить цвета автомобилей \u003cbr/\u003e\u003cbr/\u003e \u003ci\u003eхп\\_Спр\\_Номенклатура\\_ПолучитьДанныеДляВкладкиДляСайта\\_Цвета\u003ci\u003e",
                 "consumes": [
                     "application/json"
                 ],
@@ -57,7 +177,7 @@ const docTemplate = `{
                         "ApiKeyAuth": []
                     }
                 ],
-                "description": "Получить список недопустимых и обязательных опций",
+                "description": "Получить список недопустимых и обязательных опций \u003cbr/\u003e\u003cbr/\u003e \u003ci\u003eхп\\_ВыгрузкаДляСайта\\_НедопустимыеОбязательныеОпции\u003ci\u003e",
                 "consumes": [
                     "application/json"
                 ],
@@ -82,38 +202,6 @@ const docTemplate = `{
                 }
             }
         },
-        "/auth/getpacketsdata": {
-            "get": {
-                "security": [
-                    {
-                        "ApiKeyAuth": []
-                    }
-                ],
-                "description": "Получить список пакетов опций",
-                "consumes": [
-                    "application/json"
-                ],
-                "produces": [
-                    "application/json"
-                ],
-                "tags": [
-                    "Данные по автомобилям для заказа"
-                ],
-                "summary": "Получить список пакетов опций",
-                "operationId": "get-packetsdata",
-                "responses": {
-                    "200": {
-                        "description": "OK",
-                        "schema": {
-                            "type": "array",
-                            "items": {
-                                "$ref": "#/definitions/model.DataPackets"
-                            }
-                        }
-                    }
-                }
-            }
-        },
         "/auth/getstatusesdata": {
             "get": {
                 "security": [
@@ -121,7 +209,7 @@ const docTemplate = `{
                         "ApiKeyAuth": []
                     }
                 ],
-                "description": "Получить статусы заказов для личного кабинета",
+                "description": "Получить статусы заказов для личного кабинета \u003cbr/\u003e\u003cbr/\u003e \u003ci\u003eхп\\_СтатусыМашинДляРозничнойПродажи\u003ci\u003e",
                 "consumes": [
                     "application/json"
                 ],
@@ -146,6 +234,166 @@ const docTemplate = `{
                 }
             }
         },
+        "/auth/grey_inn": {
+            "get": {
+                "security": [
+                    {
+                        "ApiKeyAuth": []
+                    }
+                ],
+                "description": "Получить список ИНН серых дилеров \u003cbr/\u003e\u003cbr/\u003e \u003ci\u003eхп\\_СписокИННСерыхДилеров\u003ci\u003e",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "Данные по серым дилерам"
+                ],
+                "summary": "Получить список ИНН серых дилеров",
+                "operationId": "get-grey-inn",
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "type": "array",
+                            "items": {
+                                "type": "string"
+                            }
+                        }
+                    }
+                }
+            }
+        },
+        "/auth/models": {
+            "get": {
+                "security": [
+                    {
+                        "ApiKeyAuth": []
+                    }
+                ],
+                "description": "Получить список моделей, доступных к заказу \u003cbr/\u003e\u003cbr/\u003e \u003ci\u003eхп_Спр\\_Номенклатура\\_ПолучитьДанныеДляВкладкиДляСайта\\_ОбАвтомобиле\u003ci\u003e",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "Данные по автомобилям для заказа"
+                ],
+                "summary": "Получить список моделей",
+                "operationId": "get-models",
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "type": "array",
+                            "items": {
+                                "$ref": "#/definitions/model.DataModels"
+                            }
+                        }
+                    }
+                }
+            }
+        },
+        "/auth/options": {
+            "get": {
+                "security": [
+                    {
+                        "ApiKeyAuth": []
+                    }
+                ],
+                "description": "Получить список опций \u003cbr/\u003e\u003cbr/\u003e \u003ci\u003eхп\\_Спр\\_Номенклатура\\_ПолучитьДанныеДляВкладкиДляСайта\\_ОснащениеДопОборудование\u003ci\u003e",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "Данные по автомобилям для заказа"
+                ],
+                "summary": "Получить список опций",
+                "operationId": "get-options",
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "type": "array",
+                            "items": {
+                                "$ref": "#/definitions/model.Options"
+                            }
+                        }
+                    }
+                }
+            }
+        },
+        "/auth/packets": {
+            "get": {
+                "security": [
+                    {
+                        "ApiKeyAuth": []
+                    }
+                ],
+                "description": "Получить список пакетов опций \u003cbr/\u003e\u003cbr/\u003e \u003ci\u003eхп\\_ВыгрузкаДляСайта\\_СоставПакета\u003ci\u003e",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "Данные по автомобилям для заказа"
+                ],
+                "summary": "Получить список пакетов опций",
+                "operationId": "get-packetsdata",
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "type": "array",
+                            "items": {
+                                "$ref": "#/definitions/model.DataPackets_l"
+                            }
+                        }
+                    }
+                }
+            }
+        },
+        "/auth/special": {
+            "get": {
+                "security": [
+                    {
+                        "ApiKeyAuth": []
+                    }
+                ],
+                "description": "Получить список надстроек \u003cbr/\u003e\u003cbr/\u003e \u003ci\u003eхп\\_Спр\\_Номенклатура\\_ПолучитьДанныеДляВкладкиДляСайта\\_РучноеОснащениеНадстройка\u003ci\u003e",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "Данные по автомобилям для заказа"
+                ],
+                "summary": "Получить список надстроек",
+                "operationId": "get-special",
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "type": "array",
+                            "items": {
+                                "$ref": "#/definitions/model.Special"
+                            }
+                        }
+                    }
+                }
+            }
+        },
         "/auth/techdata": {
             "get": {
                 "security": [
@@ -153,7 +401,7 @@ const docTemplate = `{
                         "ApiKeyAuth": []
                     }
                 ],
-                "description": "Получить технические характеристики",
+                "description": "Получить технические характеристики \u003cbr/\u003e\u003cbr/\u003e \u003ci\u003eхп\\_ДляСайта\\_Характеристики\\_Моделей\u003ci\u003e",
                 "consumes": [
                     "application/json"
                 ],
@@ -227,43 +475,578 @@ const docTemplate = `{
         }
     },
     "definitions": {
+        "model.DataBookingF": {
+            "type": "object",
+            "properties": {
+                "testmode": {
+                    "type": "boolean",
+                    "x-order": "01",
+                    "example": true
+                },
+                "request_id": {
+                    "type": "string",
+                    "x-order": "02",
+                    "example": "1019157100531"
+                },
+                "request_subdivisions_id": {
+                    "type": "string",
+                    "x-order": "03",
+                    "example": "6286424721659083063"
+                },
+                "request_area": {
+                    "type": "string",
+                    "x-order": "05",
+                    "example": "distrib"
+                },
+                "request_bill_number": {
+                    "type": "string",
+                    "x-order": "07",
+                    "example": "12345678"
+                },
+                "request_bill_link": {
+                    "type": "string",
+                    "x-order": "07",
+                    "example": "https//st.tech/bill001"
+                },
+                "request_datetime": {
+                    "type": "string",
+                    "x-order": "08",
+                    "example": "2022-02-02T12:12:12"
+                },
+                "request_comment": {
+                    "type": "string",
+                    "x-order": "09",
+                    "example": "Комментарий..."
+                },
+                "consent_to_mailing": {
+                    "type": "string",
+                    "x-order": "10",
+                    "example": "yes"
+                },
+                "car_vin": {
+                    "type": "string",
+                    "x-order": "11",
+                    "example": "X96A31S12P0962150"
+                },
+                "car_uniq_code": {
+                    "type": "integer",
+                    "x-order": "12",
+                    "example": 2372376
+                },
+                "car_modification": {
+                    "type": "string",
+                    "x-order": "13",
+                    "example": "ГАЗ-С41R33-6В"
+                },
+                "car_family": {
+                    "type": "string",
+                    "x-order": "14",
+                    "example": "ГАЗель NN"
+                },
+                "car_body_type": {
+                    "type": "string",
+                    "x-order": "15",
+                    "example": "Комби+"
+                },
+                "car_price": {
+                    "type": "integer",
+                    "x-order": "19",
+                    "example": 1709800
+                },
+                "car_division": {
+                    "type": "string",
+                    "x-order": "20",
+                    "example": "lcv/mcv"
+                },
+                "car_brand_name": {
+                    "type": "string",
+                    "x-order": "21",
+                    "example": "ГАЗ"
+                },
+                "car_model": {
+                    "type": "string",
+                    "x-order": "22",
+                    "example": "ГАЗон NEXT Бортовая платформа (3 места) ГАЗ-С41R33-6В"
+                },
+                "car_preview_url": {
+                    "type": "string",
+                    "x-order": "24",
+                    "example": "https://fs.azgaz.dev.perx.ru/media/PRDiceqdYBoc6bwQEDVoHW_2"
+                },
+                "client_token": {
+                    "type": "string",
+                    "x-order": "25",
+                    "example": "eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJkYXRhIjp7ImlkIjo0NywibmFtZSI6Ik1pa2UiLCJsYXN0X25hbWUiOiJvbGVnb3ZpY2giLCJzZWNvbmRfbmFtZSI6IlNoaWxvdiIsImVtYWlsIjoibUBzaGlsb3YucHJvIn0sInVpZCI6NDcsImlhdCI6MTY3OTQwNzgwOCwiZXhwIjoxNjc5NTY3ODA4fQ.b9v1PU7XybdQ9fUcFyPd22S-tENEujdiFt_KJCxyRw0"
+                },
+                "client_surname": {
+                    "type": "string",
+                    "x-order": "27",
+                    "example": "Иванов"
+                },
+                "client_name": {
+                    "type": "string",
+                    "x-order": "28",
+                    "example": "Иван"
+                },
+                "client_patronymic": {
+                    "type": "string",
+                    "x-order": "29",
+                    "example": "Иванович"
+                },
+                "client_email": {
+                    "type": "string",
+                    "x-order": "30",
+                    "example": "i.ivanov@mail.test"
+                },
+                "client_phone_number": {
+                    "type": "string",
+                    "x-order": "31",
+                    "example": "+79991234567"
+                },
+                "client_date_of_birth": {
+                    "type": "string",
+                    "x-order": "32",
+                    "example": "1991-09-01"
+                },
+                "passport_ser": {
+                    "type": "string",
+                    "x-order": "33",
+                    "example": "2288"
+                },
+                "passport_number": {
+                    "type": "string",
+                    "x-order": "34",
+                    "example": "199455"
+                },
+                "passport_date": {
+                    "description": "new",
+                    "type": "string",
+                    "x-order": "35",
+                    "example": "2005-09-01"
+                },
+                "passport_organ": {
+                    "description": "new",
+                    "type": "string",
+                    "x-order": "36",
+                    "example": "МВД по Автозаводском р-ну г. НН"
+                },
+                "passport_organ_code": {
+                    "description": "new",
+                    "type": "string",
+                    "x-order": "37",
+                    "example": "520-001"
+                },
+                "snils": {
+                    "type": "string",
+                    "x-order": "38",
+                    "example": "12345678910"
+                },
+                "post_address": {
+                    "type": "string",
+                    "x-order": "40",
+                    "example": "Н.Новгород, ул. Ленина, д. 1"
+                },
+                "delivery_address": {
+                    "type": "string",
+                    "x-order": "41",
+                    "example": "Н.Новгород, ул. Ленина, д. 1"
+                },
+                "client_id": {
+                    "description": "Google Analytics cookies",
+                    "type": "string",
+                    "x-order": "56",
+                    "example": "128613585.1680699283"
+                },
+                "client_ip": {
+                    "type": "string",
+                    "x-order": "59",
+                    "example": "83.220.238.137"
+                },
+                "form_name": {
+                    "type": "string",
+                    "x-order": "60",
+                    "example": "Получить счёт"
+                },
+                "id_form": {
+                    "type": "string",
+                    "x-order": "61",
+                    "example": "635fc4247e0aed5155614771"
+                },
+                "host_name": {
+                    "type": "string",
+                    "x-order": "62",
+                    "example": "azgaz.ru"
+                },
+                "client_reg_address": {
+                    "type": "string",
+                    "x-order": "9",
+                    "example": "Н.Новгород, ул. Ленина, д. 1"
+                }
+            }
+        },
+        "model.DataBookingU": {
+            "type": "object",
+            "properties": {
+                "testmode": {
+                    "type": "boolean",
+                    "x-order": "01",
+                    "example": true
+                },
+                "request_id": {
+                    "type": "string",
+                    "x-order": "02",
+                    "example": "1019157100531"
+                },
+                "request_subdivisions_id": {
+                    "type": "string",
+                    "x-order": "03",
+                    "example": "6286424721659083063"
+                },
+                "request_area": {
+                    "type": "string",
+                    "x-order": "05",
+                    "example": "distrib"
+                },
+                "request_type": {
+                    "type": "string",
+                    "x-order": "06",
+                    "example": "онлайн-заказ"
+                },
+                "request_bill_link": {
+                    "type": "string",
+                    "x-order": "07",
+                    "example": "https//st.tech/bill001"
+                },
+                "request_bill_number": {
+                    "type": "string",
+                    "x-order": "07",
+                    "example": "123456"
+                },
+                "request_datetime": {
+                    "type": "string",
+                    "x-order": "08",
+                    "example": "2022-02-02T12:12:12"
+                },
+                "request_comment": {
+                    "type": "string",
+                    "x-order": "09",
+                    "example": "Комментарий..."
+                },
+                "consent_to_mailing": {
+                    "type": "string",
+                    "x-order": "10",
+                    "example": "yes"
+                },
+                "car_vin": {
+                    "type": "string",
+                    "x-order": "11",
+                    "example": "X96A31S12P0962150"
+                },
+                "car_uniq_code": {
+                    "type": "integer",
+                    "x-order": "12",
+                    "example": 2372376
+                },
+                "car_modification": {
+                    "type": "string",
+                    "x-order": "13",
+                    "example": "ГАЗ-С41R33-6В"
+                },
+                "car_family": {
+                    "type": "string",
+                    "x-order": "14",
+                    "example": "ГАЗель NN"
+                },
+                "car_body_type": {
+                    "type": "string",
+                    "x-order": "15",
+                    "example": "Комби+"
+                },
+                "car_price": {
+                    "type": "integer",
+                    "x-order": "19",
+                    "example": 1709800
+                },
+                "car_division": {
+                    "type": "string",
+                    "x-order": "20",
+                    "example": "lcv/mcv"
+                },
+                "car_brand_name": {
+                    "type": "string",
+                    "x-order": "21",
+                    "example": "ГАЗ"
+                },
+                "car_model": {
+                    "type": "string",
+                    "x-order": "22",
+                    "example": "ГАЗон NEXT Бортовая платформа (3 места) ГАЗ-С41R33-6В"
+                },
+                "car_model_url": {
+                    "type": "string",
+                    "x-order": "23",
+                    "example": "https://catalog.azgaz.ru/gazel-nn/kombi-gazel-nn-gaz-a32s22-420/641b1c2491cdddf86efceb38/"
+                },
+                "car_preview_url": {
+                    "type": "string",
+                    "x-order": "24",
+                    "example": "https://fs.azgaz.dev.perx.ru/media/PRDiceqdYBoc6bwQEDVoHW_2"
+                },
+                "client_token": {
+                    "type": "string",
+                    "x-order": "25",
+                    "example": "eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJkYXRhIjp7ImlkIjo0NywibmFtZSI6Ik1pa2UiLCJsYXN0X25hbWUiOiJvbGVnb3ZpY2giLCJzZWNvbmRfbmFtZSI6IlNoaWxvdiIsImVtYWlsIjoibUBzaGlsb3YucHJvIn0sInVpZCI6NDcsImlhdCI6MTY3OTQwNzgwOCwiZXhwIjoxNjc5NTY3ODA4fQ.b9v1PU7XybdQ9fUcFyPd22S-tENEujdiFt_KJCxyRw0"
+                },
+                "post_address": {
+                    "type": "string",
+                    "x-order": "40",
+                    "example": "Н.Новгород, ул. Ленина, д. 1"
+                },
+                "delivery_address": {
+                    "type": "string",
+                    "x-order": "41",
+                    "example": "Н.Новгород, ул. Ленина, д. 1"
+                },
+                "company_inn": {
+                    "type": "string",
+                    "x-order": "43",
+                    "example": "821636535086"
+                },
+                "company_kpp": {
+                    "type": "string",
+                    "x-order": "44",
+                    "example": "153243695"
+                },
+                "company_ogrn": {
+                    "type": "string",
+                    "x-order": "45",
+                    "example": "4052411237237"
+                },
+                "company_name": {
+                    "type": "string",
+                    "x-order": "46",
+                    "example": "Авто-НН"
+                },
+                "company_adress": {
+                    "type": "string",
+                    "x-order": "47",
+                    "example": "Н.Новгород, ул. Ленина, д. 1"
+                },
+                "company_dadata_id": {
+                    "type": "string",
+                    "x-order": "48",
+                    "example": "c7566f19aea28a24766b66ad9ef8f21c60cd8292a43338fbf9d705f88cec9a90"
+                },
+                "bank_bik": {
+                    "type": "string",
+                    "x-order": "49",
+                    "example": "044525593"
+                },
+                "bank_name": {
+                    "type": "string",
+                    "x-order": "50",
+                    "example": "АрфаБанк"
+                },
+                "bank_raschetniy_schet": {
+                    "type": "string",
+                    "x-order": "51",
+                    "example": "40702810102130000132"
+                },
+                "representative_name": {
+                    "type": "string",
+                    "x-order": "52",
+                    "example": "Иван"
+                },
+                "representative_surname": {
+                    "type": "string",
+                    "x-order": "53",
+                    "example": "Иванов"
+                },
+                "representative_phone_number": {
+                    "type": "string",
+                    "x-order": "54",
+                    "example": "+79991234567"
+                },
+                "representative_email": {
+                    "type": "string",
+                    "x-order": "55",
+                    "example": "company@mail.ru"
+                },
+                "client_id": {
+                    "description": "Yandex Metrics cookies",
+                    "type": "string",
+                    "x-order": "57",
+                    "example": "1646307578617354501"
+                },
+                "client_ip": {
+                    "type": "string",
+                    "x-order": "59",
+                    "example": "83.220.238.137"
+                },
+                "form_name": {
+                    "type": "string",
+                    "x-order": "60",
+                    "example": "Получить счёт"
+                },
+                "id_form": {
+                    "type": "string",
+                    "x-order": "61",
+                    "example": "635fc4247e0aed5155614771"
+                },
+                "host_name": {
+                    "type": "string",
+                    "x-order": "62",
+                    "example": "azgaz.ru"
+                }
+            }
+        },
         "model.DataColors": {
             "type": "object",
             "properties": {
                 "НоменклатураИд": {
                     "type": "string",
-                    "x-order": "a",
+                    "x-order": "01",
                     "example": "865436"
                 },
                 "НоменклатураНаименование": {
                     "type": "string",
-                    "x-order": "b",
+                    "x-order": "02",
                     "example": "ГАЗ-А21R33-10"
                 },
                 "ЦветИд": {
                     "type": "string",
-                    "x-order": "c",
+                    "x-order": "03",
                     "example": "996"
                 },
                 "Наименование": {
                     "type": "string",
-                    "x-order": "d",
+                    "x-order": "04",
                     "example": "СИЛЬВЕР ЛАЙТ"
                 },
                 "ПолноеНаименование": {
                     "type": "string",
-                    "x-order": "e",
+                    "x-order": "05",
                     "example": "СВЕТЛО-СЕРЫЙ"
                 },
                 "ЦветRGB": {
                     "type": "string",
-                    "x-order": "f",
+                    "x-order": "06",
                     "example": "157,163,166"
                 },
                 "Слойность": {
                     "type": "string",
-                    "x-order": "g",
+                    "x-order": "07",
                     "example": "2"
+                },
+                "Цена": {
+                    "type": "string",
+                    "x-order": "08",
+                    "example": "0"
+                }
+            }
+        },
+        "model.DataModels": {
+            "type": "object",
+            "properties": {
+                "ИдМодели": {
+                    "type": "integer",
+                    "x-order": "01",
+                    "example": 866508
+                },
+                "Модель": {
+                    "type": "string",
+                    "x-order": "02",
+                    "example": "ГАЗ-А21R25-20"
+                },
+                "ИдНабораОпций": {
+                    "type": "integer",
+                    "x-order": "03",
+                    "example": 123565
+                },
+                "НаборОпций": {
+                    "type": "string",
+                    "x-order": "04",
+                    "example": "1/ST(N)[2KB,5]GF,8KB,EA3/ПП"
+                },
+                "ИдДивизиона": {
+                    "type": "integer",
+                    "x-order": "05",
+                    "example": 7133
+                },
+                "Дивизион": {
+                    "type": "string",
+                    "x-order": "06",
+                    "example": "LCV"
+                },
+                "ИдСемейства": {
+                    "type": "integer",
+                    "x-order": "07",
+                    "example": 5725
+                },
+                "Семейство": {
+                    "type": "string",
+                    "x-order": "08",
+                    "example": "Газель Next"
+                },
+                "ВидПродукции": {
+                    "type": "string",
+                    "x-order": "09",
+                    "example": "Коммерческая техника"
+                },
+                "Класс": {
+                    "type": "string",
+                    "x-order": "10",
+                    "example": "Бортовая платформа"
+                },
+                "Кузов": {
+                    "type": "string",
+                    "x-order": "11",
+                    "example": "Комби"
+                },
+                "ИдНазначения": {
+                    "type": "integer",
+                    "x-order": "12",
+                    "example": 20
+                },
+                "Назначение": {
+                    "type": "string",
+                    "x-order": "13",
+                    "example": "ПЕРЕВОЗКИ С ТЕМПЕРАТУРНЫМ РЕЖИМОМ"
+                },
+                "ИдПроизводителя": {
+                    "type": "integer",
+                    "x-order": "14",
+                    "example": 60
+                },
+                "Производитель": {
+                    "type": "string",
+                    "x-order": "15",
+                    "example": "ГАЗ"
+                },
+                "Цена": {
+                    "type": "string",
+                    "x-order": "16",
+                    "example": "2960000.00"
+                },
+                "ПризнакЦеныОт": {
+                    "type": "integer",
+                    "x-order": "17",
+                    "example": 0
+                },
+                "СообщениеГдеНетЦен": {
+                    "type": "string",
+                    "x-order": "18",
+                    "example": "Нет цены опций 1,7BA,EA3,5GF"
+                },
+                "ДокументУстановившийЦену": {
+                    "type": "string",
+                    "x-order": "19",
+                    "example": "Ввод цен (модели) № 400 от 20.02.2023 (15443251); 1 - Ввод цен (опции) № 183 от 01.09.2022 (15137904); 8KB - Ввод цен (опции) № 185 от 01.09.2022 (15137935); EA3 - Ввод цен (опции) № 185 от 01.09.2022 (15137935); 5GF - Ввод цен (опции) № 185 от 01.09.2022 (15137935); ST(N) - Ввод цен (опции) № 187 от 01.09.2022 (15137944);"
+                },
+                "Сортировка": {
+                    "type": "integer",
+                    "x-order": "20",
+                    "example": 500
                 }
             }
         },
@@ -307,63 +1090,68 @@ const docTemplate = `{
                 }
             }
         },
-        "model.DataPackets": {
+        "model.DataPackets_l": {
             "type": "object",
             "properties": {
                 "НоменклатураИд": {
-                    "type": "string",
-                    "x-order": "a",
-                    "example": "865436"
+                    "type": "integer",
+                    "x-order": "01",
+                    "example": 865436
                 },
                 "НоменклатураНаименование": {
                     "type": "string",
-                    "x-order": "b",
+                    "x-order": "02",
                     "example": "ГАЗ-А21R33-10"
                 },
                 "ИдПакета": {
-                    "type": "string",
-                    "x-order": "c",
-                    "example": "975"
+                    "type": "integer",
+                    "x-order": "03",
+                    "example": 975
                 },
                 "КраткоеНаименованиеПакета": {
                     "type": "string",
-                    "x-order": "d",
+                    "x-order": "04",
                     "example": "ST(N)"
                 },
                 "ПолноеНаименованиеПакета": {
                     "type": "string",
-                    "x-order": "e",
-                    "example": "ПолноеНаименованиеПакета"
+                    "x-order": "05",
+                    "example": "Пакет \"Стандарт\" для 1-ряд а/м Газель Next борт, шасси и САТ, дизель, бензин"
                 },
                 "ИдГруппыОпций": {
-                    "type": "string",
-                    "x-order": "f",
-                    "example": "141"
+                    "type": "integer",
+                    "x-order": "06",
+                    "example": 141
                 },
                 "КраткоеНаименованиеГруппыОпций": {
                     "type": "string",
-                    "x-order": "g",
+                    "x-order": "07",
                     "example": "2K"
                 },
                 "ПолноеНаименованиеГруппыОпций": {
                     "type": "string",
-                    "x-order": "h",
+                    "x-order": "08",
                     "example": "Сиденье водителя"
                 },
                 "ИдОпции": {
-                    "type": "string",
-                    "x-order": "i",
-                    "example": "684"
+                    "type": "integer",
+                    "x-order": "09",
+                    "example": 684
                 },
                 "ПолноеНаименованиеОпции": {
                     "type": "string",
-                    "x-order": "j",
+                    "x-order": "10",
                     "example": "Сиденье водителя с подлокотником"
                 },
                 "КраткоеНаименованиеОпции": {
                     "type": "string",
-                    "x-order": "k",
+                    "x-order": "11",
                     "example": "2KB"
+                },
+                "ЦенаПакета": {
+                    "type": "string",
+                    "x-order": "12",
+                    "example": "10000.00"
                 }
             }
         },
@@ -392,6 +1180,132 @@ const docTemplate = `{
                 }
             }
         },
+        "model.Form": {
+            "type": "object",
+            "properties": {
+                "testmode": {
+                    "type": "boolean",
+                    "x-order": "01",
+                    "example": true
+                },
+                "request_id": {
+                    "type": "string",
+                    "x-order": "02",
+                    "example": "1019157100531"
+                },
+                "request_subdivisions_id": {
+                    "type": "string",
+                    "x-order": "03",
+                    "example": "6286424721659083063"
+                },
+                "request_subdivisions_name": {
+                    "type": "string",
+                    "x-order": "04",
+                    "example": "Авторитейл М"
+                },
+                "request_area": {
+                    "type": "string",
+                    "x-order": "05",
+                    "example": "dealer"
+                },
+                "request_datetime": {
+                    "type": "string",
+                    "x-order": "06",
+                    "example": "2022-02-02T12:12:12"
+                },
+                "request_comment": {
+                    "type": "string",
+                    "x-order": "07",
+                    "example": "Комментарий..."
+                },
+                "form_name": {
+                    "type": "string",
+                    "x-order": "08",
+                    "example": "Получить счёт"
+                },
+                "id_form": {
+                    "type": "string",
+                    "x-order": "09",
+                    "example": "635fc4247e0aed5155614771"
+                },
+                "car_division": {
+                    "type": "string",
+                    "x-order": "10",
+                    "example": "lcv/mcv"
+                },
+                "car_brand_name": {
+                    "type": "string",
+                    "x-order": "11",
+                    "example": "ГАЗ"
+                },
+                "car_model": {
+                    "type": "string",
+                    "x-order": "12",
+                    "example": "ГАЗон NEXT Бортовая платформа (3 места) ГАЗ-С41R33-6В"
+                },
+                "car_modification": {
+                    "type": "string",
+                    "x-order": "13",
+                    "example": "ГАЗ-С41R33-6В"
+                },
+                "car_family": {
+                    "type": "string",
+                    "x-order": "14",
+                    "example": "ГАЗель NN"
+                },
+                "car_body_type": {
+                    "type": "string",
+                    "x-order": "15",
+                    "example": "Комби+"
+                },
+                "client_id": {
+                    "description": "Yandex Metrics cookies",
+                    "type": "string",
+                    "x-order": "16",
+                    "example": "1646307578617354501"
+                },
+                "client_ip": {
+                    "type": "string",
+                    "x-order": "17",
+                    "example": "83.220.238.137"
+                },
+                "client_type": {
+                    "type": "string",
+                    "x-order": "18",
+                    "example": "personal"
+                },
+                "company_name": {
+                    "type": "string",
+                    "x-order": "19",
+                    "example": "Авто-НН"
+                },
+                "client_name": {
+                    "type": "string",
+                    "x-order": "20",
+                    "example": "Иван"
+                },
+                "client_email": {
+                    "type": "string",
+                    "x-order": "21",
+                    "example": "i.ivanov@mail.test"
+                },
+                "client_phone_number": {
+                    "type": "string",
+                    "x-order": "22",
+                    "example": "+79991234567"
+                },
+                "consent_to_mailing": {
+                    "type": "string",
+                    "x-order": "23",
+                    "example": "yes"
+                },
+                "host_name": {
+                    "type": "string",
+                    "x-order": "24",
+                    "example": "azgaz.ru"
+                }
+            }
+        },
         "model.HTTPerrIncorrectEmailOrPassword": {
             "type": "object",
             "properties": {
@@ -407,6 +1321,179 @@ const docTemplate = `{
                 "error": {
                     "type": "string",
                     "example": "service registration error"
+                }
+            }
+        },
+        "model.Options": {
+            "type": "object",
+            "properties": {
+                "НомерСтроки": {
+                    "type": "integer",
+                    "x-order": "01",
+                    "example": 82
+                },
+                "Модель": {
+                    "type": "integer",
+                    "x-order": "02",
+                    "example": 936749
+                },
+                "БазоваяМодель": {
+                    "type": "integer",
+                    "x-order": "02",
+                    "example": 935649
+                },
+                "КодКатегории": {
+                    "type": "string",
+                    "x-order": "03",
+                    "example": "2"
+                },
+                "НаименованиеКатегории": {
+                    "type": "string",
+                    "x-order": "04",
+                    "example": "Комфорт (часть 1)"
+                },
+                "ИдЗначенияОпции": {
+                    "type": "integer",
+                    "x-order": "05",
+                    "example": 2413
+                },
+                "КодЗначенияОпции": {
+                    "type": "string",
+                    "x-order": "06",
+                    "example": "2MD"
+                },
+                "НаименованиеЗначенияОпции": {
+                    "type": "string",
+                    "x-order": "07",
+                    "example": "Без кондиционера"
+                },
+                "ОписаниеЗначенияОпцииДляСайта": {
+                    "type": "string",
+                    "x-order": "09",
+                    "example": "Без системы кондиционирования для комплектации low-cost"
+                },
+                "ВыбранаПоУмолчанию": {
+                    "type": "boolean",
+                    "x-order": "11",
+                    "example": true
+                },
+                "Обязательная": {
+                    "type": "boolean",
+                    "x-order": "12",
+                    "example": false
+                },
+                "ДопустимоТолькоОдноЗначениеВНаборе": {
+                    "type": "boolean",
+                    "x-order": "13",
+                    "example": true
+                },
+                "ОбязательноеСочетаниеОпций": {
+                    "type": "string",
+                    "x-order": "16",
+                    "example": "2LF"
+                },
+                "НедопустимоеСочетаниеОпций": {
+                    "type": "string",
+                    "x-order": "17",
+                    "example": "9PA"
+                },
+                "Цена": {
+                    "type": "string",
+                    "x-order": "19",
+                    "example": "-55000.00"
+                },
+                "ГруппаНаСайте": {
+                    "type": "string",
+                    "x-order": "20",
+                    "example": "Оснащение"
+                }
+            }
+        },
+        "model.ResponseBooking": {
+            "type": "object",
+            "properties": {
+                "response_gcrm": {
+                    "type": "string"
+                },
+                "response_ms": {
+                    "type": "string"
+                },
+                "status_lk": {
+                    "type": "string"
+                },
+                "status_ms": {
+                    "type": "string"
+                }
+            }
+        },
+        "model.ResponseGazCrm": {
+            "type": "object",
+            "properties": {
+                "message": {
+                    "type": "string"
+                },
+                "status": {
+                    "type": "string"
+                }
+            }
+        },
+        "model.Special": {
+            "type": "object",
+            "properties": {
+                "ИдМодели": {
+                    "type": "integer",
+                    "x-order": "01",
+                    "example": 867560
+                },
+                "НаименованиеМодели": {
+                    "type": "string",
+                    "x-order": "02",
+                    "example": "А23R25-0011-18-641-60-00-900"
+                },
+                "ИдПараметра": {
+                    "type": "integer",
+                    "x-order": "03",
+                    "example": 10
+                },
+                "НаименованиеПараметра": {
+                    "type": "string",
+                    "x-order": "04",
+                    "example": "Внешняя длина фургона, мм"
+                },
+                "ИдЗначения": {
+                    "type": "integer",
+                    "x-order": "05",
+                    "example": 1180
+                },
+                "НаименованиеЗначения": {
+                    "type": "string",
+                    "x-order": "06",
+                    "example": "3060"
+                },
+                "ПорядокСортировки": {
+                    "type": "integer",
+                    "x-order": "07",
+                    "example": 7
+                },
+                "ИдГруппы": {
+                    "type": "integer",
+                    "x-order": "08",
+                    "example": 4
+                },
+                "НаименованиеГруппы": {
+                    "type": "string",
+                    "x-order": "09",
+                    "example": "Описание надстройки"
+                },
+                "ИдКатегории": {
+                    "type": "integer",
+                    "x-order": "10",
+                    "example": 6
+                },
+                "НаименованиеКатегории": {
+                    "type": "string",
+                    "x-order": "11",
+                    "example": "Размеры фургона"
                 }
             }
         },
@@ -511,7 +1598,7 @@ var SwaggerInfo = &swag.Spec{
 	BasePath:         "/",
 	Schemes:          []string{},
 	Title:            "API СТТ",
-	Description:      "API-сервер СТТ",
+	Description:      "API-сервер СТТ <br/><br/>Разработчики: Шилов Михаил (Golang, Postgress), Кошмар Олег (C#, MS SQL), Мелик-Саядян Антон (Systems analysis, Architecture)",
 	InfoInstanceName: "swagger",
 	SwaggerTemplate:  docTemplate,
 }

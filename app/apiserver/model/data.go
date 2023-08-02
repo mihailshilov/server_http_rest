@@ -62,69 +62,78 @@ func (s *NullInt) Scan(value interface{}) error {
 
 // Data booking
 type DataBooking struct {
-	TestMod                   bool   `json:"testmode"` //true - test, false - prod
-	RequestId                 string `json:"request_id"`
-	SubdivisionsId            string `json:"request_subdivisions_id"` //gazcrm
-	Area                      string `json:"request_area"`            //gazcrm
-	ActionType                string `json:"request_type"`
-	BillNumber                string `json:"request_bill_namber"`
-	TimeRequest               string `json:"request_datetime"`
-	Comment                   string `json:"request_comment"`
-	Consentmailing            string `json:"consent_to_mailing"`
-	Vin                       string `json:"car_vin"`
-	UniqModCode               int    `json:"car_uniq_code"`
-	Modification              string `json:"car_modification"`
-	ModFamily                 string `json:"car_family"`
-	ModBodyType               string `json:"car_body_type"`
-	ModEngine                 string `json:"car_engine"`
-	ModBase                   string `json:"car_base"`
-	ModTuning                 string `json:"car_tuning"`
-	PriceWithNds              int    `json:"car_price"`
-	Division                  string `json:"car_division"`
-	BrandName                 string `json:"car_brand_name"`
-	CarModel                  string `json:"car_model"`
-	PreviewUrl                string `json:"car_preview_url"`
-	СlientToken               string `json:"client_token"`
-	TypeClient                string `json:"client_type"`
-	Surname                   string `json:"client_surname"`
-	Name                      string `json:"client_name"`
-	Patronymic                string `json:"client_patronymic"`
-	Email                     string `json:"client_email"`
-	PhoneNumber               string `json:"client_phone_number"`
-	DateOfBirth               string `json:"client_date_of_birth"`
-	PassportSer               string `json:"passport_ser"`
-	PassportNumber            string `json:"passport_number"`
-	PassportDate              string `json:"passport_date"`       //new
-	PassportOrgan             string `json:"passport_organ"`      //new
-	PassportOrganCode         string `json:"passport_organ_code"` //new
-	Snils                     string `json:"snils"`
-	YurAddress                string `json:"client_reg_address"`
-	PostAddress               string `json:"post_address"`
-	DeliveryAddress           string `json:"delivery_address"`
-	DeliveryAddressCode       string `json:"delivery_address_code"`
-	Inn                       string `json:"company_inn"`
-	Kpp                       string `json:"company_kpp"`
-	Ogrn                      string `json:"company_ogrn"`
-	CompanyName               string `json:"company_name"`
-	CompanyAdress             string `json:"company_adress"`
-	BankBik                   string `json:"bank_bik"`
-	BankName                  string `json:"bank_name"`
-	BankRS                    string `json:"bank_raschetniy_schet"`
-	RepresentativeName        string `json:"representative_name"`
-	RepresentativeSurname     string `json:"representative_surname"`
-	RepresentativePhoneNumber string `json:"representative_phone_number"`
-	RepresentativeEmail       string `json:"representative_email"`
-	UrlMod                    string `json:"car_model_url"`
-	Clientid                  string `json:"clientid_google"` //Google Analytics cookies
-	Ymuid                     string `json:"ClientID"`        //Yandex Metrics cookies
-	MetricsType               string `json:"metrics_type"`
-	СlientIP                  string `json:"client_IP"`
-	FormName                  string `json:"form_name"`
-	FormId                    string `json:"id_form"`
-	HostName                  string `json:"host_name"`
-	Hid                       string `json:"company_dadata_id"`
-	File                      string `json:"file"`
-	SubdivisionsName          string `json:"request_subdivisions_name"`
+	TestMod                   bool   `json:"testmode" extensions:"x-order=01" example:"true"`
+	RequestId                 string `json:"request_id" extensions:"x-order=02" example:"1019157100531"`
+	SubdivisionsId            string `json:"request_subdivisions_id" extensions:"x-order=03" example:"6286424721659083063"`
+	SubdivisionsName          string `json:"request_subdivisions_name" extensions:"x-order=04" example:"Авторитейл"`
+	Area                      string `json:"request_area" extensions:"x-order=05" example:"distrib"`
+	ActionType                string `json:"request_type" extensions:"x-order=06" example:"онлайн-заказ"`
+	BillNumber                string `json:"request_bill_number" extensions:"x-order=07" example:"123456"`
+	TimeRequest               string `json:"request_datetime" extensions:"x-order=08" example:"2022-02-02T12:12:12"`
+	Comment                   string `json:"request_comment" extensions:"x-order=09" example:"Комментарий..."`
+	Consentmailing            string `json:"consent_to_mailing" extensions:"x-order=10" example:"yes"`
+	Vin                       string `json:"car_vin" extensions:"x-order=11" example:"X96A31S12P0962150"`
+	UniqModCode               int    `json:"car_uniq_code" extensions:"x-order=12" example:"2372376"`
+	Modification              string `json:"car_modification" extensions:"x-order=13" example:"ГАЗ-С41R33-6В"`
+	ModFamily                 string `json:"car_family" extensions:"x-order=14" example:"ГАЗель NN"`
+	ModBodyType               string `json:"car_body_type" extensions:"x-order=15" example:"Комби+"`
+	ModEngine                 string `json:"car_engine" extensions:"x-order=16" example:"Дизель Cummins 2,8"`
+	ModBase                   string `json:"car_base" extensions:"x-order=17" example:"3145"`
+	ModTuning                 string `json:"car_tuning" extensions:"x-order=18" example:"Тюнинг"`
+	PriceWithNds              int    `json:"car_price" extensions:"x-order=19" example:"1709800"`
+	Division                  string `json:"car_division" extensions:"x-order=20" example:"lcv/mcv"`
+	BrandName                 string `json:"car_brand_name" extensions:"x-order=21" example:"ГАЗ"`
+	CarModel                  string `json:"car_model" extensions:"x-order=22" example:"ГАЗон NEXT Бортовая платформа (3 места) ГАЗ-С41R33-6В"`
+	UrlMod                    string `json:"car_model_url" extensions:"x-order=23" example:"https://catalog.azgaz.ru/gazel-nn/kombi-gazel-nn-gaz-a32s22-420/641b1c2491cdddf86efceb38/"`
+	PreviewUrl                string `json:"car_preview_url" extensions:"x-order=24" example:"https://fs.azgaz.dev.perx.ru/media/PRDiceqdYBoc6bwQEDVoHW_2"`
+	СlientToken               string `json:"client_token" extensions:"x-order=25" example:"eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJkYXRhIjp7ImlkIjo0NywibmFtZSI6Ik1pa2UiLCJsYXN0X25hbWUiOiJvbGVnb3ZpY2giLCJzZWNvbmRfbmFtZSI6IlNoaWxvdiIsImVtYWlsIjoibUBzaGlsb3YucHJvIn0sInVpZCI6NDcsImlhdCI6MTY3OTQwNzgwOCwiZXhwIjoxNjc5NTY3ODA4fQ.b9v1PU7XybdQ9fUcFyPd22S-tENEujdiFt_KJCxyRw0"`
+	TypeClient                string `json:"client_type" extensions:"x-order=26" example:"Физлицо"`
+	Surname                   string `json:"client_surname" extensions:"x-order=27" example:"Иванов"`
+	Name                      string `json:"client_name" extensions:"x-order=28" example:"Иван"`
+	Patronymic                string `json:"client_patronymic" extensions:"x-order=29" example:"Иванович"`
+	Email                     string `json:"client_email" extensions:"x-order=30" example:"i.ivanov@mail.test"`
+	PhoneNumber               string `json:"client_phone_number" extensions:"x-order=31" example:"+79991234567"`
+	DateOfBirth               string `json:"client_date_of_birth" extensions:"x-order=32" example:"1991-09-01"`
+	PassportSer               string `json:"passport_ser" extensions:"x-order=33" example:"2288"`
+	PassportNumber            string `json:"passport_number" extensions:"x-order=34" example:"199455"`
+	PassportDate              string `json:"passport_date" extensions:"x-order=35" example:"2005-09-01"`                       //new
+	PassportOrgan             string `json:"passport_organ" extensions:"x-order=36" example:"МВД по Автозаводском р-ну г. НН"` //new
+	PassportOrganCode         string `json:"passport_organ_code" extensions:"x-order=37" example:"520-001"`                    //new
+	Snils                     string `json:"snils" extensions:"x-order=38" example:"12345678910"`
+	YurAddress                string `json:"client_reg_address" extensions:"x-order=9" example:"Н.Новгород, ул. Ленина, д. 1"`
+	PostAddress               string `json:"post_address" extensions:"x-order=40" example:"Н.Новгород, ул. Ленина, д. 1"`
+	DeliveryAddress           string `json:"delivery_address" extensions:"x-order=41" example:"Н.Новгород, ул. Ленина, д. 1"`
+	DeliveryAddressCode       string `json:"delivery_address_code" extensions:"x-order=42" example:"987987987987987987987"`
+	Inn                       string `json:"company_inn" extensions:"x-order=43" example:"821636535086"`
+	Kpp                       string `json:"company_kpp" extensions:"x-order=44" example:"153243695"`
+	Ogrn                      string `json:"company_ogrn" extensions:"x-order=45" example:"4052411237237"`
+	CompanyName               string `json:"company_name" extensions:"x-order=46" example:"Авто-НН"`
+	CompanyAdress             string `json:"company_adress" extensions:"x-order=47" example:"Н.Новгород, ул. Ленина, д. 1"`
+	Hid                       string `json:"company_dadata_id" extensions:"x-order=48" example:"Н.Новгород, ул. Ленина, д. 1"`
+	BankBik                   string `json:"bank_bik" extensions:"x-order=49" example:"044525593"`
+	BankName                  string `json:"bank_name" extensions:"x-order=50" example:"АрфаБанк"`
+	BankRS                    string `json:"bank_raschetniy_schet" extensions:"x-order=51" example:"40702810102130000132"`
+	RepresentativeName        string `json:"representative_name" extensions:"x-order=52" example:"Иван"`
+	RepresentativeSurname     string `json:"representative_surname" extensions:"x-order=53" example:"Иванов"`
+	RepresentativePhoneNumber string `json:"representative_phone_number" extensions:"x-order=54" example:"+79991234567"`
+	RepresentativeEmail       string `json:"representative_email" extensions:"x-order=55" example:"company@mail.ru"`
+	Clientid                  string `json:"clientid_google" extensions:"x-order=56" example:"128613585.1680699283"` //Google Analytics cookies
+	Ymuid                     string `json:"ClientID" extensions:"x-order=57" example:"1646307578617354501"`         //Yandex Metrics cookies
+	MetricsType               string `json:"metrics_type" extensions:"x-order=58" example:"yandex"`
+	СlientIP                  string `json:"client_IP" extensions:"x-order=59" example:"83.220.238.137"`
+	FormName                  string `json:"form_name" extensions:"x-order=60" example:"Получить счёт"`
+	FormId                    string `json:"id_form" extensions:"x-order=61" example:"635fc4247e0aed5155614771"`
+	HostName                  string `json:"host_name" extensions:"x-order=62" example:"azgaz.ru"`
+	File                      string `json:"file" extensions:"x-order=63" example:"ссылка на счет"`
+}
+
+type DataBookingDel struct {
+	TestMod     bool   `json:"testmode"` //true - test, false - prod
+	RequestId   string `json:"request_id"`
+	TimeRequest string `json:"request_datetime"`
+	Comment     string `json:"request_comment"`
+	Vin         string `json:"car_vin"`
+	UniqModCode int    `json:"car_uniq_code"`
 }
 
 // Validation data booking
@@ -170,40 +179,128 @@ func (d *DataBooking) ValidateDataBooking() error {
 	)
 }
 
+type DataBookingF struct {
+	TestMod           bool   `json:"testmode" extensions:"x-order=01" example:"true"`
+	RequestId         string `json:"request_id" extensions:"x-order=02" example:"1019157100531"`
+	SubdivisionsId    string `json:"request_subdivisions_id" extensions:"x-order=03" example:"6286424721659083063"`
+	Area              string `json:"request_area" extensions:"x-order=05" example:"distrib"`
+	BillNumber        string `json:"request_bill_number" extensions:"x-order=07" example:"12345678"`
+	BillURL           string `json:"request_bill_link" extensions:"x-order=07" example:"https//st.tech/bill001"`
+	TimeRequest       string `json:"request_datetime" extensions:"x-order=08" example:"2022-02-02T12:12:12"`
+	Comment           string `json:"request_comment" extensions:"x-order=09" example:"Комментарий..."`
+	Consentmailing    string `json:"consent_to_mailing" extensions:"x-order=10" example:"yes"`
+	Vin               string `json:"car_vin" extensions:"x-order=11" example:"X96A31S12P0962150"`
+	UniqModCode       int    `json:"car_uniq_code" extensions:"x-order=12" example:"2372376"`
+	Modification      string `json:"car_modification" extensions:"x-order=13" example:"ГАЗ-С41R33-6В"`
+	ModFamily         string `json:"car_family" extensions:"x-order=14" example:"ГАЗель NN"`
+	ModBodyType       string `json:"car_body_type" extensions:"x-order=15" example:"Комби+"`
+	PriceWithNds      int    `json:"car_price" extensions:"x-order=19" example:"1709800"`
+	Division          string `json:"car_division" extensions:"x-order=20" example:"lcv/mcv"`
+	BrandName         string `json:"car_brand_name" extensions:"x-order=21" example:"ГАЗ"`
+	CarModel          string `json:"car_model" extensions:"x-order=22" example:"ГАЗон NEXT Бортовая платформа (3 места) ГАЗ-С41R33-6В"`
+	PreviewUrl        string `json:"car_preview_url" extensions:"x-order=24" example:"https://fs.azgaz.dev.perx.ru/media/PRDiceqdYBoc6bwQEDVoHW_2"`
+	СlientToken       string `json:"client_token" extensions:"x-order=25" example:"eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJkYXRhIjp7ImlkIjo0NywibmFtZSI6Ik1pa2UiLCJsYXN0X25hbWUiOiJvbGVnb3ZpY2giLCJzZWNvbmRfbmFtZSI6IlNoaWxvdiIsImVtYWlsIjoibUBzaGlsb3YucHJvIn0sInVpZCI6NDcsImlhdCI6MTY3OTQwNzgwOCwiZXhwIjoxNjc5NTY3ODA4fQ.b9v1PU7XybdQ9fUcFyPd22S-tENEujdiFt_KJCxyRw0"`
+	Surname           string `json:"client_surname" extensions:"x-order=27" example:"Иванов"`
+	Name              string `json:"client_name" extensions:"x-order=28" example:"Иван"`
+	Patronymic        string `json:"client_patronymic" extensions:"x-order=29" example:"Иванович"`
+	PhoneNumber       string `json:"client_phone_number" extensions:"x-order=31" example:"+79991234567"`
+	Email             string `json:"client_email" extensions:"x-order=30" example:"i.ivanov@mail.test"`
+	DateOfBirth       string `json:"client_date_of_birth" extensions:"x-order=32" example:"1991-09-01"`
+	PassportSer       string `json:"passport_ser" extensions:"x-order=33" example:"2288"`
+	PassportNumber    string `json:"passport_number" extensions:"x-order=34" example:"199455"`
+	PassportDate      string `json:"passport_date" extensions:"x-order=35" example:"2005-09-01"`                       //new
+	PassportOrgan     string `json:"passport_organ" extensions:"x-order=36" example:"МВД по Автозаводском р-ну г. НН"` //new
+	PassportOrganCode string `json:"passport_organ_code" extensions:"x-order=37" example:"520-001"`                    //new
+	Snils             string `json:"snils" extensions:"x-order=38" example:"12345678910"`
+	YurAddress        string `json:"client_reg_address" extensions:"x-order=9" example:"Н.Новгород, ул. Ленина, д. 1"`
+	PostAddress       string `json:"post_address" extensions:"x-order=40" example:"Н.Новгород, ул. Ленина, д. 1"`
+	DeliveryAddress   string `json:"delivery_address" extensions:"x-order=41" example:"Н.Новгород, ул. Ленина, д. 1"`
+	Clientid          string `json:"client_id" extensions:"x-order=56" example:"128613585.1680699283"` //Google Analytics cookies
+	СlientIP          string `json:"client_ip" extensions:"x-order=59" example:"83.220.238.137"`
+	FormName          string `json:"form_name" extensions:"x-order=60" example:"Получить счёт"`
+	FormId            string `json:"id_form" extensions:"x-order=61" example:"635fc4247e0aed5155614771"`
+	HostName          string `json:"host_name" extensions:"x-order=62" example:"azgaz.ru"`
+}
+
+type DataBookingU struct {
+	TestMod                   bool   `json:"testmode" extensions:"x-order=01" example:"true"`
+	RequestId                 string `json:"request_id" extensions:"x-order=02" example:"1019157100531"`
+	SubdivisionsId            string `json:"request_subdivisions_id" extensions:"x-order=03" example:"6286424721659083063"`
+	Area                      string `json:"request_area" extensions:"x-order=05" example:"distrib"`
+	ActionType                string `json:"request_type" extensions:"x-order=06" example:"онлайн-заказ"`
+	BillNumber                string `json:"request_bill_number" extensions:"x-order=07" example:"123456"`
+	BillURL                   string `json:"request_bill_link" extensions:"x-order=07" example:"https//st.tech/bill001"`
+	TimeRequest               string `json:"request_datetime" extensions:"x-order=08" example:"2022-02-02T12:12:12"`
+	Comment                   string `json:"request_comment" extensions:"x-order=09" example:"Комментарий..."`
+	Consentmailing            string `json:"consent_to_mailing" extensions:"x-order=10" example:"yes"`
+	Vin                       string `json:"car_vin" extensions:"x-order=11" example:"X96A31S12P0962150"`
+	UniqModCode               int    `json:"car_uniq_code" extensions:"x-order=12" example:"2372376"`
+	Modification              string `json:"car_modification" extensions:"x-order=13" example:"ГАЗ-С41R33-6В"`
+	ModFamily                 string `json:"car_family" extensions:"x-order=14" example:"ГАЗель NN"`
+	ModBodyType               string `json:"car_body_type" extensions:"x-order=15" example:"Комби+"`
+	PriceWithNds              int    `json:"car_price" extensions:"x-order=19" example:"1709800"`
+	Division                  string `json:"car_division" extensions:"x-order=20" example:"lcv/mcv"`
+	BrandName                 string `json:"car_brand_name" extensions:"x-order=21" example:"ГАЗ"`
+	CarModel                  string `json:"car_model" extensions:"x-order=22" example:"ГАЗон NEXT Бортовая платформа (3 места) ГАЗ-С41R33-6В"`
+	UrlMod                    string `json:"car_model_url" extensions:"x-order=23" example:"https://catalog.azgaz.ru/gazel-nn/kombi-gazel-nn-gaz-a32s22-420/641b1c2491cdddf86efceb38/"`
+	PreviewUrl                string `json:"car_preview_url" extensions:"x-order=24" example:"https://fs.azgaz.dev.perx.ru/media/PRDiceqdYBoc6bwQEDVoHW_2"`
+	СlientToken               string `json:"client_token" extensions:"x-order=25" example:"eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJkYXRhIjp7ImlkIjo0NywibmFtZSI6Ik1pa2UiLCJsYXN0X25hbWUiOiJvbGVnb3ZpY2giLCJzZWNvbmRfbmFtZSI6IlNoaWxvdiIsImVtYWlsIjoibUBzaGlsb3YucHJvIn0sInVpZCI6NDcsImlhdCI6MTY3OTQwNzgwOCwiZXhwIjoxNjc5NTY3ODA4fQ.b9v1PU7XybdQ9fUcFyPd22S-tENEujdiFt_KJCxyRw0"`
+	Inn                       string `json:"company_inn" extensions:"x-order=43" example:"821636535086"`
+	Kpp                       string `json:"company_kpp" extensions:"x-order=44" example:"153243695"`
+	Ogrn                      string `json:"company_ogrn" extensions:"x-order=45" example:"4052411237237"`
+	CompanyName               string `json:"company_name" extensions:"x-order=46" example:"Авто-НН"`
+	CompanyAdress             string `json:"company_adress" extensions:"x-order=47" example:"Н.Новгород, ул. Ленина, д. 1"`
+	PostAddress               string `json:"post_address" extensions:"x-order=40" example:"Н.Новгород, ул. Ленина, д. 1"`
+	DeliveryAddress           string `json:"delivery_address" extensions:"x-order=41" example:"Н.Новгород, ул. Ленина, д. 1"`
+	Hid                       string `json:"company_dadata_id" extensions:"x-order=48" example:"c7566f19aea28a24766b66ad9ef8f21c60cd8292a43338fbf9d705f88cec9a90"`
+	BankBik                   string `json:"bank_bik" extensions:"x-order=49" example:"044525593"`
+	BankName                  string `json:"bank_name" extensions:"x-order=50" example:"АрфаБанк"`
+	BankRS                    string `json:"bank_raschetniy_schet" extensions:"x-order=51" example:"40702810102130000132"`
+	RepresentativeName        string `json:"representative_name" extensions:"x-order=52" example:"Иван"`
+	RepresentativeSurname     string `json:"representative_surname" extensions:"x-order=53" example:"Иванов"`
+	RepresentativePhoneNumber string `json:"representative_phone_number" extensions:"x-order=54" example:"+79991234567"`
+	RepresentativeEmail       string `json:"representative_email" extensions:"x-order=55" example:"company@mail.ru"`
+	Clientid                  string `json:"client_id" extensions:"x-order=57" example:"1646307578617354501"` //Yandex Metrics cookies
+	СlientIP                  string `json:"client_ip" extensions:"x-order=59" example:"83.220.238.137"`
+	FormName                  string `json:"form_name" extensions:"x-order=60" example:"Получить счёт"`
+	FormId                    string `json:"id_form" extensions:"x-order=61" example:"635fc4247e0aed5155614771"`
+	HostName                  string `json:"host_name" extensions:"x-order=62" example:"azgaz.ru"`
+}
+
 // Data get
 type DataStocks struct {
-	VIN                            string
-	Площадка                       string
-	Наименование_номенклатуры      string
-	Номер_согласно_КД              string
-	Дивизион                       string
-	Доработчик_Подрядчик           NullString
-	Test_truck                     bool
-	Телематика                     string
-	Номер_шасси                    string
-	Номер_двигателя                NullString
-	Грузоподъемность_кг            string
-	Цвет                           string
-	ЦветИд                         string
-	ЦветRGB                        NullString
-	Вариант_сборки                 string
-	Расшифровка_варианта_сборки    string
-	Вариант_сборки_свернутый       NullString
-	Год_VIN                        string
-	Дата_сборки                    NullString
-	Справочная_стоимость_по_прайсу string
-	Дата_отгрузка                  NullString
-	Дата_прихода                   NullString
-	Страна                         NullString
-	Контрагент_получателя          string
-	Стоянка                        string
-	Город_стоянки                  NullString
-	Площадка_получателя_Ид         string
-	Контрагент_получателя_Ид       string
-	Город_стоянки_Ид               NullString
-	Номер_заявки                   NullString
-	Для_доработки                  NullString
-	Номерной_товар                 string
+	VIN                            string  `json:"VIN" extensions:"x-order=a" example:"866508"`
+	Площадка                       string  `json:"Площадка" extensions:"x-order=b" example:"866508"`
+	Наименование_номенклатуры      string  `json:"Наименование_номенклатуры" extensions:"x-order=c" example:"866508"`
+	Номер_согласно_КД              string  `json:"Номер_согласно_КД" extensions:"x-order=d" example:"866508"`
+	Дивизион                       string  `json:"Дивизион" extensions:"x-order=e" example:"866508"`
+	Доработчик_Подрядчик           *string `json:"Доработчик_Подрядчик" extensions:"x-order=f" example:"866508"`
+	Test_truck                     bool    `json:"Test_truck" extensions:"x-order=g" example:"866508"`
+	Телематика                     string  `json:"Телематика" extensions:"x-order=h" example:"866508"`
+	Номер_шасси                    string  `json:"Номер_шасси" extensions:"x-order=i" example:"866508"`
+	Номер_двигателя                *string `json:"Номер_двигателя" extensions:"x-order=j" example:"866508"`
+	Грузоподъемность_кг            string  `json:"Грузоподъемность_кг" extensions:"x-order=k" example:"866508"`
+	Цвет                           string  `json:"Цвет" extensions:"x-order=l" example:"866508"`
+	ЦветИд                         string  `json:"ЦветИд" extensions:"x-order=m" example:"866508"`
+	ЦветRGB                        *string `json:"ЦветRGB" extensions:"x-order=n" example:"866508"`
+	Вариант_сборки                 string  `json:"Вариант_сборки" extensions:"x-order=o" example:"866508"`
+	Расшифровка_варианта_сборки    string  `json:"Расшифровка_варианта_сборки" extensions:"x-order=p" example:"866508"`
+	Вариант_сборки_свернутый       *string `json:"Вариант_сборки_свернутый" extensions:"x-order=q" example:"866508"`
+	Год_VIN                        string  `json:"Год_VIN" extensions:"x-order=r" example:"866508"`
+	Дата_сборки                    *string `json:"Дата_сборки" extensions:"x-order=s" example:"866508"`
+	Справочная_стоимость_по_прайсу string  `json:"Справочная_стоимость_по_прайсу" extensions:"x-order=t" example:"866508"`
+	Дата_отгрузка                  *string `json:"Дата_отгрузка" extensions:"x-order=u" example:"866508"`
+	Дата_прихода                   *string `json:"Дата_прихода" extensions:"x-order=v" example:"866508"`
+	Страна                         *string `json:"Страна" extensions:"x-order=w" example:"866508"`
+	Контрагент_получателя          string  `json:"Контрагент_получателя" extensions:"x-order=wa" example:"866508"`
+	Стоянка                        string  `json:"Стоянка" extensions:"x-order=wb" example:"866508"`
+	Город_стоянки                  *string `json:"Город_стоянки" extensions:"x-order=wc" example:"866508"`
+	Площадка_получателя_Ид         string  `json:"Площадка_получателя_Ид" extensions:"x-order=wd" example:"866508"`
+	Контрагент_получателя_Ид       string  `json:"Контрагент_получателя_Ид" extensions:"x-order=we" example:"866508"`
+	Город_стоянки_Ид               *string `json:"Город_стоянки_Ид" extensions:"x-order=wf" example:"866508"`
+	Номер_заявки                   *string `json:"Номер_заявки" extensions:"x-order=wg" example:"866508"`
+	Для_доработки                  *string `json:"Для_доработки" extensions:"x-order=wh" example:"866508"`
+	Номерной_товар                 string  `json:"Номерной_товар" extensions:"x-order=wi" example:"866508"`
 }
 
 // data price basic models
@@ -295,6 +392,30 @@ type DataSprav struct {
 	ДоступностьКЗаказу                         string
 }
 
+// data models
+type DataModels struct {
+	ИдМодели                 int     `json:"ИдМодели" extensions:"x-order=01" example:"866508"`
+	Модель                   string  `json:"Модель" extensions:"x-order=02" example:"ГАЗ-А21R25-20"`
+	ИдНабораОпций            int     `json:"ИдНабораОпций" extensions:"x-order=03" example:"123565"`
+	НаборОпций               string  `json:"НаборОпций" extensions:"x-order=04" example:"1/ST(N)[2KB,5]GF,8KB,EA3/ПП"`
+	ИдДивизиона              int     `json:"ИдДивизиона" extensions:"x-order=05" example:"7133"`
+	Дивизион                 string  `json:"Дивизион" extensions:"x-order=06" example:"LCV"`
+	ИдСемейства              *int    `json:"ИдСемейства" extensions:"x-order=07" example:"5725"`
+	Семейство                *string `json:"Семейство" extensions:"x-order=08" example:"Газель Next"`
+	ВидПродукции             *string `json:"ВидПродукции" extensions:"x-order=09" example:"Коммерческая техника"`
+	Класс                    *string `json:"Класс" extensions:"x-order=10" example:"Бортовая платформа"`
+	Кузов                    *string `json:"Кузов" extensions:"x-order=11" example:"Комби"`
+	ИдНазначения             *int    `json:"ИдНазначения" extensions:"x-order=12" example:"20"`
+	Назначение               *string `json:"Назначение" extensions:"x-order=13" example:"ПЕРЕВОЗКИ С ТЕМПЕРАТУРНЫМ РЕЖИМОМ"`
+	ИдПроизводителя          int     `json:"ИдПроизводителя" extensions:"x-order=14" example:"60"`
+	Производитель            string  `json:"Производитель" extensions:"x-order=15" example:"ГАЗ"`
+	Цена                     *string `json:"Цена" extensions:"x-order=16" example:"2960000.00"`
+	ПризнакЦеныОт            int     `json:"ПризнакЦеныОт" extensions:"x-order=17" example:"0"`
+	СообщениеГдеНетЦен       string  `json:"СообщениеГдеНетЦен" extensions:"x-order=18" example:"Нет цены опций 1,7BA,EA3,5GF"`
+	ДокументУстановившийЦену string  `json:"ДокументУстановившийЦену" extensions:"x-order=19" example:"Ввод цен (модели) № 400 от 20.02.2023 (15443251); 1 - Ввод цен (опции) № 183 от 01.09.2022 (15137904); 8KB - Ввод цен (опции) № 185 от 01.09.2022 (15137935); EA3 - Ввод цен (опции) № 185 от 01.09.2022 (15137935); 5GF - Ввод цен (опции) № 185 от 01.09.2022 (15137935); ST(N) - Ввод цен (опции) № 187 от 01.09.2022 (15137944);"`
+	Сортировка               int     `json:"Сортировка" extensions:"x-order=20" example:"500"`
+}
+
 // options data
 type DataOptions struct {
 	НоменклатураИд                 string
@@ -330,7 +451,7 @@ type DataPackets struct {
 	НоменклатураНаименование       string `json:"НоменклатураНаименование" extensions:"x-order=b" example:"ГАЗ-А21R33-10"`
 	ИдПакета                       string `json:"ИдПакета" extensions:"x-order=c" example:"975"`
 	КраткоеНаименованиеПакета      string `json:"КраткоеНаименованиеПакета" extensions:"x-order=d" example:"ST(N)"`
-	ПолноеНаименованиеПакета       string `json:"ПолноеНаименованиеПакета" extensions:"x-order=e" example:"ПолноеНаименованиеПакета": "Пакет \"Стандарт\" для 1-ряд а/м Газель Next борт, шасси и САТ, дизель, бензин"`
+	ПолноеНаименованиеПакета       string `json:"ПолноеНаименованиеПакета" extensions:"x-order=e" example:"Пакет \"Стандарт\" для 1-ряд а/м Газель Next борт, шасси и САТ, дизель, бензин"`
 	ИдГруппыОпций                  string `json:"ИдГруппыОпций" extensions:"x-order=f" example:"141"`
 	КраткоеНаименованиеГруппыОпций string `json:"КраткоеНаименованиеГруппыОпций" extensions:"x-order=g" example:"2K"`
 	ПолноеНаименованиеГруппыОпций  string `json:"ПолноеНаименованиеГруппыОпций" extensions:"x-order=h" example:"Сиденье водителя"`
@@ -339,15 +460,51 @@ type DataPackets struct {
 	КраткоеНаименованиеОпции       string `json:"КраткоеНаименованиеОпции" extensions:"x-order=k" example:"2KB"`
 }
 
+// packets data new
+type DataPackets_l struct {
+	НоменклатураИд                 int    `json:"НоменклатураИд" extensions:"x-order=01" example:"865436"`
+	НоменклатураНаименование       string `json:"НоменклатураНаименование" extensions:"x-order=02" example:"ГАЗ-А21R33-10"`
+	ИдПакета                       int    `json:"ИдПакета" extensions:"x-order=03" example:"975"`
+	КраткоеНаименованиеПакета      string `json:"КраткоеНаименованиеПакета" extensions:"x-order=04" example:"ST(N)"`
+	ПолноеНаименованиеПакета       string `json:"ПолноеНаименованиеПакета" extensions:"x-order=05" example:"Пакет \"Стандарт\" для 1-ряд а/м Газель Next борт, шасси и САТ, дизель, бензин"`
+	ИдГруппыОпций                  int    `json:"ИдГруппыОпций" extensions:"x-order=06" example:"141"`
+	КраткоеНаименованиеГруппыОпций string `json:"КраткоеНаименованиеГруппыОпций" extensions:"x-order=07" example:"2K"`
+	ПолноеНаименованиеГруппыОпций  string `json:"ПолноеНаименованиеГруппыОпций" extensions:"x-order=08" example:"Сиденье водителя"`
+	ИдОпции                        int    `json:"ИдОпции" extensions:"x-order=09" example:"684"`
+	ПолноеНаименованиеОпции        string `json:"ПолноеНаименованиеОпции" extensions:"x-order=10" example:"Сиденье водителя с подлокотником"`
+	КраткоеНаименованиеОпции       string `json:"КраткоеНаименованиеОпции" extensions:"x-order=11" example:"2KB"`
+	ЦенаПакета                     string `json:"ЦенаПакета" extensions:"x-order=12" example:"10000.00"`
+}
+
 // colors data
 type DataColors struct {
-	НоменклатураИд           string  `json:"НоменклатураИд" extensions:"x-order=a" example:"865436"`
-	НоменклатураНаименование string  `json:"НоменклатураНаименование" extensions:"x-order=b" example:"ГАЗ-А21R33-10"`
-	ЦветИд                   string  `json:"ЦветИд" extensions:"x-order=c" example:"996"`
-	Наименование             string  `json:"Наименование" extensions:"x-order=d" example:"СИЛЬВЕР ЛАЙТ"`
-	ПолноеНаименование       string  `json:"ПолноеНаименование" extensions:"x-order=e" example:"СВЕТЛО-СЕРЫЙ"`
-	ЦветRGB                  string  `json:"ЦветRGB" extensions:"x-order=f" example:"157,163,166"`
-	Слойность                *string `json:"Слойность" extensions:"x-order=g" example:"2"`
+	НоменклатураИд           string  `json:"НоменклатураИд" extensions:"x-order=01" example:"865436"`
+	НоменклатураНаименование string  `json:"НоменклатураНаименование" extensions:"x-order=02" example:"ГАЗ-А21R33-10"`
+	ЦветИд                   string  `json:"ЦветИд" extensions:"x-order=03" example:"996"`
+	Наименование             string  `json:"Наименование" extensions:"x-order=04" example:"СИЛЬВЕР ЛАЙТ"`
+	ПолноеНаименование       string  `json:"ПолноеНаименование" extensions:"x-order=05" example:"СВЕТЛО-СЕРЫЙ"`
+	ЦветRGB                  string  `json:"ЦветRGB" extensions:"x-order=06" example:"157,163,166"`
+	Слойность                *string `json:"Слойность" extensions:"x-order=07" example:"2"`
+	Цена                     *string `json:"Цена" extensions:"x-order=08" example:"0"`
+}
+
+type Options struct {
+	НомерСтроки                        int32   `json:"НомерСтроки" extensions:"x-order=01" example:"82"`
+	Модель                             int32   `json:"Модель" extensions:"x-order=02" example:"936749"`
+	БазоваяМодель                      *int32  `json:"БазоваяМодель" extensions:"x-order=02" example:"935649"`
+	КодКатегории                       *string `json:"КодКатегории" extensions:"x-order=03" example:"2"`
+	НаименованиеКатегории              *string `json:"НаименованиеКатегории" extensions:"x-order=04" example:"Комфорт (часть 1)"`
+	ИдЗначенияОпции                    *int16  `json:"ИдЗначенияОпции" extensions:"x-order=05" example:"2413"`
+	КодЗначенияОпции                   string  `json:"КодЗначенияОпции" extensions:"x-order=06" example:"2MD"`
+	НаименованиеЗначенияОпции          string  `json:"НаименованиеЗначенияОпции" extensions:"x-order=07" example:"Без кондиционера"`
+	ОписаниеЗначенияОпцииДляСайта      *string `json:"ОписаниеЗначенияОпцииДляСайта" extensions:"x-order=09" example:"Без системы кондиционирования для комплектации low-cost"`
+	ВыбранаПоУмолчанию                 bool    `json:"ВыбранаПоУмолчанию" extensions:"x-order=11" example:"true"`
+	Обязательная                       *bool   `json:"Обязательная" extensions:"x-order=12" example:"false"`
+	ДопустимоТолькоОдноЗначениеВНаборе *bool   `json:"ДопустимоТолькоОдноЗначениеВНаборе" extensions:"x-order=13" example:"true"`
+	ОбязательноеСочетаниеОпций         *string `json:"ОбязательноеСочетаниеОпций" extensions:"x-order=16" example:"2LF"`
+	НедопустимоеСочетаниеОпций         *string `json:"НедопустимоеСочетаниеОпций" extensions:"x-order=17" example:"9PA"`
+	Цена                               *string `json:"Цена" extensions:"x-order=19" example:"-55000.00"`
+	ГруппаНаСайте                      *string `json:"ГруппаНаСайте" extensions:"x-order=20" example:"Оснащение"`
 }
 
 // data options
@@ -435,7 +592,6 @@ type DataGazCrm struct {
 
 // data struct for call gaz crm api method
 type DataGazCrmReq struct {
-	//gaz crm fields
 	TimeRequest       string `json:"event_datetime,omitempty"` //general field with booking
 	RequestId         string `json:"request_id,omitempty"`     //general field with booking
 	SubdivisionsId    string `json:"subdivisions_id,omitempty"`
@@ -578,4 +734,18 @@ type TechDataObj struct {
 	НаименованиеСвойства string `json:"НаименованиеСвойства" extensions:"x-order=h" example:"Размерность"`
 	ИдЗначенияСвойства   int    `json:"ИдЗначенияСвойства" extensions:"x-order=i" example:"5809"`
 	ЗначениеСвойства     string `json:"ЗначениеСвойства" extensions:"x-order=j" example:"185/75R16C"`
+}
+
+type Special struct {
+	ИдМодели              int     `json:"ИдМодели" extensions:"x-order=01" example:"867560"`
+	НаименованиеМодели    string  `json:"НаименованиеМодели" extensions:"x-order=02" example:"А23R25-0011-18-641-60-00-900"`
+	ИдПараметра           int     `json:"ИдПараметра" extensions:"x-order=03" example:"10"`
+	НаименованиеПараметра string  `json:"НаименованиеПараметра" extensions:"x-order=04" example:"Внешняя длина фургона, мм"`
+	ИдЗначения            int     `json:"ИдЗначения" extensions:"x-order=05" example:"1180"`
+	НаименованиеЗначения  string  `json:"НаименованиеЗначения" extensions:"x-order=06" example:"3060"`
+	ПорядокСортировки     *int    `json:"ПорядокСортировки" extensions:"x-order=07" example:"7"`
+	ИдГруппы              int     `json:"ИдГруппы" extensions:"x-order=08" example:"4"`
+	НаименованиеГруппы    string  `json:"НаименованиеГруппы" extensions:"x-order=09" example:"Описание надстройки"`
+	ИдКатегории           *int    `json:"ИдКатегории" extensions:"x-order=10" example:"6"`
+	НаименованиеКатегории *string `json:"НаименованиеКатегории" extensions:"x-order=11" example:"Размеры фургона"`
 }

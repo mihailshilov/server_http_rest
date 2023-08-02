@@ -7,6 +7,7 @@ import (
 	"net/http"
 	"time"
 
+	_ "github.com/go-playground/validator/v10"
 	"github.com/gorilla/mux"
 	logger "github.com/mihailshilov/server_http_rest/app/apiserver/logger"
 	"github.com/mihailshilov/server_http_rest/app/apiserver/model"
@@ -18,7 +19,7 @@ import (
 // @title API СТТ
 // @version 1.0
 // @oas 3
-// @description API-сервер СТТ
+// @description API-сервер СТТ <br/><br/>Разработчики: Шилов Михаил (Golang, Postgress), Кошмар Олег (C#, MS SQL), Мелик-Саядян Антон (Systems analysis, Architecture)
 // @contact.name API Support
 // @contact.email shilovmo@st.tech
 // @host onsales.st.tech
@@ -120,7 +121,7 @@ func (s *server) configureRouter() {
 		httpSwagger.UIConfig(map[string]string{
 			"showExtensions":        "true",
 			"onComplete":            `() => { window.ui.setBasePath('v3'); }`,
-			"defaultModelRendering": `"model"`,
+			"defaultModelRendering": `"Example"`,
 		}),
 		//httpSwagger.Plugins([]string),
 	)).Methods(http.MethodGet)
@@ -132,7 +133,14 @@ func (s *server) configureRouter() {
 	auth.Use(s.middleWare)
 	//booking, forms submit
 	auth.HandleFunc("/requestbooking", s.handleRequestBooking()).Methods("POST")
+	auth.HandleFunc("/booking_f", s.handleRequestBookingF()).Methods("POST")
+	auth.HandleFunc("/booking_u", s.handleRequestBookingU()).Methods("POST")
+
 	auth.HandleFunc("/requestform", s.handleRequestForm()).Methods("POST")
+	auth.HandleFunc("/form", s.handleForm()).Methods("POST")
+
+	//LK
+	auth.HandleFunc("/requestbooking", s.handleRequestBookingDel()).Methods("DELETE")
 	//gaz crm
 	auth.HandleFunc("/requestleadget", s.handleRequestLeadGetGazCrm()).Methods("POST")
 	auth.HandleFunc("/requestworklist", s.handleRequestWorkListGazCrm()).Methods("POST")
@@ -146,16 +154,23 @@ func (s *server) configureRouter() {
 	auth.HandleFunc("/getgeneralprice", s.handleGeneralPrice()).Methods("GET")
 	//sprav models
 	auth.HandleFunc("/getsprav", s.handleSprav()).Methods("GET")
+	auth.HandleFunc("/models", s.handleModels()).Methods("GET")
 	auth.HandleFunc("/getspravmodels", s.handleSpravModels()).Methods("GET")
 	auth.HandleFunc("/techdata", s.handleTechData()).Methods("GET")
+	//grey dealers
+	auth.HandleFunc("/grey_inn", s.handleGreyINN()).Methods("GET")
 	//options
+	auth.HandleFunc("/options", s.handleOptions()).Methods("GET")
 	auth.HandleFunc("/getoptionsdata", s.handleOptionsData()).Methods("GET")
 	auth.HandleFunc("/getoptionsdatasprav", s.handleOptionsDataSprav()).Methods("GET")
 	auth.HandleFunc("/getpacketsdata", s.handlePacketsData()).Methods("GET")
+	auth.HandleFunc("/packets", s.handlePackets()).Methods("GET")
+	auth.HandleFunc("/special", s.handleSpecial()).Methods("GET")
 	//colors
 	auth.HandleFunc("/getcolorsdata", s.handleColorsData()).Methods("GET")
 	//statuses
 	auth.HandleFunc("/getstatusesdata", s.handleStatusesData()).Methods("GET")
+
 }
 
 // HandleAuth godoc
@@ -180,6 +195,8 @@ func (s *server) handleAuth() http.HandlerFunc {
 			logger.ErrorLogger.Println(err)
 			return
 		}
+
+		w.Header().Add("Content-Type", "application/json")
 
 		u, err := s.store.User().FindUser(req.Email, req.Password)
 		if err != nil {
@@ -228,7 +245,6 @@ func (s *server) middleWare(next http.Handler) http.Handler {
 
 }
 
-// handle Client Data
 func (s *server) handleRequestBooking() http.HandlerFunc {
 
 	var errMs string
@@ -243,7 +259,7 @@ func (s *server) handleRequestBooking() http.HandlerFunc {
 			return
 		}
 
-		logger.InfoLogger.Println("Запрос от Перкса:\n")
+		logger.InfoLogger.Printf("Запрос от Перкса:\n")
 		bodyBytesReq, err := json.Marshal(req)
 		if err != nil {
 			logger.ErrorLogger.Println(err)
@@ -308,7 +324,7 @@ func (s *server) handleRequestBooking() http.HandlerFunc {
 			} else {
 				logger.InfoLogger.Println(res_lk_profile)
 				//StatusLK = res_lk.Status
-				res_lk_profile = res_lk_profile
+				//res_lk_profile = res_lk_profile
 			}
 
 		}
@@ -328,6 +344,246 @@ func (s *server) handleRequestBooking() http.HandlerFunc {
 
 	}
 
+}
+
+// handleRequestBookingF godoc
+// @Summary Данные по продаже физ.лицу для ИС Клиент, ГазЦРМ и ЛК
+// @Tags Онлайн продажа
+// @Description Регистрирует онлайн продажу <br/><br/> <i>хп\_ОтразитьРозничнуюПродажу<i>
+// @ID post-booking-f
+// @Accept  json
+// @Produce  json
+// @Param input body model.DataBookingF true "booking info"
+// @Success 200 {object} model.ResponseBooking "OK"
+// @Router /auth/booking_f/ [post]
+// @Security ApiKeyAuth
+func (s *server) handleRequestBookingF() http.HandlerFunc {
+
+	var errMs string
+
+	return func(w http.ResponseWriter, r *http.Request) {
+
+		req := model.DataBookingF{}
+
+		if err := json.NewDecoder(r.Body).Decode(&req); err != nil {
+			s.error(w, r, http.StatusBadRequest, err)
+			logger.ErrorLogger.Println(err)
+			return
+		}
+
+		logger.InfoLogger.Printf("Запрос от Перкса:\n")
+		bodyBytesReq, err := json.Marshal(req)
+		if err != nil {
+			logger.ErrorLogger.Println(err)
+			return
+		}
+		logger.InfoLogger.Println(bytes.NewBuffer(bodyBytesReq))
+		logger.InfoLogger.Println("\n Конец запроса от Перкса")
+
+		//пишем в postgres
+		if err := s.store.Data().QueryInsertBookingPostgresF(req); err != nil {
+			logger.ErrorLogger.Println(err)
+		} else {
+			logger.InfoLogger.Println("sites booking data stored")
+		}
+
+		//отправляем в исклиент
+		resp, err := s.store.Data().QueryInsertMssqlBookingF(req)
+		if err != nil {
+			s.error(w, r, http.StatusBadRequest, errMssql)
+			logger.ErrorLogger.Println(err)
+			logger.ErrorLogger.Println(resp)
+			return
+		}
+
+		if resp != "Обработка данных прошла успешно" {
+			errMs = "Error"
+			logger.ErrorLogger.Println(resp)
+			s.respond(w, r, http.StatusBadRequest, newResponseBooking(errMs, resp, "", ""))
+			return
+		} else {
+			errMs = "Ok"
+			logger.InfoLogger.Println("data booking stored in mssql")
+
+			//respm, err := s.store.Data().CallMSMailing(req, s.config)
+			//if err != nil {
+			//ErrorLogger.Println(err)
+			//ErrorLogger.Println(respm)
+			//}
+			//InfoLogger.Println("email=" + respm)
+
+		}
+
+		//Если есть токен - отправим в ЛК
+
+		StatusLK := ""
+
+		if req.СlientToken != "" {
+
+			//send order data to lk
+			res_lk, err := s.store.Data().RequestLkOrderF(req, s.config)
+			if err != nil {
+				logger.ErrorLogger.Println(err)
+			} else {
+				logger.InfoLogger.Println(res_lk)
+				StatusLK = res_lk.Status
+			}
+
+			//update user data in lk
+
+			res_lk_profile, err := s.store.Data().RequestLkProfileF(req, s.config)
+			if err != nil {
+				logger.ErrorLogger.Println(err)
+			} else {
+				logger.InfoLogger.Println(res_lk_profile)
+				//StatusLK = res_lk.Status
+				//res_lk_profile = res_lk_profile
+			}
+
+		}
+
+		//request gazcrm api
+		respg, err := s.store.Data().RequestGazCrmApiBookingF(req, s.config)
+		if err != nil {
+			logger.ErrorLogger.Println(err)
+		}
+		if respg.Status != "OK" {
+			logger.ErrorLogger.Println(respg)
+			s.respond(w, r, http.StatusBadRequest, newResponseBooking(errMs, resp, StatusLK, respg.Message))
+		} else {
+			logger.InfoLogger.Println("gazcrm booking data transfer success")
+			s.respond(w, r, http.StatusOK, newResponseBooking(errMs, resp, StatusLK, respBooking))
+		}
+
+	}
+
+}
+
+// handleRequestBookingU godoc
+// @Summary Данные по продаже юр.лицу для ИС Клиент, ГазЦРМ и ЛК
+// @Tags Онлайн продажа
+// @Description Регистрирует онлайн продажу <br/><br/> <i>хп\_ОтразитьРозничнуюПродажу<i>
+// @ID post-booking-u
+// @Accept  json
+// @Produce  json
+// @Param input body model.DataBookingU true "booking info"
+// @Success 200 {object} model.ResponseBooking "OK"
+// @Router /auth/booking_u/ [post]
+// @Security ApiKeyAuth
+func (s *server) handleRequestBookingU() http.HandlerFunc {
+
+	var errMs string
+
+	return func(w http.ResponseWriter, r *http.Request) {
+
+		req := model.DataBookingU{}
+
+		if err := json.NewDecoder(r.Body).Decode(&req); err != nil {
+			s.error(w, r, http.StatusBadRequest, err)
+			logger.ErrorLogger.Println(err)
+			return
+		}
+
+		logger.InfoLogger.Printf("Запрос от Перкса:\n")
+		bodyBytesReq, err := json.Marshal(req)
+		if err != nil {
+			logger.ErrorLogger.Println(err)
+			return
+		}
+		logger.InfoLogger.Println(bytes.NewBuffer(bodyBytesReq))
+		logger.InfoLogger.Println("\n Конец запроса от Перкса")
+
+		//пишем в postgres
+		if err := s.store.Data().QueryInsertBookingPostgresU(req); err != nil {
+			logger.ErrorLogger.Println(err)
+		} else {
+			logger.InfoLogger.Println("sites booking data stored")
+		}
+
+		//отправляем в исклиент
+		resp, err := s.store.Data().QueryInsertMssqlBookingU(req)
+		if err != nil {
+			s.error(w, r, http.StatusBadRequest, errMssql)
+			logger.ErrorLogger.Println(err)
+			logger.ErrorLogger.Println(resp)
+			return
+		}
+
+		if resp != "Обработка данных прошла успешно" {
+			errMs = "Error"
+			logger.ErrorLogger.Println(resp)
+			s.respond(w, r, http.StatusBadRequest, newResponseBooking(errMs, resp, "", ""))
+			return
+		} else {
+			errMs = "Ok"
+			logger.InfoLogger.Println("data booking stored in mssql")
+
+			//respm, err := s.store.Data().CallMSMailing(req, s.config)
+			//if err != nil {
+			//ErrorLogger.Println(err)
+			//ErrorLogger.Println(respm)
+			//}
+			//InfoLogger.Println("email=" + respm)
+
+		}
+
+		//Если есть токен - отправим в ЛК
+
+		StatusLK := ""
+
+		if req.СlientToken != "" {
+
+			//send order data to lk
+			res_lk, err := s.store.Data().RequestLkOrderU(req, s.config)
+			if err != nil {
+				logger.ErrorLogger.Println(err)
+			} else {
+				logger.InfoLogger.Println(res_lk)
+				StatusLK = res_lk.Status
+			}
+
+			//update user data in lk
+
+			// res_lk_profile, err := s.store.Data().RequestLkProfileF(req, s.config)
+			// if err != nil {
+			// 	logger.ErrorLogger.Println(err)
+			// } else {
+			// 	logger.InfoLogger.Println(res_lk_profile)
+			// }
+
+		}
+
+		//request gazcrm api
+		respg, err := s.store.Data().RequestGazCrmApiBookingU(req, s.config)
+		if err != nil {
+			logger.ErrorLogger.Println(err)
+		}
+		if respg.Status != "OK" {
+			logger.ErrorLogger.Println(respg)
+			s.respond(w, r, http.StatusBadRequest, newResponseBooking(errMs, resp, StatusLK, respg.Message))
+		} else {
+			logger.InfoLogger.Println("gazcrm booking data transfer success")
+			s.respond(w, r, http.StatusOK, newResponseBooking(errMs, resp, StatusLK, respBooking))
+		}
+
+	}
+
+}
+
+// handle Booking Delete
+func (s *server) handleRequestBookingDel() http.HandlerFunc {
+
+	return func(w http.ResponseWriter, r *http.Request) {
+
+		req := model.DataBookingDel{}
+
+		if err := json.NewDecoder(r.Body).Decode(&req); err != nil {
+			s.error(w, r, http.StatusBadRequest, err)
+			logger.ErrorLogger.Println(err)
+			return
+		}
+
+	}
 }
 
 // handle request forms
@@ -358,6 +614,79 @@ func (s *server) handleRequestForm() http.HandlerFunc {
 
 		//insert data in postgres
 		if err := s.store.Data().QueryInsertFormsPostgres(req); err != nil {
+			logger.ErrorLogger.Println(err)
+		} else {
+			logger.InfoLogger.Println("sites form data stored")
+		}
+
+	}
+
+}
+
+// handleForm godoc
+// @Summary Данные для создания обращения в ГАЗЦРМ
+// @Tags ГАЗ ЦРМ
+// @Description Данные для создания обращения в ГАЗЦРМ
+// @ID post-form
+// @Accept  json
+// @Produce  json
+// @Param input body model.Form true "form info"
+// @Success 200 {object} model.ResponseGazCrm "OK"
+// @Router /auth/form/ [post]
+// @Security ApiKeyAuth
+func (s *server) handleForm() http.HandlerFunc {
+
+	return func(w http.ResponseWriter, r *http.Request) {
+
+		req := model.Form{}
+
+		if err := json.NewDecoder(r.Body).Decode(&req); err != nil {
+			s.error(w, r, http.StatusBadRequest, err)
+			logger.ErrorLogger.Println(err)
+			return
+		}
+
+		//request gazcrm api
+		respg, err := s.store.Data().RequestForms(req, s.config)
+		var CrmDone bool
+		if err != nil {
+			logger.ErrorLogger.Println(err)
+
+			// respBytes, err := ioutil.ReadAll(r.Body)
+			// if err != nil {
+			// 	logger.ErrorLogger.Println(err)
+			// }
+
+			// buf := new(bytes.Buffer)
+			// buf.ReadFrom(r.Response.Body)
+			// JsonString := buf.String()
+
+			JsonStringBytes, err := json.Marshal(req)
+			if err != nil {
+				logger.ErrorLogger.Println(err)
+			}
+
+			err = s.store.Data().AddToRabbit(JsonStringBytes, "crm-err-queue", "crm-err-ex")
+			logger.InfoLogger.Println(JsonStringBytes)
+			if err != nil {
+				logger.ErrorLogger.Println(err)
+			}
+
+		}
+		if respg.Status != "OK" {
+			logger.ErrorLogger.Println(respg)
+			s.respond(w, r, http.StatusBadRequest, newResponse("Error", respg.Message))
+			CrmDone = false
+		} else if respg.Status == "" {
+
+		} else {
+			logger.InfoLogger.Println("gazcrm form data transfer success")
+			s.respond(w, r, http.StatusOK, newResponse("Ok", respForm))
+			CrmDone = true
+		}
+
+		//insert data in postgres
+		if err := s.store.Data().QueryFormsPostgres(req, CrmDone); err != nil {
 			logger.ErrorLogger.Println(err)
 		} else {
 			logger.InfoLogger.Println("sites form data stored")
@@ -502,6 +831,8 @@ func (s *server) handleBasicModelsPrice2() http.HandlerFunc {
 		s.respond(w, r, http.StatusOK, data)
 		logger.InfoLogger.Println("data price basic 2 models sent")
 
+		//тут кладем в кролика
+
 	}
 
 }
@@ -563,7 +894,47 @@ func (s *server) handleSprav() http.HandlerFunc {
 
 }
 
-// handle request sprav
+// handleSpravModels godoc
+// @Summary Получить список моделей
+// @Tags Данные по автомобилям для заказа
+// @Description Получить список моделей, доступных к заказу <br/><br/> <i>хп_Спр\_Номенклатура\_ПолучитьДанныеДляВкладкиДляСайта\_ОбАвтомобиле<i>
+// @ID get-models
+// @Accept  json
+// @Produce  json
+// @Success 200 {array} model.DataModels "OK"
+// @Router /auth/models [get]
+// @Security ApiKeyAuth
+func (s *server) handleModels() http.HandlerFunc {
+
+	return func(w http.ResponseWriter, r *http.Request) {
+
+		data, err := s.store.Data().QueryModels()
+
+		if err != nil {
+			s.error(w, r, http.StatusBadRequest, errMssql)
+			logger.ErrorLogger.Println(err)
+		}
+
+		s.respond(w, r, http.StatusOK, data)
+		logger.InfoLogger.Println("data models sent")
+
+		JsonStringBytes, err := json.Marshal(data)
+		if err != nil {
+			logger.ErrorLogger.Println(err)
+		}
+
+		err = s.store.Data().AddToRabbit(JsonStringBytes, "isk.models", "isk.models")
+		//logger.InfoLogger.Println(JsonStringBytes)
+		if err != nil {
+			logger.ErrorLogger.Println(err)
+		}
+		logger.InfoLogger.Println("data models sent to rabbit")
+
+	}
+
+}
+
+// handle request spravModels
 func (s *server) handleSpravModels() http.HandlerFunc {
 
 	return func(w http.ResponseWriter, r *http.Request) {
@@ -580,6 +951,58 @@ func (s *server) handleSpravModels() http.HandlerFunc {
 
 	}
 
+}
+
+// handleOptions godoc
+// @Summary Получить список опций
+// @Tags Данные по автомобилям для заказа
+// @Description Получить список опций <br/><br/> <i>хп\_Спр\_Номенклатура\_ПолучитьДанныеДляВкладкиДляСайта\_ОснащениеДопОборудование<i>
+// @ID get-options
+// @Accept  json
+// @Produce  json
+// @Success 200 {array} model.Options "OK"
+// @Router /auth/options [get]
+// @Security ApiKeyAuth
+func (s *server) handleOptions() http.HandlerFunc {
+
+	return func(w http.ResponseWriter, r *http.Request) {
+
+		data, err := s.store.Data().QueryOptions()
+
+		if err != nil {
+			s.error(w, r, http.StatusBadRequest, errMssql)
+			logger.ErrorLogger.Println(err)
+		}
+
+		s.respond(w, r, http.StatusOK, data)
+		logger.InfoLogger.Println("new options sent")
+	}
+}
+
+// handleSpecial godoc
+// @Summary Получить список надстроек
+// @Tags Данные по автомобилям для заказа
+// @Description Получить список надстроек <br/><br/> <i>хп\_Спр\_Номенклатура\_ПолучитьДанныеДляВкладкиДляСайта\_РучноеОснащениеНадстройка<i>
+// @ID get-special
+// @Accept  json
+// @Produce  json
+// @Success 200 {array} model.Special "OK"
+// @Router /auth/special [get]
+// @Security ApiKeyAuth
+func (s *server) handleSpecial() http.HandlerFunc {
+
+	return func(w http.ResponseWriter, r *http.Request) {
+
+		data, err := s.store.Data().QuerySpecial()
+
+		if err != nil {
+			s.error(w, r, http.StatusBadRequest, errMssql)
+			logger.ErrorLogger.Println(err)
+		}
+
+		s.respond(w, r, http.StatusOK, data)
+		logger.InfoLogger.Println("new sspecial sent")
+	}
 }
 
 // handle request options data
@@ -601,10 +1024,10 @@ func (s *server) handleOptionsData() http.HandlerFunc {
 
 }
 
-// handlePacketsDataSprav godoc
+// handleOptionsDataSprav godoc
 // @Summary Получить список недопустимых и обязательных опций
 // @Tags Данные по автомобилям для заказа
-// @Description Получить список недопустимых и обязательных опций
+// @Description Получить список недопустимых и обязательных опций <br/><br/> <i>хп\_ВыгрузкаДляСайта\_НедопустимыеОбязательныеОпции<i>
 // @ID get-packetsdatasprav
 // @Accept  json
 // @Produce  json
@@ -629,16 +1052,6 @@ func (s *server) handleOptionsDataSprav() http.HandlerFunc {
 
 }
 
-// handlePacketsData godoc
-// @Summary Получить список пакетов опций
-// @Tags Данные по автомобилям для заказа
-// @Description Получить список пакетов опций
-// @ID get-packetsdata
-// @Accept  json
-// @Produce  json
-// @Success 200 {array} model.DataPackets "OK"
-// @Router /auth/getpacketsdata [get]
-// @Security ApiKeyAuth
 func (s *server) handlePacketsData() http.HandlerFunc {
 
 	return func(w http.ResponseWriter, r *http.Request) {
@@ -656,10 +1069,37 @@ func (s *server) handlePacketsData() http.HandlerFunc {
 	}
 }
 
+// handlePackets godoc
+// @Summary Получить список пакетов опций
+// @Tags Данные по автомобилям для заказа
+// @Description Получить список пакетов опций <br/><br/> <i>хп\_ВыгрузкаДляСайта\_СоставПакета<i>
+// @ID get-packetsdata
+// @Accept  json
+// @Produce  json
+// @Success 200 {array} model.DataPackets_l "OK"
+// @Router /auth/packets [get]
+// @Security ApiKeyAuth
+func (s *server) handlePackets() http.HandlerFunc {
+
+	return func(w http.ResponseWriter, r *http.Request) {
+
+		data, err := s.store.Data().QueryPackets()
+
+		if err != nil {
+			s.error(w, r, http.StatusBadRequest, errMssql)
+			logger.ErrorLogger.Println(err)
+		}
+
+		s.respond(w, r, http.StatusOK, data)
+		logger.InfoLogger.Println("new data packets sent")
+
+	}
+}
+
 // handleColorsData godoc
 // @Summary Получить цвета автомобилей
 // @Tags Данные по автомобилям для заказа
-// @Description Получить цвета автомобилей
+// @Description Получить цвета автомобилей <br/><br/> <i>хп\_Спр\_Номенклатура\_ПолучитьДанныеДляВкладкиДляСайта\_Цвета<i>
 // @ID get-colorsdata
 // @Accept  json
 // @Produce  json
@@ -686,7 +1126,7 @@ func (s *server) handleColorsData() http.HandlerFunc {
 // handleStatusesData godoc
 // @Summary Получить статусы заказов для личного кабинета
 // @Tags Данные для личного кабинета
-// @Description Получить статусы заказов для личного кабинета
+// @Description Получить статусы заказов для личного кабинета <br/><br/> <i>хп\_СтатусыМашинДляРозничнойПродажи<i>
 // @ID get-statusesdata
 // @Accept  json
 // @Produce  json
@@ -724,7 +1164,7 @@ func (s *server) handleStatusesData() http.HandlerFunc {
 // handleTechData godoc
 // @Summary Получить технические характеристика автомобилей
 // @Tags Данные по автомобилям для заказа
-// @Description Получить технические характеристики
+// @Description Получить технические характеристики <br/><br/> <i>хп\_ДляСайта\_Характеристики\_Моделей<i>
 // @ID get-techdata
 // @Accept  json
 // @Produce  json
@@ -744,6 +1184,34 @@ func (s *server) handleTechData() http.HandlerFunc {
 
 		s.respond(w, r, http.StatusOK, data)
 		logger.InfoLogger.Println("tech data sent")
+
+	}
+
+}
+
+// handleGreyINN godoc
+// @Summary Получить список ИНН серых дилеров
+// @Tags Данные по серым дилерам
+// @Description Получить список ИНН серых дилеров <br/><br/> <i>хп\_СписокИННСерыхДилеров<i>
+// @ID get-grey-inn
+// @Accept  json
+// @Produce  json
+// @Success 200 {array} string "OK"
+// @Router /auth/grey_inn [get]
+// @Security ApiKeyAuth
+func (s *server) handleGreyINN() http.HandlerFunc {
+
+	return func(w http.ResponseWriter, r *http.Request) {
+
+		data, err := s.store.Data().QueryGreyINN()
+
+		if err != nil {
+			s.error(w, r, http.StatusBadRequest, errMssql)
+			logger.ErrorLogger.Println(err)
+		}
+
+		s.respond(w, r, http.StatusOK, data)
+		logger.InfoLogger.Println("grey inn data sent")
 
 	}
 

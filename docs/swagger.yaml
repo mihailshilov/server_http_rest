@@ -1,35 +1,465 @@
 basePath: /
 definitions:
+  model.DataBookingF:
+    properties:
+      car_body_type:
+        example: Комби+
+        type: string
+        x-order: "15"
+      car_brand_name:
+        example: ГАЗ
+        type: string
+        x-order: "21"
+      car_division:
+        example: lcv/mcv
+        type: string
+        x-order: "20"
+      car_family:
+        example: ГАЗель NN
+        type: string
+        x-order: "14"
+      car_model:
+        example: ГАЗон NEXT Бортовая платформа (3 места) ГАЗ-С41R33-6В
+        type: string
+        x-order: "22"
+      car_modification:
+        example: ГАЗ-С41R33-6В
+        type: string
+        x-order: "13"
+      car_preview_url:
+        example: https://fs.azgaz.dev.perx.ru/media/PRDiceqdYBoc6bwQEDVoHW_2
+        type: string
+        x-order: "24"
+      car_price:
+        example: 1709800
+        type: integer
+        x-order: "19"
+      car_uniq_code:
+        example: 2372376
+        type: integer
+        x-order: "12"
+      car_vin:
+        example: X96A31S12P0962150
+        type: string
+        x-order: "11"
+      client_date_of_birth:
+        example: "1991-09-01"
+        type: string
+        x-order: "32"
+      client_email:
+        example: i.ivanov@mail.test
+        type: string
+        x-order: "30"
+      client_id:
+        description: Google Analytics cookies
+        example: "128613585.1680699283"
+        type: string
+        x-order: "56"
+      client_ip:
+        example: 83.220.238.137
+        type: string
+        x-order: "59"
+      client_name:
+        example: Иван
+        type: string
+        x-order: "28"
+      client_patronymic:
+        example: Иванович
+        type: string
+        x-order: "29"
+      client_phone_number:
+        example: "+79991234567"
+        type: string
+        x-order: "31"
+      client_reg_address:
+        example: Н.Новгород, ул. Ленина, д. 1
+        type: string
+        x-order: "9"
+      client_surname:
+        example: Иванов
+        type: string
+        x-order: "27"
+      client_token:
+        example: eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJkYXRhIjp7ImlkIjo0NywibmFtZSI6Ik1pa2UiLCJsYXN0X25hbWUiOiJvbGVnb3ZpY2giLCJzZWNvbmRfbmFtZSI6IlNoaWxvdiIsImVtYWlsIjoibUBzaGlsb3YucHJvIn0sInVpZCI6NDcsImlhdCI6MTY3OTQwNzgwOCwiZXhwIjoxNjc5NTY3ODA4fQ.b9v1PU7XybdQ9fUcFyPd22S-tENEujdiFt_KJCxyRw0
+        type: string
+        x-order: "25"
+      consent_to_mailing:
+        example: "yes"
+        type: string
+        x-order: "10"
+      delivery_address:
+        example: Н.Новгород, ул. Ленина, д. 1
+        type: string
+        x-order: "41"
+      form_name:
+        example: Получить счёт
+        type: string
+        x-order: "60"
+      host_name:
+        example: azgaz.ru
+        type: string
+        x-order: "62"
+      id_form:
+        example: 635fc4247e0aed5155614771
+        type: string
+        x-order: "61"
+      passport_date:
+        description: new
+        example: "2005-09-01"
+        type: string
+        x-order: "35"
+      passport_number:
+        example: "199455"
+        type: string
+        x-order: "34"
+      passport_organ:
+        description: new
+        example: МВД по Автозаводском р-ну г. НН
+        type: string
+        x-order: "36"
+      passport_organ_code:
+        description: new
+        example: 520-001
+        type: string
+        x-order: "37"
+      passport_ser:
+        example: "2288"
+        type: string
+        x-order: "33"
+      post_address:
+        example: Н.Новгород, ул. Ленина, д. 1
+        type: string
+        x-order: "40"
+      request_area:
+        example: distrib
+        type: string
+        x-order: "05"
+      request_bill_link:
+        example: https//st.tech/bill001
+        type: string
+        x-order: "07"
+      request_bill_number:
+        example: "12345678"
+        type: string
+        x-order: "07"
+      request_comment:
+        example: Комментарий...
+        type: string
+        x-order: "09"
+      request_datetime:
+        example: 2022-02-02T12:12:12
+        type: string
+        x-order: "08"
+      request_id:
+        example: "1019157100531"
+        type: string
+        x-order: "02"
+      request_subdivisions_id:
+        example: "6286424721659083063"
+        type: string
+        x-order: "03"
+      snils:
+        example: "12345678910"
+        type: string
+        x-order: "38"
+      testmode:
+        example: true
+        type: boolean
+        x-order: "01"
+    type: object
+  model.DataBookingU:
+    properties:
+      bank_bik:
+        example: "044525593"
+        type: string
+        x-order: "49"
+      bank_name:
+        example: АрфаБанк
+        type: string
+        x-order: "50"
+      bank_raschetniy_schet:
+        example: "40702810102130000132"
+        type: string
+        x-order: "51"
+      car_body_type:
+        example: Комби+
+        type: string
+        x-order: "15"
+      car_brand_name:
+        example: ГАЗ
+        type: string
+        x-order: "21"
+      car_division:
+        example: lcv/mcv
+        type: string
+        x-order: "20"
+      car_family:
+        example: ГАЗель NN
+        type: string
+        x-order: "14"
+      car_model:
+        example: ГАЗон NEXT Бортовая платформа (3 места) ГАЗ-С41R33-6В
+        type: string
+        x-order: "22"
+      car_model_url:
+        example: https://catalog.azgaz.ru/gazel-nn/kombi-gazel-nn-gaz-a32s22-420/641b1c2491cdddf86efceb38/
+        type: string
+        x-order: "23"
+      car_modification:
+        example: ГАЗ-С41R33-6В
+        type: string
+        x-order: "13"
+      car_preview_url:
+        example: https://fs.azgaz.dev.perx.ru/media/PRDiceqdYBoc6bwQEDVoHW_2
+        type: string
+        x-order: "24"
+      car_price:
+        example: 1709800
+        type: integer
+        x-order: "19"
+      car_uniq_code:
+        example: 2372376
+        type: integer
+        x-order: "12"
+      car_vin:
+        example: X96A31S12P0962150
+        type: string
+        x-order: "11"
+      client_id:
+        description: Yandex Metrics cookies
+        example: "1646307578617354501"
+        type: string
+        x-order: "57"
+      client_ip:
+        example: 83.220.238.137
+        type: string
+        x-order: "59"
+      client_token:
+        example: eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJkYXRhIjp7ImlkIjo0NywibmFtZSI6Ik1pa2UiLCJsYXN0X25hbWUiOiJvbGVnb3ZpY2giLCJzZWNvbmRfbmFtZSI6IlNoaWxvdiIsImVtYWlsIjoibUBzaGlsb3YucHJvIn0sInVpZCI6NDcsImlhdCI6MTY3OTQwNzgwOCwiZXhwIjoxNjc5NTY3ODA4fQ.b9v1PU7XybdQ9fUcFyPd22S-tENEujdiFt_KJCxyRw0
+        type: string
+        x-order: "25"
+      company_adress:
+        example: Н.Новгород, ул. Ленина, д. 1
+        type: string
+        x-order: "47"
+      company_dadata_id:
+        example: c7566f19aea28a24766b66ad9ef8f21c60cd8292a43338fbf9d705f88cec9a90
+        type: string
+        x-order: "48"
+      company_inn:
+        example: "821636535086"
+        type: string
+        x-order: "43"
+      company_kpp:
+        example: "153243695"
+        type: string
+        x-order: "44"
+      company_name:
+        example: Авто-НН
+        type: string
+        x-order: "46"
+      company_ogrn:
+        example: "4052411237237"
+        type: string
+        x-order: "45"
+      consent_to_mailing:
+        example: "yes"
+        type: string
+        x-order: "10"
+      delivery_address:
+        example: Н.Новгород, ул. Ленина, д. 1
+        type: string
+        x-order: "41"
+      form_name:
+        example: Получить счёт
+        type: string
+        x-order: "60"
+      host_name:
+        example: azgaz.ru
+        type: string
+        x-order: "62"
+      id_form:
+        example: 635fc4247e0aed5155614771
+        type: string
+        x-order: "61"
+      post_address:
+        example: Н.Новгород, ул. Ленина, д. 1
+        type: string
+        x-order: "40"
+      representative_email:
+        example: company@mail.ru
+        type: string
+        x-order: "55"
+      representative_name:
+        example: Иван
+        type: string
+        x-order: "52"
+      representative_phone_number:
+        example: "+79991234567"
+        type: string
+        x-order: "54"
+      representative_surname:
+        example: Иванов
+        type: string
+        x-order: "53"
+      request_area:
+        example: distrib
+        type: string
+        x-order: "05"
+      request_bill_link:
+        example: https//st.tech/bill001
+        type: string
+        x-order: "07"
+      request_bill_number:
+        example: "123456"
+        type: string
+        x-order: "07"
+      request_comment:
+        example: Комментарий...
+        type: string
+        x-order: "09"
+      request_datetime:
+        example: 2022-02-02T12:12:12
+        type: string
+        x-order: "08"
+      request_id:
+        example: "1019157100531"
+        type: string
+        x-order: "02"
+      request_subdivisions_id:
+        example: "6286424721659083063"
+        type: string
+        x-order: "03"
+      request_type:
+        example: онлайн-заказ
+        type: string
+        x-order: "06"
+      testmode:
+        example: true
+        type: boolean
+        x-order: "01"
+    type: object
   model.DataColors:
     properties:
       Наименование:
         example: СИЛЬВЕР ЛАЙТ
         type: string
-        x-order: d
+        x-order: "04"
       НоменклатураИд:
         example: "865436"
         type: string
-        x-order: a
+        x-order: "01"
       НоменклатураНаименование:
         example: ГАЗ-А21R33-10
         type: string
-        x-order: b
+        x-order: "02"
       ПолноеНаименование:
         example: СВЕТЛО-СЕРЫЙ
         type: string
-        x-order: e
+        x-order: "05"
       Слойность:
         example: "2"
         type: string
-        x-order: g
+        x-order: "07"
       ЦветRGB:
         example: 157,163,166
         type: string
-        x-order: f
+        x-order: "06"
       ЦветИд:
         example: "996"
         type: string
-        x-order: c
+        x-order: "03"
+      Цена:
+        example: "0"
+        type: string
+        x-order: "08"
+    type: object
+  model.DataModels:
+    properties:
+      ВидПродукции:
+        example: Коммерческая техника
+        type: string
+        x-order: "09"
+      Дивизион:
+        example: LCV
+        type: string
+        x-order: "06"
+      ДокументУстановившийЦену:
+        example: Ввод цен (модели) № 400 от 20.02.2023 (15443251); 1 - Ввод цен (опции)
+          № 183 от 01.09.2022 (15137904); 8KB - Ввод цен (опции) № 185 от 01.09.2022
+          (15137935); EA3 - Ввод цен (опции) № 185 от 01.09.2022 (15137935); 5GF -
+          Ввод цен (опции) № 185 от 01.09.2022 (15137935); ST(N) - Ввод цен (опции)
+          № 187 от 01.09.2022 (15137944);
+        type: string
+        x-order: "19"
+      ИдДивизиона:
+        example: 7133
+        type: integer
+        x-order: "05"
+      ИдМодели:
+        example: 866508
+        type: integer
+        x-order: "01"
+      ИдНабораОпций:
+        example: 123565
+        type: integer
+        x-order: "03"
+      ИдНазначения:
+        example: 20
+        type: integer
+        x-order: "12"
+      ИдПроизводителя:
+        example: 60
+        type: integer
+        x-order: "14"
+      ИдСемейства:
+        example: 5725
+        type: integer
+        x-order: "07"
+      Класс:
+        example: Бортовая платформа
+        type: string
+        x-order: "10"
+      Кузов:
+        example: Комби
+        type: string
+        x-order: "11"
+      Модель:
+        example: ГАЗ-А21R25-20
+        type: string
+        x-order: "02"
+      НаборОпций:
+        example: 1/ST(N)[2KB,5]GF,8KB,EA3/ПП
+        type: string
+        x-order: "04"
+      Назначение:
+        example: ПЕРЕВОЗКИ С ТЕМПЕРАТУРНЫМ РЕЖИМОМ
+        type: string
+        x-order: "13"
+      ПризнакЦеныОт:
+        example: 0
+        type: integer
+        x-order: "17"
+      Производитель:
+        example: ГАЗ
+        type: string
+        x-order: "15"
+      Семейство:
+        example: Газель Next
+        type: string
+        x-order: "08"
+      СообщениеГдеНетЦен:
+        example: Нет цены опций 1,7BA,EA3,5GF
+        type: string
+        x-order: "18"
+      Сортировка:
+        example: 500
+        type: integer
+        x-order: "20"
+      Цена:
+        example: "2960000.00"
+        type: string
+        x-order: "16"
     type: object
   model.DataOptionsSprav:
     properties:
@@ -62,52 +492,57 @@ definitions:
         type: string
         x-order: b
     type: object
-  model.DataPackets:
+  model.DataPackets_l:
     properties:
       ИдГруппыОпций:
-        example: "141"
-        type: string
-        x-order: f
+        example: 141
+        type: integer
+        x-order: "06"
       ИдОпции:
-        example: "684"
-        type: string
-        x-order: i
+        example: 684
+        type: integer
+        x-order: "09"
       ИдПакета:
-        example: "975"
-        type: string
-        x-order: c
+        example: 975
+        type: integer
+        x-order: "03"
       КраткоеНаименованиеГруппыОпций:
         example: 2K
         type: string
-        x-order: g
+        x-order: "07"
       КраткоеНаименованиеОпции:
         example: 2KB
         type: string
-        x-order: k
+        x-order: "11"
       КраткоеНаименованиеПакета:
         example: ST(N)
         type: string
-        x-order: d
+        x-order: "04"
       НоменклатураИд:
-        example: "865436"
-        type: string
-        x-order: a
+        example: 865436
+        type: integer
+        x-order: "01"
       НоменклатураНаименование:
         example: ГАЗ-А21R33-10
         type: string
-        x-order: b
+        x-order: "02"
       ПолноеНаименованиеГруппыОпций:
         example: Сиденье водителя
         type: string
-        x-order: h
+        x-order: "08"
       ПолноеНаименованиеОпции:
         example: Сиденье водителя с подлокотником
         type: string
-        x-order: j
+        x-order: "10"
       ПолноеНаименованиеПакета:
-        example: ПолноеНаименованиеПакета
+        example: Пакет "Стандарт" для 1-ряд а/м Газель Next борт, шасси и САТ, дизель,
+          бензин
         type: string
-        x-order: e
+        x-order: "05"
+      ЦенаПакета:
+        example: "10000.00"
+        type: string
+        x-order: "12"
     type: object
   model.DataStatusesLk:
     properties:
@@ -128,6 +563,106 @@ definitions:
         type: string
         x-order: d
     type: object
+  model.Form:
+    properties:
+      car_body_type:
+        example: Комби+
+        type: string
+        x-order: "15"
+      car_brand_name:
+        example: ГАЗ
+        type: string
+        x-order: "11"
+      car_division:
+        example: lcv/mcv
+        type: string
+        x-order: "10"
+      car_family:
+        example: ГАЗель NN
+        type: string
+        x-order: "14"
+      car_model:
+        example: ГАЗон NEXT Бортовая платформа (3 места) ГАЗ-С41R33-6В
+        type: string
+        x-order: "12"
+      car_modification:
+        example: ГАЗ-С41R33-6В
+        type: string
+        x-order: "13"
+      client_email:
+        example: i.ivanov@mail.test
+        type: string
+        x-order: "21"
+      client_id:
+        description: Yandex Metrics cookies
+        example: "1646307578617354501"
+        type: string
+        x-order: "16"
+      client_ip:
+        example: 83.220.238.137
+        type: string
+        x-order: "17"
+      client_name:
+        example: Иван
+        type: string
+        x-order: "20"
+      client_phone_number:
+        example: "+79991234567"
+        type: string
+        x-order: "22"
+      client_type:
+        example: personal
+        type: string
+        x-order: "18"
+      company_name:
+        example: Авто-НН
+        type: string
+        x-order: "19"
+      consent_to_mailing:
+        example: "yes"
+        type: string
+        x-order: "23"
+      form_name:
+        example: Получить счёт
+        type: string
+        x-order: "08"
+      host_name:
+        example: azgaz.ru
+        type: string
+        x-order: "24"
+      id_form:
+        example: 635fc4247e0aed5155614771
+        type: string
+        x-order: "09"
+      request_area:
+        example: dealer
+        type: string
+        x-order: "05"
+      request_comment:
+        example: Комментарий...
+        type: string
+        x-order: "07"
+      request_datetime:
+        example: 2022-02-02T12:12:12
+        type: string
+        x-order: "06"
+      request_id:
+        example: "1019157100531"
+        type: string
+        x-order: "02"
+      request_subdivisions_id:
+        example: "6286424721659083063"
+        type: string
+        x-order: "03"
+      request_subdivisions_name:
+        example: Авторитейл М
+        type: string
+        x-order: "04"
+      testmode:
+        example: true
+        type: boolean
+        x-order: "01"
+    type: object
   model.HTTPerrIncorrectEmailOrPassword:
     properties:
       error:
@@ -139,6 +674,138 @@ definitions:
       error:
         example: service registration error
         type: string
+    type: object
+  model.Options:
+    properties:
+      БазоваяМодель:
+        example: 935649
+        type: integer
+        x-order: "02"
+      ВыбранаПоУмолчанию:
+        example: true
+        type: boolean
+        x-order: "11"
+      ГруппаНаСайте:
+        example: Оснащение
+        type: string
+        x-order: "20"
+      ДопустимоТолькоОдноЗначениеВНаборе:
+        example: true
+        type: boolean
+        x-order: "13"
+      ИдЗначенияОпции:
+        example: 2413
+        type: integer
+        x-order: "05"
+      КодЗначенияОпции:
+        example: 2MD
+        type: string
+        x-order: "06"
+      КодКатегории:
+        example: "2"
+        type: string
+        x-order: "03"
+      Модель:
+        example: 936749
+        type: integer
+        x-order: "02"
+      НаименованиеЗначенияОпции:
+        example: Без кондиционера
+        type: string
+        x-order: "07"
+      НаименованиеКатегории:
+        example: Комфорт (часть 1)
+        type: string
+        x-order: "04"
+      НедопустимоеСочетаниеОпций:
+        example: 9PA
+        type: string
+        x-order: "17"
+      НомерСтроки:
+        example: 82
+        type: integer
+        x-order: "01"
+      Обязательная:
+        example: false
+        type: boolean
+        x-order: "12"
+      ОбязательноеСочетаниеОпций:
+        example: 2LF
+        type: string
+        x-order: "16"
+      ОписаниеЗначенияОпцииДляСайта:
+        example: Без системы кондиционирования для комплектации low-cost
+        type: string
+        x-order: "09"
+      Цена:
+        example: "-55000.00"
+        type: string
+        x-order: "19"
+    type: object
+  model.ResponseBooking:
+    properties:
+      response_gcrm:
+        type: string
+      response_ms:
+        type: string
+      status_lk:
+        type: string
+      status_ms:
+        type: string
+    type: object
+  model.ResponseGazCrm:
+    properties:
+      message:
+        type: string
+      status:
+        type: string
+    type: object
+  model.Special:
+    properties:
+      ИдГруппы:
+        example: 4
+        type: integer
+        x-order: "08"
+      ИдЗначения:
+        example: 1180
+        type: integer
+        x-order: "05"
+      ИдКатегории:
+        example: 6
+        type: integer
+        x-order: "10"
+      ИдМодели:
+        example: 867560
+        type: integer
+        x-order: "01"
+      ИдПараметра:
+        example: 10
+        type: integer
+        x-order: "03"
+      НаименованиеГруппы:
+        example: Описание надстройки
+        type: string
+        x-order: "09"
+      НаименованиеЗначения:
+        example: "3060"
+        type: string
+        x-order: "06"
+      НаименованиеКатегории:
+        example: Размеры фургона
+        type: string
+        x-order: "11"
+      НаименованиеМодели:
+        example: А23R25-0011-18-641-60-00-900
+        type: string
+        x-order: "02"
+      НаименованиеПараметра:
+        example: Внешняя длина фургона, мм
+        type: string
+        x-order: "04"
+      ПорядокСортировки:
+        example: 7
+        type: integer
+        x-order: "07"
     type: object
   model.TechDataObj:
     properties:
@@ -208,15 +875,91 @@ info:
   contact:
     email: shilovmo@st.tech
     name: API Support
-  description: API-сервер СТТ
+  description: 'API-сервер СТТ <br/><br/>Разработчики: Шилов Михаил (Golang, Postgress),
+    Кошмар Олег (C#, MS SQL), Мелик-Саядян Антон (Systems analysis, Architecture)'
   title: API СТТ
   version: "1.0"
 paths:
+  /auth/booking_f/:
+    post:
+      consumes:
+      - application/json
+      description: Регистрирует онлайн продажу <br/><br/> <i>хп\_ОтразитьРозничнуюПродажу<i>
+      operationId: post-booking-f
+      parameters:
+      - description: booking info
+        in: body
+        name: input
+        required: true
+        schema:
+          $ref: '#/definitions/model.DataBookingF'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/model.ResponseBooking'
+      security:
+      - ApiKeyAuth: []
+      summary: Данные по продаже физ.лицу для ИС Клиент, ГазЦРМ и ЛК
+      tags:
+      - Онлайн продажа
+  /auth/booking_u/:
+    post:
+      consumes:
+      - application/json
+      description: Регистрирует онлайн продажу <br/><br/> <i>хп\_ОтразитьРозничнуюПродажу<i>
+      operationId: post-booking-u
+      parameters:
+      - description: booking info
+        in: body
+        name: input
+        required: true
+        schema:
+          $ref: '#/definitions/model.DataBookingU'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/model.ResponseBooking'
+      security:
+      - ApiKeyAuth: []
+      summary: Данные по продаже юр.лицу для ИС Клиент, ГазЦРМ и ЛК
+      tags:
+      - Онлайн продажа
+  /auth/form/:
+    post:
+      consumes:
+      - application/json
+      description: Данные для создания обращения в ГАЗЦРМ
+      operationId: post-form
+      parameters:
+      - description: form info
+        in: body
+        name: input
+        required: true
+        schema:
+          $ref: '#/definitions/model.Form'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/model.ResponseGazCrm'
+      security:
+      - ApiKeyAuth: []
+      summary: Данные для создания обращения в ГАЗЦРМ
+      tags:
+      - ГАЗ ЦРМ
   /auth/getcolorsdata:
     get:
       consumes:
       - application/json
-      description: Получить цвета автомобилей
+      description: Получить цвета автомобилей <br/><br/> <i>хп\_Спр\_Номенклатура\_ПолучитьДанныеДляВкладкиДляСайта\_Цвета<i>
       operationId: get-colorsdata
       produces:
       - application/json
@@ -236,7 +979,7 @@ paths:
     get:
       consumes:
       - application/json
-      description: Получить список недопустимых и обязательных опций
+      description: Получить список недопустимых и обязательных опций <br/><br/> <i>хп\_ВыгрузкаДляСайта\_НедопустимыеОбязательныеОпции<i>
       operationId: get-packetsdatasprav
       produces:
       - application/json
@@ -252,31 +995,11 @@ paths:
       summary: Получить список недопустимых и обязательных опций
       tags:
       - Данные по автомобилям для заказа
-  /auth/getpacketsdata:
-    get:
-      consumes:
-      - application/json
-      description: Получить список пакетов опций
-      operationId: get-packetsdata
-      produces:
-      - application/json
-      responses:
-        "200":
-          description: OK
-          schema:
-            items:
-              $ref: '#/definitions/model.DataPackets'
-            type: array
-      security:
-      - ApiKeyAuth: []
-      summary: Получить список пакетов опций
-      tags:
-      - Данные по автомобилям для заказа
   /auth/getstatusesdata:
     get:
       consumes:
       - application/json
-      description: Получить статусы заказов для личного кабинета
+      description: Получить статусы заказов для личного кабинета <br/><br/> <i>хп\_СтатусыМашинДляРозничнойПродажи<i>
       operationId: get-statusesdata
       produces:
       - application/json
@@ -292,11 +1015,111 @@ paths:
       summary: Получить статусы заказов для личного кабинета
       tags:
       - Данные для личного кабинета
+  /auth/grey_inn:
+    get:
+      consumes:
+      - application/json
+      description: Получить список ИНН серых дилеров <br/><br/> <i>хп\_СписокИННСерыхДилеров<i>
+      operationId: get-grey-inn
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            items:
+              type: string
+            type: array
+      security:
+      - ApiKeyAuth: []
+      summary: Получить список ИНН серых дилеров
+      tags:
+      - Данные по серым дилерам
+  /auth/models:
+    get:
+      consumes:
+      - application/json
+      description: Получить список моделей, доступных к заказу <br/><br/> <i>хп_Спр\_Номенклатура\_ПолучитьДанныеДляВкладкиДляСайта\_ОбАвтомобиле<i>
+      operationId: get-models
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            items:
+              $ref: '#/definitions/model.DataModels'
+            type: array
+      security:
+      - ApiKeyAuth: []
+      summary: Получить список моделей
+      tags:
+      - Данные по автомобилям для заказа
+  /auth/options:
+    get:
+      consumes:
+      - application/json
+      description: Получить список опций <br/><br/> <i>хп\_Спр\_Номенклатура\_ПолучитьДанныеДляВкладкиДляСайта\_ОснащениеДопОборудование<i>
+      operationId: get-options
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            items:
+              $ref: '#/definitions/model.Options'
+            type: array
+      security:
+      - ApiKeyAuth: []
+      summary: Получить список опций
+      tags:
+      - Данные по автомобилям для заказа
+  /auth/packets:
+    get:
+      consumes:
+      - application/json
+      description: Получить список пакетов опций <br/><br/> <i>хп\_ВыгрузкаДляСайта\_СоставПакета<i>
+      operationId: get-packetsdata
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            items:
+              $ref: '#/definitions/model.DataPackets_l'
+            type: array
+      security:
+      - ApiKeyAuth: []
+      summary: Получить список пакетов опций
+      tags:
+      - Данные по автомобилям для заказа
+  /auth/special:
+    get:
+      consumes:
+      - application/json
+      description: Получить список надстроек <br/><br/> <i>хп\_Спр\_Номенклатура\_ПолучитьДанныеДляВкладкиДляСайта\_РучноеОснащениеНадстройка<i>
+      operationId: get-special
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            items:
+              $ref: '#/definitions/model.Special'
+            type: array
+      security:
+      - ApiKeyAuth: []
+      summary: Получить список надстроек
+      tags:
+      - Данные по автомобилям для заказа
   /auth/techdata:
     get:
       consumes:
       - application/json
-      description: Получить технические характеристики
+      description: Получить технические характеристики <br/><br/> <i>хп\_ДляСайта\_Характеристики\_Моделей<i>
       operationId: get-techdata
       produces:
       - application/json
